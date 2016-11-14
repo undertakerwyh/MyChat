@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.wyh.mychat.view.ActionBar
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></com.wyh.mychat.view.ActionBar>
+
+    <com.wyh.mychat.view.TouchViewPager
+        android:id="@+id/vp_Home"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clickable="true"></com.wyh.mychat.view.TouchViewPager>
+
+    <View style="@style/line_h_black_1"></View>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottombar_height">
+
+        <include layout="@layout/layout_bottombar_bg"></include>
+
+        <TabWidget
+            android:id="@+id/tabWidget"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottombar_height"></TabWidget>
+
+    </FrameLayout>
+
+
+</LinearLayout>

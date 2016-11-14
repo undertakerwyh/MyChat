@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/chat_friends_height"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <ImageView
+        android:id="@+id/iv_friends_pic"
+        android:layout_width="@dimen/chat_friends_height"
+        android:layout_height="wrap_content"
+        android:src="@drawable/headportrait" />
+
+    <TextView
+        android:id="@+id/tv_friends_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:text="小明"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp" />
+
+</LinearLayout>
