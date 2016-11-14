@@ -29,7 +29,7 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
 
     private TimeNoteUtil timeNoteUtil;
 
-    private TimeUpdate timeUpdate;
+
 
     public UniversalAdapter(Context context, int layoutRes) {
         this.context = context;
@@ -76,19 +76,22 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
         this.notifyDataSetChanged();
     }
     public void addDataToAdapterHead(List<DataType>list){
-        list.add(list.size(),null);
+        String time = null;
         for(DataType dataType:list){
-            String time = timeNoteUtil.getTime(Long.parseLong(((Message) dataType).getTime()));
+            time = timeNoteUtil.start(Long.parseLong(((Message) dataType).getTime()));
             if(time!=null){
                 Message message = new Message(null,null,time, CommonUtil.TYPE_TIME);
                 dataList.add(0,(DataType) message);
             }
             dataList.add(0,dataType);
         }
+        if(list.size()!=0){
+            time = timeNoteUtil.end();
+            if(time!=null) {
+                Message message = new Message(null,null,time, CommonUtil.TYPE_TIME);
+                dataList.add(0,(DataType) message);
+            }
+        }
         this.notifyDataSetChanged();
-    }
-    public interface TimeUpdate{
-        void start(long time);
-        void end();
     }
 }

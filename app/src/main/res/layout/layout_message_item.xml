@@ -3,7 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <LinearLayout
         android:id="@+id/ll_chat_left"
@@ -50,6 +53,7 @@
         android:layout_width="match_parent"
         android:text="1231423123"
         android:gravity="center_horizontal"
+        android:textColor="@color/colorGray"
         android:padding="6dp"
         android:layout_height="wrap_content" />
 
