@@ -53,6 +53,9 @@ public class PageChangeAnimUtil {
         return pageChangeAnimUtil;
     }
 
+    private float maxScreen;
+    private LinearLayout linearLayout;
+
     /**
      * viewpager的滚动与滚动条的交互,需要重写ViewPager的dispatchTouchEvent方法添加是否触摸屏幕的判断
      *
@@ -61,6 +64,8 @@ public class PageChangeAnimUtil {
      * @param maxScreen    屏幕大小
      */
     public void pageChangeAnim(ViewPager viewPager, final LinearLayout linearLayout, final float maxScreen) {
+        this.maxScreen = maxScreen;
+        this.linearLayout = linearLayout;
         executorService = Executors.newCachedThreadPool();
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -118,5 +123,17 @@ public class PageChangeAnimUtil {
 
             }
         });
+    }
+    public void initPage(int position){
+        if (position == 0) {
+            linearLayout.layout(0, top, (int) maxScreen, bottom);
+            isIdle = true;
+        } else if (position == 1) {
+            linearLayout.layout((int) (maxScreen / 3), top, (int) maxScreen + (int) (maxScreen / 3), bottom);
+            isIdle = true;
+        } else if (position == 2) {
+            linearLayout.layout((int) (2 * maxScreen / 3), top, (int) maxScreen + (int) (2 * maxScreen / 3), bottom);
+            isIdle = true;
+        }
     }
 }

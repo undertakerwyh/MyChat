@@ -5,7 +5,7 @@ package com.wyh.mychat.util;
  */
 
 public class TimeNoteUtil{
-    private final long timeDuration = 1*60*1000;
+    public static final long timeDuration = 4*60*1000;
     private long timeRef;
     private long saveTime;
     private boolean isFirst = true;

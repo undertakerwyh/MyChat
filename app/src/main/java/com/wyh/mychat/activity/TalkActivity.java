@@ -13,6 +13,7 @@ import com.wyh.mychat.base.BaseActivity;
 import com.wyh.mychat.biz.DBManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.util.CommonUtil;
+import com.wyh.mychat.util.TimeNoteUtil;
 import com.wyh.mychat.view.ActionBar;
 import com.wyh.mychat.view.xlistview.XListView;
 
@@ -119,6 +120,10 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     private void mySendMessage() {
         String content = edInputMessage.getText().toString();
         Message message = new Message(name, CommonUtil.getTime(), content, CommonUtil.TYPE_RIGHT);
+        if(CommonUtil.getTimeLong()- DBManager.getTime()> TimeNoteUtil.timeDuration){
+            Message timeMsg = new Message(null,null,CommonUtil.getTimeSelect(CommonUtil.getTimeLong()),CommonUtil.TYPE_TIME);
+            adapter.addDataRefreshTime(timeMsg);
+        }
         adapter.addDataRefreshTime(message);
         lvTalkMessage.setSelection(adapter.getDataList().size());
         DBManager.getDbManager(getApplicationContext()).saveMessage(message);

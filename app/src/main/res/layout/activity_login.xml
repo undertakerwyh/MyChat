@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     android:orientation="vertical"
     tools:context="com.wyh.mychat.activity.LoginActivity">
 
     <com.wyh.mychat.view.ActionBar
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/actionbar_height"></com.wyh.mychat.view.ActionBar>
+        android:layout_height="?attr/actionBarSize"></com.wyh.mychat.view.ActionBar>
     <com.wyh.mychat.view.NoTouchViewPager
         android:id="@+id/vp_login"
         android:layout_width="match_parent"

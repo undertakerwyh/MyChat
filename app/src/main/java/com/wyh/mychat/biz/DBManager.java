@@ -26,6 +26,13 @@ public class DBManager {
     private static SQLiteDatabase sqLiteDatabase;
     private boolean istrue = true;
     private int maxId = -1;
+
+    public static long getTime() {
+        return time;
+    }
+
+    private static long time = 0;
+
     /**
      * 过去消息加载条数
      */
@@ -76,6 +83,9 @@ public class DBManager {
                         if(name.equals(nameLoad)&&(idLoad < maxId || istrue)&&loop<loadNum){
                             typeLoad = cursor.getType(cursor.getColumnIndex("type"));
                             timeLoad = cursor.getString(cursor.getColumnIndex("time"));
+                            if(istrue){
+                                time = Long.parseLong(timeLoad);
+                            }
                             contentLoad = cursor.getString(cursor.getColumnIndex("content"));
                             Message message = new Message(nameLoad,timeLoad,contentLoad,typeLoad);
                             list.add(list.size(),message);
