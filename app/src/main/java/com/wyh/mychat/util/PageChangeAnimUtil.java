@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
  */
 
 public class PageChangeAnimUtil {
+    private static int positionPos;
     /**
      * 记录上一个点的位置
      */
@@ -38,6 +39,10 @@ public class PageChangeAnimUtil {
      * 记录Viewpager的滚动页
      */
     private int oldPosition = 0;
+
+    public static int getPositionPos() {
+        return positionPos;
+    }
 
     public static PageChangeAnimUtil pageChangeAnimUtil = null;
     private ExecutorService executorService;
@@ -70,6 +75,7 @@ public class PageChangeAnimUtil {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(final int position, final float positionOffset, int positionOffsetPixels) {
+                positionPos = positionOffsetPixels;
                 if (isIdle) {
                     oldPixel = positionOffsetPixels;
                     isIdle = false;
@@ -123,17 +129,5 @@ public class PageChangeAnimUtil {
 
             }
         });
-    }
-    public void initPage(int position){
-        if (position == 0) {
-            linearLayout.layout(0, top, (int) maxScreen, bottom);
-            isIdle = true;
-        } else if (position == 1) {
-            linearLayout.layout((int) (maxScreen / 3), top, (int) maxScreen + (int) (maxScreen / 3), bottom);
-            isIdle = true;
-        } else if (position == 2) {
-            linearLayout.layout((int) (2 * maxScreen / 3), top, (int) maxScreen + (int) (2 * maxScreen / 3), bottom);
-            isIdle = true;
-        }
     }
 }
