@@ -3,7 +3,6 @@ package com.wyh.mychat.view;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.wyh.mychat.util.PageChangeAnimUtil;
@@ -29,7 +28,6 @@ public class TouchViewPager extends ViewPager {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Log.e("AAA",PageChangeAnimUtil.getPositionPos()+"");
         if (ev.getAction() == MotionEvent.ACTION_DOWN&& PageChangeAnimUtil.getPositionPos()!=0) {
             isCheaked = true;
         }else if(ev.getAction()==MotionEvent.ACTION_UP||ev.getAction()==MotionEvent.ACTION_CANCEL||PageChangeAnimUtil.getPositionPos()==0){
