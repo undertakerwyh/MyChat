@@ -3,6 +3,7 @@ package com.wyh.mychat.util;
 import android.content.Context;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.wyh.mychat.view.TouchViewPager;
@@ -101,6 +102,7 @@ public class PageChangeAnimUtil {
                     if (isLeft) {
                         linearLayout.layout(left + move / 3, top, right + move / 3, bottom);
                     } else {
+                        Log.e("AAA",finalPositionOffsetPixels+"");
                         linearLayout.layout(left - move / 3, top, right - move / 3, bottom);
                     }
                 } else {

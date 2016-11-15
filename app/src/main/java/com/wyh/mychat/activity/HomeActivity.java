@@ -2,6 +2,7 @@ package com.wyh.mychat.activity;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,6 +18,9 @@ import com.wyh.mychat.fragment.MessageFragment;
 import com.wyh.mychat.util.PageChangeAnimUtil;
 import com.wyh.mychat.view.ActionBar;
 import com.wyh.mychat.view.TouchViewPager;
+import com.wyh.mychat.view.ViewPagerScroller;
+
+import java.lang.reflect.Field;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -56,6 +60,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         initTabHost();
         /**viewpager与滚动条的交互*/
         initHomePageChange();
+        initViewPagerScroll();
     }
 
     private void initHomePageChange() {
@@ -103,6 +108,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         fragmentAdapter.addToFragmentData(new ConfigFragment());
         vpHome.setAdapter(fragmentAdapter);
         vpHome.setLongClickable(true);
+    }
+    private void initViewPagerScroll(){
+        try {
+            Field mScroller = null;
+            mScroller = ViewPager.class.getDeclaredField("mScroller");
+            mScroller.setAccessible(true);
+            ViewPagerScroller scroller = new ViewPagerScroller(vpHome.getContext());
+            mScroller.set(vpHome, scroller);
+        }catch(NoSuchFieldException e){
+
+        }catch (IllegalArgumentException e){
+
+        }catch (IllegalAccessException e){
+
+        }
     }
 
     @Override
