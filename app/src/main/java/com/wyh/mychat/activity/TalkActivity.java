@@ -140,3 +140,4 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         handler.sendMessage(message);
     }
 }
+
