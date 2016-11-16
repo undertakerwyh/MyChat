@@ -28,7 +28,7 @@ public class PageChangeAnimUtil {
     private int bottom;
     private int top;
 
-    private float bottomSpeed =1.5f;
+    private float bottomSpeed = 2f;
     /**
      * isLeft为true时往左滑,false时往右滑
      */
@@ -90,7 +90,7 @@ public class PageChangeAnimUtil {
                 } else if (positionOffsetPixels - oldPixel < 0) {
                     isLeft = false;
                 }
-                final float move = Math.abs(positionOffsetPixels- oldPixel);
+                final float move = Math.abs(positionOffsetPixels - oldPixel);
                 top = linearLayout.getTop();
                 bottom = linearLayout.getBottom();
                 left = linearLayout.getLeft();
@@ -101,36 +101,36 @@ public class PageChangeAnimUtil {
                  */
                 if (TouchViewPager.isCheaked() || finalPositionOffsetPixels != 0) {
                     if (isLeft) {
-                        switch (position){
+                        switch (position) {
                             case 0:
-                                if((int) (left + move/3+bottomSpeed)>(int) (maxScreen / 3)){
-//                                    linearLayout.layout((int) (maxScreen / 3), top, (int) maxScreen + (int) (maxScreen / 3), bottom);
+                                if ((int) (left + move / 3 + bottomSpeed) <= (int) (maxScreen / 3)) {
+                                    linearLayout.layout((int) (left + move / 3 + bottomSpeed), top, (int) (right + move / 3 + bottomSpeed), bottom);
                                 }else{
-                                    linearLayout.layout((int) (left + move/3+bottomSpeed), top, (int) (right + move/3+bottomSpeed), bottom);
+                                    linearLayout.layout((int) (maxScreen / 3), top, (int) maxScreen + (int) (maxScreen / 3), bottom);
                                 }
                                 break;
                             case 1:
-                                if((int) (left + move/3+bottomSpeed)>(int) (2*maxScreen / 3)){
-//                                    linearLayout.layout((int) (2 * maxScreen / 3), top, (int) maxScreen + (int) (2 * maxScreen / 3), bottom);
+                                if ((int) (left + move / 3 + bottomSpeed) <= (int) (2 * maxScreen / 3)) {
+                                    linearLayout.layout((int) (left + move / 3 + bottomSpeed), top, (int) (right + move / 3 + bottomSpeed), bottom);
                                 }else{
-                                    linearLayout.layout((int) (left + move/3+bottomSpeed), top, (int) (right + move/3+bottomSpeed), bottom);
+                                    linearLayout.layout((int) (2 * maxScreen / 3), top, (int) maxScreen + (int) (2 * maxScreen / 3), bottom);
                                 }
                                 break;
                         }
                     } else {
-                        switch (position){
+                        switch (position) {
                             case 0:
-                                if((int)(left - move/3-bottomSpeed)<0){
-                                    linearLayout.layout(0, top, (int) maxScreen, bottom);
+                                if ((int) (left - move / 3 - bottomSpeed) >= 0) {
+                                    linearLayout.layout((int) (left - move / 3 - bottomSpeed), top, (int) (right - move / 3 - bottomSpeed), bottom);
                                 }else{
-                                    linearLayout.layout((int)(left - move/3-bottomSpeed), top, (int)(right - move/3-bottomSpeed), bottom);
+                                    linearLayout.layout(0, top, (int) maxScreen, bottom);
                                 }
                                 break;
                             case 1:
-                                if((int)(left - move/3-bottomSpeed)<(int) (maxScreen / 3)){
-                                    linearLayout.layout((int) (maxScreen / 3), top, (int) maxScreen + (int) (2*maxScreen / 3), bottom);
+                                if ((int) (left - move / 3 - bottomSpeed) >=(int) (maxScreen / 3)) {
+                                    linearLayout.layout((int) (left - move / 3 - bottomSpeed), top, (int) (right - move / 3 - bottomSpeed), bottom);
                                 }else{
-                                    linearLayout.layout((int)(left - move/3-bottomSpeed), top, (int)(right - move/3-bottomSpeed), bottom);
+                                    linearLayout.layout((int) (maxScreen / 3), top, (int) maxScreen + (int) (maxScreen / 3), bottom);
                                 }
                                 break;
                         }

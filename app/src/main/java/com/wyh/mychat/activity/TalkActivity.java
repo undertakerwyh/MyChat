@@ -2,6 +2,7 @@ package com.wyh.mychat.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -105,7 +106,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 finish();
                 break;
             case R.id.btn_send:
-                mySendMessage();
+                String content = edInputMessage.getText().toString();
+                mySendMessage(content);
                 edInputMessage.setText("");
                 break;
         }
@@ -117,16 +119,17 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         DBManager.getDbManager(getApplicationContext()).DBClose();
     }
 
-    private void mySendMessage() {
-        String content = edInputMessage.getText().toString();
-        Message message = new Message(name, CommonUtil.getTime(), content, CommonUtil.TYPE_RIGHT);
-        if(CommonUtil.getTimeLong()- DBManager.getTime()> TimeNoteUtil.timeDuration){
-            Message timeMsg = new Message(null,null,CommonUtil.getTimeSelect(CommonUtil.getTimeLong()),CommonUtil.TYPE_TIME);
-            adapter.addDataRefreshTime(timeMsg);
+    private void mySendMessage(String content) {
+        if(!TextUtils.isEmpty(content)) {
+            Message message = new Message(name, CommonUtil.getTime(), content, CommonUtil.TYPE_RIGHT);
+            if (CommonUtil.getTimeLong() - DBManager.getTime() > TimeNoteUtil.timeDuration) {
+                Message timeMsg = new Message(null, null, CommonUtil.getTimeSelect(CommonUtil.getTimeLong()), CommonUtil.TYPE_TIME);
+                adapter.addDataRefreshTime(timeMsg);
+            }
+            adapter.addDataRefreshTime(message);
+            lvTalkMessage.setSelection(adapter.getDataList().size());
+            DBManager.getDbManager(getApplicationContext()).saveMessage(message);
         }
-        adapter.addDataRefreshTime(message);
-        lvTalkMessage.setSelection(adapter.getDataList().size());
-        DBManager.getDbManager(getApplicationContext()).saveMessage(message);
     }
 
     @Override

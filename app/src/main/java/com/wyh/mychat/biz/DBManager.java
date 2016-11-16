@@ -31,6 +31,10 @@ public class DBManager {
         return time;
     }
 
+    public static void setTime(long time) {
+        DBManager.time = time;
+    }
+
     private static long time = 0;
 
     /**
