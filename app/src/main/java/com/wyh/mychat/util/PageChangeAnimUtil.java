@@ -28,7 +28,7 @@ public class PageChangeAnimUtil {
     private int bottom;
     private int top;
 
-    private float bottomSpeed = 2f;
+    private float bottomSpeed = 1f;
     /**
      * isLeft为true时往左滑,false时往右滑
      */
