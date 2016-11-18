@@ -141,6 +141,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             case R.id.iv_config:
                 vpHome.setCurrentItem(2);
                 break;
+            default:
+                break;
         }
     }
 

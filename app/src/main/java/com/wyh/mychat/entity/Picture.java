@@ -9,12 +9,32 @@ import java.io.File;
  */
 
 public class Picture {
-    private File file;
+    private String folder;
+    private String name;
     private Bitmap bitmap;
+    private File file;
 
-    public Picture(File file, Bitmap bitmap) {
-        this.file = file;
+    public Picture(String folder, String name, Bitmap bitmap, File file) {
+        this.folder = folder;
+        this.name = name;
         this.bitmap = bitmap;
+        this.file = file;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public File getFile() {

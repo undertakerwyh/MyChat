@@ -37,7 +37,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     private UniversalAdapter<Message> adapter;
     private String name;
 
-    private int num = 10;
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -53,6 +52,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         lvTalkMessage.setSelection(endIndex-startIndex+1);
                     }
                     lvTalkMessage.stopRefresh();
+                    break;
+                default:
                     break;
             }
         }
@@ -109,6 +110,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 String content = edInputMessage.getText().toString();
                 mySendMessage(content);
                 edInputMessage.setText("");
+                break;
+            default:
                 break;
         }
     }

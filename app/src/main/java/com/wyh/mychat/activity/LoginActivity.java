@@ -29,8 +29,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
      * fragment适配器
      */
     private FragmentAdapter adapter;
-    private final int ACTION_LOGIN=1;
-    private final int ACTION_REGISTER=2;
+    private static final int ACTION_LOGIN=1;
+    private static final int ACTION_REGISTER=2;
     /**
      * 判断当前页面是否是登陆页面,如果是就退出activity,否就回到登陆页面
      */
@@ -52,6 +52,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 String title1 = getResources().getString(R.string.title_register);
                 initActionBar(title1, R.drawable.back,-1,this);
                 isLogin = false;
+                break;
+            default:
                 break;
         }
     }
@@ -84,6 +86,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         switch (view.getId()){
             case R.id.iv_actionbar_left:
                 handler.sendEmptyMessage(ACTION_LOGIN);
+                break;
+            default:
                 break;
         }
     }

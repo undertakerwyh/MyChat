@@ -20,6 +20,9 @@
     <style name="line_h_black_1" parent="line_h_tranparent_1">
         <item name="android:background">#000000</item>
     </style>
+    <style name="line_h_gray_1" parent="line_h_tranparent_1">
+        <item name="android:background">#989898</item>
+    </style>
     <style name="line_h_tranparent_1">
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">match_parent</item>
