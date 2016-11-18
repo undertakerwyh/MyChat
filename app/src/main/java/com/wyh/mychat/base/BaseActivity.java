@@ -37,7 +37,7 @@ public class BaseActivity extends AppCompatActivity{
     /**
      * 清除所有的活跃activity
      */
-    protected void finishAll(){
+    public void finishAll(){
         Iterator<AppCompatActivity> iterator = activities.iterator();
         while (iterator.hasNext()){
             iterator.next().finish();
@@ -73,11 +73,11 @@ public class BaseActivity extends AppCompatActivity{
     protected void myHandlerMessage(Message message){
 
     }
-    protected void startActivity(Class<?>TargetActivity){
+    public void startActivity(Class<?>TargetActivity){
         Intent intent = new Intent(this,TargetActivity);
         startActivity(intent);
     }
-    protected void startActivity(Class<?>TargetActivity,int animStart,int animEnd){
+    public void startActivity(Class<?>TargetActivity,int animStart,int animEnd){
         Intent intent = new Intent(this,TargetActivity);
         startActivity(intent);
         overridePendingTransition(animStart,animEnd);

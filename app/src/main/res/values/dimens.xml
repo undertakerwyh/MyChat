@@ -15,4 +15,6 @@
     <dimen name="chat_friends_height">50dp</dimen>
     <!--发送信息栏的高-->
     <dimen name="chat_send_height">50dp</dimen>
+
+    <dimen name="chat_config_item_height">60dp</dimen>
 </resources>

@@ -3,7 +3,46 @@
     android:layout_width="match_parent"
     android:background="@color/colorWhite"
     android:layout_height="match_parent"
+    android:padding="10dp"
     android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/config_pic"
+        style="@style/config_text"
+        android:text="我的图片"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chat_config_item_height" />
+    <view
+       style="@style/line_h_black_1"></view>
+
+    <TextView
+        android:id="@+id/config_video"
+        style="@style/config_text"
+        android:text="我的视频"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chat_config_item_height" />
+    <view
+        style="@style/line_h_black_1"></view>
+
+    <TextView
+        android:id="@+id/config_log_off"
+        style="@style/config_text"
+        android:text="注销"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chat_config_item_height" />
+    <view
+        style="@style/line_h_black_1"></view>
+
+
+    <TextView
+        android:id="@+id/config_exit"
+        style="@style/config_text"
+        android:text="退出"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chat_config_item_height" />
+    <view
+        style="@style/line_h_black_1"></view>
+
 
 
 </LinearLayout>

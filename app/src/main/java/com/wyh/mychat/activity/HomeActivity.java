@@ -125,6 +125,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
