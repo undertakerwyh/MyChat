@@ -13,6 +13,11 @@ import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
+import com.wyh.mychat.biz.LoadManager;
+
+import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,6 +48,22 @@ public class FolderFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+    }
+    public void refresh(){
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                final TreeSet<String> folderSet = LoadManager.getFolderSet();
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addTreeSetAddAll(folderSet);
+                    }
+                });
+            }
+        });
 
     }
 

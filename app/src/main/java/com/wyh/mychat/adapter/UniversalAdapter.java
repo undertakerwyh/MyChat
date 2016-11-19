@@ -76,7 +76,9 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
         dataList.addAll(list);
         this.notifyDataSetChanged();
     }
-    public void addTreeSetAddAll(TreeSet<String>treeSet){
+    public void addTreeSetAddAll(TreeSet<DataType>treeSet){
+        dataList.clear();
+        dataList.addAll(treeSet);
         this.notifyDataSetChanged();
     }
     public void addDataToAdapterHead(List<DataType>list){

@@ -3,7 +3,7 @@ package com.wyh.mychat.biz;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
+import android.util.LruCache;
 
 import com.wyh.mychat.entity.Picture;
 
@@ -21,17 +21,23 @@ import java.util.concurrent.Executors;
 public class LoadManager {
     private static LoadManager picLoadManager;
     private static Context contexts;
-    private boolean isFirst=true;
+    private boolean isFirst = true;
 
     public static List<Picture> getPicList() {
         return picList;
     }
 
+    public static TreeSet<String> getNameSet() {
+        return nameSet;
+    }
+
+    private static List<Picture> picList = new ArrayList<>();
+    private static TreeSet<String> nameSet = new TreeSet<>();
+
     public static TreeSet<String> getFolderSet() {
         return folderSet;
     }
 
-    private static List<Picture> picList = new ArrayList<>();
     private static TreeSet<String> folderSet = new TreeSet<>();
 
     public void setFileUpdate(FileUpdate fileUpdate) {
@@ -66,7 +72,7 @@ public class LoadManager {
     }
 
     public void searchFile(File file) {
-        if(isFirst) {
+        if (isFirst) {
             if (isStop) {
                 return;
             }
@@ -83,12 +89,14 @@ public class LoadManager {
                 }
                 String type = file.getName().substring(endIndex + 1);
                 if (type.equals("png") || type.equals("jpg") || type.equals("gif")) {
-                    if(!folderSet.contains(file.getPath())) {
-                        String name = file.getName().substring(0, endIndex);
+                    if (!nameSet.contains(file.getPath())) {
+                        String name =  file.getName().substring(0, endIndex);
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                        Picture picture = new Picture(name,bitmap, file);
+                        Picture picture = new Picture(name, bitmap, file);
+                        String folder = file.getPath().substring(0, file.getPath().lastIndexOf("/" + name));
+                        folderSet.add(folder);
                         picList.add(picture);
-                        folderSet.add(file.getPath());
+                        nameSet.add(file.getPath());
                         fileUpdate.update();
                     }
                     return;
@@ -104,6 +112,7 @@ public class LoadManager {
             }
         }
     }
+    public void
 
     public void isStop(boolean stop) {
         isStop = stop;
@@ -111,6 +120,7 @@ public class LoadManager {
 
     public interface FileUpdate {
         void update();
+
         void end();
     }
 }
