@@ -14,9 +14,6 @@ import com.wyh.mychat.fragment.FolderFragment;
 import com.wyh.mychat.fragment.PicFragment;
 
 import java.io.File;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -52,9 +49,8 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         super.onStart();
         pbLoad.setVisibility(View.VISIBLE);
         File sdFile = Environment.getExternalStorageDirectory();
-        File selfFile = Environment.getRootDirectory();
         LoadManager.getPicLoadManager(this).setFileUpdate(this);
-        LoadManager.getPicLoadManager(this).getSrcList(sdFile, selfFile);
+        LoadManager.getPicLoadManager(this).getSrcList(sdFile);
     }
 
     public void showFolderFragment() {
@@ -70,17 +66,8 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
     private boolean enter = true;
 
     @Override
-    public void update() {
-        if (enter) {
-            enter = false;
-            ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-            executorService.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    ((FolderFragment) getSupportFragmentManager().findFragmentById(R.id.fm_show)).refresh();
-                }
-            }, 500, TimeUnit.NANOSECONDS);
-        }
+    public void update(final String folder) {
+        ((FolderFragment) getSupportFragmentManager().findFragmentById(R.id.fm_show)).refresh(folder);
     }
 
     @Override

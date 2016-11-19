@@ -12,7 +12,6 @@ import com.wyh.mychat.util.TimeNoteUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 /**
  * 万能适配器
@@ -29,7 +28,6 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
     private List<DataType> dataList = new ArrayList<>();
 
     private TimeNoteUtil timeNoteUtil;
-
 
 
     public UniversalAdapter(Context context, int layoutRes) {
@@ -67,35 +65,32 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
      * ------------------------------------------------------------------
      * 以下是自定义方法
      */
-    public void addDataAllTime(DataType dataType) {
+    public void addDataAll(DataType dataType) {
         dataList.add(dataType);
         this.notifyDataSetChanged();
     }
 
-    public void addDataAddAll(List<DataType>list){
+
+    public void addDataAddAll(List<DataType> list) {
         dataList.addAll(list);
         this.notifyDataSetChanged();
     }
-    public void addTreeSetAddAll(TreeSet<DataType>treeSet){
-        dataList.clear();
-        dataList.addAll(treeSet);
-        this.notifyDataSetChanged();
-    }
-    public void addDataToAdapterHead(List<DataType>list){
+
+    public void addDataToAdapterHead(List<DataType> list) {
         String time = null;
-        for(DataType dataType:list){
+        for (DataType dataType : list) {
             time = timeNoteUtil.start(Long.parseLong(((Message) dataType).getTime()));
-            if(time!=null){
-                Message message = new Message(null,null,time, CommonUtil.TYPE_TIME);
-                dataList.add(0,(DataType) message);
+            if (time != null) {
+                Message message = new Message(null, null, time, CommonUtil.TYPE_TIME);
+                dataList.add(0, (DataType) message);
             }
-            dataList.add(0,dataType);
+            dataList.add(0, dataType);
         }
-        if(list.size()!=0){
+        if (list.size() != 0) {
             time = timeNoteUtil.end();
-            if(time!=null) {
-                Message message = new Message(null,null,time, CommonUtil.TYPE_TIME);
-                dataList.add(0,(DataType) message);
+            if (time != null) {
+                Message message = new Message(null, null, time, CommonUtil.TYPE_TIME);
+                dataList.add(0, (DataType) message);
             }
         }
         this.notifyDataSetChanged();

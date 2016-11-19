@@ -1,14 +1,14 @@
 package com.wyh.mychat.biz;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.LruCache;
+import android.os.Environment;
+import android.util.Log;
 
 import com.wyh.mychat.entity.Picture;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
@@ -27,12 +27,7 @@ public class LoadManager {
         return picList;
     }
 
-    public static TreeSet<String> getNameSet() {
-        return nameSet;
-    }
-
     private static List<Picture> picList = new ArrayList<>();
-    private static TreeSet<String> nameSet = new TreeSet<>();
 
     public static TreeSet<String> getFolderSet() {
         return folderSet;
@@ -58,13 +53,12 @@ public class LoadManager {
         return picLoadManager;
     }
 
-    public void getSrcList(final File sdFile, final File selfFile) {
+    public void getSrcList(final File sdFile) {
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(new Runnable() {
             @Override
             public void run() {
                 searchFile(sdFile);
-                searchFile(selfFile);
                 fileUpdate.end();
                 isFirst = false;
             }
@@ -89,15 +83,13 @@ public class LoadManager {
                 }
                 String type = file.getName().substring(endIndex + 1);
                 if (type.equals("png") || type.equals("jpg") || type.equals("gif")) {
-                    if (!nameSet.contains(file.getPath())) {
-                        String name =  file.getName().substring(0, endIndex);
-                        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                        Picture picture = new Picture(name, bitmap, file);
-                        String folder = file.getPath().substring(0, file.getPath().lastIndexOf("/" + name));
+                    String[] headSplit = file.getPath().split(Environment.getExternalStorageDirectory().getPath()+"/");
+                    String[] folderSplit = headSplit[1].split("/");
+                    String folder = Environment.getExternalStorageDirectory().getPath()+"/"+folderSplit[0];
+                    if(!folderSet.contains(folder)){
+                        Log.e("AAA",folder);
                         folderSet.add(folder);
-                        picList.add(picture);
-                        nameSet.add(file.getPath());
-                        fileUpdate.update();
+                        fileUpdate.update(folder);
                     }
                     return;
                 }
@@ -106,20 +98,23 @@ public class LoadManager {
             if (files == null || files.length <= 0) {
                 return;
             }
-            String folderName = file.getName();
             for (int i = 0; i < files.length; i++) {
                 searchFile(files[i]);
             }
+        }else{
+            Iterator<String>iterator = folderSet.iterator();
+            while (iterator.hasNext()){
+                fileUpdate.update(iterator.next());
+            }
         }
     }
-    public void
 
     public void isStop(boolean stop) {
         isStop = stop;
     }
 
     public interface FileUpdate {
-        void update();
+        void update(String folder);
 
         void end();
     }

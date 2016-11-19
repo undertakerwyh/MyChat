@@ -127,9 +127,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             Message message = new Message(name, CommonUtil.getTime(), content, CommonUtil.TYPE_RIGHT);
             if (CommonUtil.getTimeLong() - DBManager.getTime() > TimeNoteUtil.timeDuration) {
                 Message timeMsg = new Message(null, null, CommonUtil.getTimeSelect(CommonUtil.getTimeLong()), CommonUtil.TYPE_TIME);
-                adapter.addDataAllTime(timeMsg);
+                adapter.addDataAll(timeMsg);
             }
-            adapter.addDataAllTime(message);
+            adapter.addDataAll(message);
             lvTalkMessage.setSelection(adapter.getDataList().size());
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
         }
