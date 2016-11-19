@@ -1,7 +1,6 @@
 package com.wyh.mychat.fragment;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,15 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
-import com.wyh.mychat.biz.LoadManager;
-
-import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,12 +21,10 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/11/18.
  */
 
-public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
+public class FolderFragment extends Fragment {
 
     @Bind(R.id.lv_folder)
     ListView lvPic;
-    @Bind(R.id.pb_load)
-    ProgressBar pbLoad;
     private View view;
 
     private UniversalAdapter<String> adapter;
@@ -50,9 +43,7 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        File sdFile = Environment.getExternalStorageDirectory();
-        File selfFile = Environment.getRootDirectory();
-        LoadManager.getPicLoadManager(getContext()).getSrcList(sdFile,selfFile);
+
     }
 
     private void initAdapter() {
@@ -84,13 +75,4 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
         ButterKnife.unbind(this);
     }
 
-    @Override
-    public void update() {
-
-    }
-
-    @Override
-    public void end() {
-
-    }
 }

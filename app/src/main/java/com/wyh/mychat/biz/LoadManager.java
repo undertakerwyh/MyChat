@@ -3,6 +3,7 @@ package com.wyh.mychat.biz;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.wyh.mychat.entity.Picture;
 
@@ -82,12 +83,14 @@ public class LoadManager {
                 }
                 String type = file.getName().substring(endIndex + 1);
                 if (type.equals("png") || type.equals("jpg") || type.equals("gif")) {
-                    String name = file.getName().substring(0, endIndex - 2);
-                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                    Picture picture = new Picture(name,bitmap, file);
-                    picList.add(picture);
-                    folderSet.add(file.getPath());
-                    fileUpdate.update();
+                    if(!folderSet.contains(file.getPath())) {
+                        String name = file.getName().substring(0, endIndex);
+                        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                        Picture picture = new Picture(name,bitmap, file);
+                        picList.add(picture);
+                        folderSet.add(file.getPath());
+                        fileUpdate.update();
+                    }
                     return;
                 }
             }
