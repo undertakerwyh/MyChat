@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.HomeActivity;
-import com.wyh.mychat.activity.ShowPicture;
+import com.wyh.mychat.activity.ShowSrcActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -49,7 +49,7 @@ public class ConfigFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.config_pic:
-                ((HomeActivity)getActivity()).startActivity(ShowPicture.class);
+                ((HomeActivity)getActivity()).startActivity(ShowSrcActivity.class);
                 break;
             case R.id.config_video:
                 break;

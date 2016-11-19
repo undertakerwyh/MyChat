@@ -56,7 +56,7 @@ public class MessageFragment extends Fragment {
         initAdapter();
         lvMessage.setAdapter(adapter);
         /**向适配器添加数据*/
-        adapter.addDataRefreshList(list);
+        adapter.addDataAddAll(list);
         return view;
     }
 

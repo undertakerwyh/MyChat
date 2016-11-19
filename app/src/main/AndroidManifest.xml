@@ -23,7 +23,7 @@
             android:name=".activity.HomeActivity"
             android:launchMode="singleTask" />
         <activity android:name=".activity.TalkActivity"></activity>
-        <activity android:name=".activity.ShowPicture"></activity>
+        <activity android:name=".activity.ShowSrcActivity"></activity>
     </application>
 
 </manifest>

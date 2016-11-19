@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/iv_pic_icon"
+        android:layout_width="@dimen/chat_config_item_height"
+        android:clickable="false"
+        android:focusable="false"
+        android:src ="@drawable/folder"
+        android:layout_height="@dimen/chat_config_item_height" />
+    <TextView
+        android:id="@+id/tv_folder_text"
+        android:layout_width="match_parent"
+        android:clickable="false"
+        android:focusable="false"
+        style="@style/config_text"
+        android:text="我的文件夹"
+        android:layout_height="@dimen/chat_config_item_height" />
+
+
+</LinearLayout>

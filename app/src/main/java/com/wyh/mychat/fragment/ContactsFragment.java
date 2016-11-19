@@ -48,7 +48,7 @@ public class ContactsFragment extends Fragment {
         /**初始化适配器*/
         initAdapter();
         lvContacts.setAdapter(adapter);
-        adapter.addDataRefreshList(list);
+        adapter.addDataAddAll(list);
         return view;
     }
 

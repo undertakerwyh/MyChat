@@ -61,6 +61,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         /**viewpager与滚动条的交互*/
         initHomePageChange();
         initViewPagerScroll();
+
     }
 
     private void initHomePageChange() {
