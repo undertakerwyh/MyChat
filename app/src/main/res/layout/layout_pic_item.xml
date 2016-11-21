@@ -16,9 +16,9 @@
         android:layout_width="match_parent"
         android:clickable="false"
         android:focusable="false"
+        android:lines="1"
         style="@style/config_text"
         android:text="我的文件夹"
         android:layout_height="@dimen/chat_config_item_height" />
-
 
 </LinearLayout>

@@ -15,6 +15,7 @@ import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
+import com.wyh.mychat.util.CommonUtil;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,11 +61,11 @@ public class FolderFragment extends Fragment {
                     @Override
                     public void run() {
                         adapter.addDataAll(name);
+                        Log.e("FolderFragment", name);
                     }
                 });
             }
         });
-
     }
 
     private void initAdapter() {
@@ -72,7 +73,7 @@ public class FolderFragment extends Fragment {
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
                 String folderName = adapter.getDataList().get(positon);
-                viewHolder.setTextViewContent(R.id.tv_folder_text, folderName)
+                viewHolder.setTextViewContent(R.id.tv_folder_text, CommonUtil.folderName(folderName).trim())
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -88,7 +89,6 @@ public class FolderFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
-
 
     @Override
     public void onDestroyView() {

@@ -70,7 +70,6 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
         this.notifyDataSetChanged();
     }
 
-
     public void addDataAddAll(List<DataType> list) {
         dataList.addAll(list);
         this.notifyDataSetChanged();

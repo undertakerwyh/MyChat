@@ -60,4 +60,8 @@ public class CommonUtil {
         return timeStr;
     }
 
+    public static String folderName(String fileName){
+        return fileName.substring(fileName.lastIndexOf("/")+1,fileName.length());
+    }
+
 }
