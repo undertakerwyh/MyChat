@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -11,7 +12,7 @@ import com.wyh.mychat.R;
 import com.wyh.mychat.base.BaseActivity;
 import com.wyh.mychat.biz.LoadManager;
 import com.wyh.mychat.fragment.FolderFragment;
-import com.wyh.mychat.fragment.PicFragment;
+import com.wyh.mychat.view.NoTouchViewPager;
 
 import java.io.File;
 
@@ -26,6 +27,9 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
 
     @Bind(R.id.pb_load)
     ProgressBar pbLoad;
+    @Bind(R.id.vp_resource)
+    NoTouchViewPager vpResource;
+    private FragmentStatePagerAdapter fragmentStatePagerAdapter;
 
     public static Fragment getMcurrentFragment() {
         return mcurrentFragment;
@@ -37,11 +41,34 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
 
     private static Fragment mcurrentFragment;
 
+    private FolderFragment folderFragment;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
         ButterKnife.bind(this);
+        initViewpager();
+    }
+
+    private void initViewpager() {
+        fragmentStatePagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+            Fragment[] fragment = {new FolderFragment()};
+            @Override
+            public Fragment getItem(int position) {
+                switch (position) {
+                    case 0:
+                        return fragment[position];
+                }
+                return null;
+            }
+
+            @Override
+            public int getCount() {
+                return 1;
+            }
+        };
+        vpResource.setAdapter(fragmentStatePagerAdapter);
     }
 
     @Override
@@ -53,21 +80,12 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         LoadManager.getPicLoadManager(this).getSrcList(sdFile);
     }
 
-    public void showFolderFragment() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fm_show, new FolderFragment()).commitAllowingStateLoss();
-    }
-
-    public void showPicFragment() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fm_show, new PicFragment()).commitAllowingStateLoss();
-    }
-
-    private boolean enter = true;
-
     @Override
     public void update(final String folder) {
-        ((FolderFragment) getSupportFragmentManager().findFragmentById(R.id.fm_show)).refresh(folder);
+        if(folderFragment==null){
+            folderFragment = (FolderFragment) fragmentStatePagerAdapter.getItem(0);
+        }
+        folderFragment.refresh(folder);
     }
 
     @Override

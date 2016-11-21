@@ -18,9 +18,8 @@
         android:indeterminateOnly="true"
         android:indeterminateDrawable="@drawable/progressbar" />
 
-    <fragment
-        android:id="@+id/fm_show"
-        android:name="com.wyh.mychat.fragment.FolderFragment"
+    <com.wyh.mychat.view.NoTouchViewPager
+        android:id="@+id/vp_resource"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></fragment>
+        android:layout_height="match_parent"></com.wyh.mychat.view.NoTouchViewPager>
 </LinearLayout>
