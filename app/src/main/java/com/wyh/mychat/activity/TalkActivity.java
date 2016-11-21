@@ -129,9 +129,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 isFirst=false;
                 Message timeMsg = new Message(null, null,CommonUtil.getTimeSelect(Long.parseLong(message.getTime())), CommonUtil.TYPE_TIME);
                 DBManager.getDbManager(this).setTime(Long.parseLong(message.getTime()));
-                adapter.addDataAll(timeMsg);
+                adapter.addDataUpdate(timeMsg);
             }
-            adapter.addDataAll(message);
+            adapter.addDataUpdate(message);
             lvTalkMessage.setSelection(adapter.getDataList().size());
         }
     }

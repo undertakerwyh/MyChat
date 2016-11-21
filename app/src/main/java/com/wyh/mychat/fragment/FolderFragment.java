@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
+import com.wyh.mychat.biz.LoadManager;
 import com.wyh.mychat.util.CommonUtil;
 
 import java.util.concurrent.ExecutorService;
@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 public class FolderFragment extends Fragment {
 
     @Bind(R.id.lv_folder)
-    ListView lvPic;
+    ListView lvFolders;
     private View view;
 
     private UniversalAdapter<String> adapter;
@@ -41,10 +41,10 @@ public class FolderFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_folder, null);
         ButterKnife.bind(this, view);
         initAdapter();
-        lvPic.setAdapter(adapter);
-        ShowSrcActivity.setMcurrentFragment(this);
+        lvFolders.setAdapter(adapter);
         return view;
     }
+
     private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
@@ -52,7 +52,8 @@ public class FolderFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
     }
-    public void refresh(final String name){
+
+    public void refresh(final String name) {
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.execute(new Runnable() {
             @Override
@@ -60,7 +61,7 @@ public class FolderFragment extends Fragment {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.addDataAll(name);
+                        adapter.addDataUpdate(name);
                     }
                 });
             }
@@ -71,13 +72,13 @@ public class FolderFragment extends Fragment {
         adapter = new UniversalAdapter<String>(getContext(), R.layout.layout_pic_item) {
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
-                String folderName = adapter.getDataList().get(positon);
+                final String folderName = adapter.getDataList().get(positon);
                 viewHolder.setTextViewContent(R.id.tv_folder_text, CommonUtil.folderName(folderName))
+                        .setImageViewContent(R.id.iv_pic_icon,R.drawable.folder)
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Log.e("AAA", "onclick");
-//                                ((ShowSrcActivity)getActivity()).showPicFragment();
+                                ((ShowSrcActivity)getActivity()).showResource(folderName);
                             }
                         });
             }
@@ -93,6 +94,7 @@ public class FolderFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+        LoadManager.getPicLoadManager(getContext()).isStop(true);
     }
 
 }

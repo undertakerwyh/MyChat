@@ -65,9 +65,12 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
      * ------------------------------------------------------------------
      * 以下是自定义方法
      */
-    public void addDataAll(DataType dataType) {
+    public void addDataUpdate(DataType dataType) {
         dataList.add(dataType);
         this.notifyDataSetChanged();
+    }
+    public void addData(DataType dataType) {
+        dataList.add(dataType);
     }
 
     public void addDataAddAll(List<DataType> list) {
