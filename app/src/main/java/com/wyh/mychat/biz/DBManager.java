@@ -27,11 +27,11 @@ public class DBManager {
     private boolean istrue = true;
     private int maxId = -1;
 
-    public static long getTime() {
+    public long getTime() {
         return time;
     }
 
-    public static void setTime(long time) {
+    public void setTime(long time) {
         DBManager.time = time;
     }
 
@@ -59,15 +59,20 @@ public class DBManager {
         }
         return dbManager;
     }
-
+    private boolean isFirst = true;
     public void saveMessage(Message message){
+        if(isFirst){
+            isFirst = false;
+            time = Long.parseLong(message.getTime());
+        }
         String name = message.getName();
         String content = message.getContent();
         String time = message.getTime();
         int type = message.getType();
         sqLiteDatabase.execSQL("insert into Message (name,content,time,type) values (?,?,?,?)",new Object[]{name,content,time,type});
     }
-    public void loadMessageDESC(final String name){
+    private int maxLoad;
+    public void loadMessageDESC(final String name, final int size){
         final List<Message> list = new ArrayList<>();
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.execute(new Runnable() {
@@ -84,18 +89,24 @@ public class DBManager {
                     do {
                         nameLoad = cursor.getString(cursor.getColumnIndex("name"));
                         idLoad = cursor.getInt(cursor.getColumnIndex("id"));
-                        if(name.equals(nameLoad)&&(idLoad < maxId || istrue)&&loop<loadNum){
-                            typeLoad = cursor.getType(cursor.getColumnIndex("type"));
-                            timeLoad = cursor.getString(cursor.getColumnIndex("time"));
-                            if(istrue){
-                                time = Long.parseLong(timeLoad);
+                        if(maxLoad<idLoad){
+                            maxLoad = idLoad;
+                        }
+                        if(maxLoad>size) {
+                            if (name.equals(nameLoad) && (idLoad < maxId || istrue) && loop < loadNum) {
+                                typeLoad = cursor.getType(cursor.getColumnIndex("type"));
+                                timeLoad = cursor.getString(cursor.getColumnIndex("time"));
+                                if (istrue) {
+                                    isFirst = false;
+                                    time = Long.parseLong(timeLoad);
+                                }
+                                contentLoad = cursor.getString(cursor.getColumnIndex("content"));
+                                Message message = new Message(nameLoad, timeLoad, contentLoad, typeLoad);
+                                list.add(0, message);
+                                istrue = false;
+                                maxId = idLoad;
+                                loop++;
                             }
-                            contentLoad = cursor.getString(cursor.getColumnIndex("content"));
-                            Message message = new Message(nameLoad,timeLoad,contentLoad,typeLoad);
-                            list.add(list.size(),message);
-                            istrue = false;
-                            maxId = idLoad;
-                            loop++;
                         }
                     }while (cursor.moveToNext());
                 }
@@ -107,7 +118,10 @@ public class DBManager {
         istrue = true;
     }
     public interface UpdateListener{
-        public void complete(List<Message>list);
+        void complete(List<Message>list);
+    }
+    public static void DeleteData(){
+        sqLiteDatabase.execSQL("delete from Message where id>?",new String []{"0"});
     }
 
     static class MySQLite extends SQLiteOpenHelper {

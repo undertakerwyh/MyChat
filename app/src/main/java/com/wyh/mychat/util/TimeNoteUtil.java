@@ -6,27 +6,31 @@ package com.wyh.mychat.util;
 
 public class TimeNoteUtil{
     public static final long timeDuration = 4*60*1000;
-    private long timeRef;
     private long saveTime;
-    private boolean isFirst = true;
+    private boolean isFirst=true;
+
+    public void setFirst(boolean first) {
+        isFirst = first;
+    }
+
 
     public String start(long time) {
         String timeStr = null;
-        if(isFirst){
-            timeRef = time;
+        if(time-saveTime>timeDuration||isFirst){
             isFirst = false;
-        }
-        if(saveTime-time>timeDuration){
-            timeStr = CommonUtil.getTimeSelect(saveTime);
-            timeRef = time;
             saveTime = time;
-            return timeStr;
+            timeStr = CommonUtil.getTimeSelect(saveTime);
         }
-        saveTime = time;
         return timeStr;
     }
+    private long sendSaveTime;
 
-    public String end() {
-        return CommonUtil.getTimeSelect(saveTime);
+    public String sendStart(long time){
+        String timeStr = null;
+        if(time - sendSaveTime>timeDuration){
+            timeStr = CommonUtil.getTimeSelect(sendSaveTime);
+            sendSaveTime = time;
+        }
+        return timeStr;
     }
 }

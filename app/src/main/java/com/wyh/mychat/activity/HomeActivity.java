@@ -137,6 +137,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.iv_actionbar_right:
                 ShowPopwindow();
+//                DBManager.getDbManager(this).delete();
                 break;
             case R.id.iv_message:
                 vpHome.setCurrentItem(0);

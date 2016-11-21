@@ -77,21 +77,17 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
 
     public void addDataToAdapterHead(List<DataType> list) {
         String time = null;
-        for (DataType dataType : list) {
+        List<DataType>dataTypeList = new ArrayList<>();
+        timeNoteUtil.setFirst(true);
+        for(DataType dataType:list){
             time = timeNoteUtil.start(Long.parseLong(((Message) dataType).getTime()));
-            if (time != null) {
-                Message message = new Message(null, null, time, CommonUtil.TYPE_TIME);
-                dataList.add(0, (DataType) message);
+            if(time!=null){
+                Message message = new Message(null,null,time, CommonUtil.TYPE_TIME);
+                dataTypeList.add(dataTypeList.size(),(DataType) message);
             }
-            dataList.add(0, dataType);
+            dataTypeList.add(dataTypeList.size(),dataType);
         }
-        if (list.size() != 0) {
-            time = timeNoteUtil.end();
-            if (time != null) {
-                Message message = new Message(null, null, time, CommonUtil.TYPE_TIME);
-                dataList.add(0, (DataType) message);
-            }
-        }
+        dataList.addAll(0,dataTypeList);
         this.notifyDataSetChanged();
     }
 }
