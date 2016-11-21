@@ -28,7 +28,7 @@ public class PageChangeAnimUtil {
     private int bottom;
     private int top;
 
-    private float bottomSpeed = 1f;
+    private float bottomSpeed = 2f;
     /**
      * isLeft为true时往左滑,false时往右滑
      */
@@ -162,5 +162,17 @@ public class PageChangeAnimUtil {
 
             }
         });
+    }
+    public void initPosition(int position){
+        if (position == 0) {
+            linearLayout.layout(0, top, (int) maxScreen, bottom);
+            isIdle = true;
+        } else if (position == 1) {
+            linearLayout.layout((int) (maxScreen / 3), top, (int) maxScreen + (int) (maxScreen / 3), bottom);
+            isIdle = true;
+        } else if (position == 2) {
+            linearLayout.layout((int) (2 * maxScreen / 3), top, (int) maxScreen + (int) (2 * maxScreen / 3), bottom);
+            isIdle = true;
+        }
     }
 }

@@ -61,7 +61,6 @@ public class FolderFragment extends Fragment {
                     @Override
                     public void run() {
                         adapter.addDataAll(name);
-                        Log.e("FolderFragment", name);
                     }
                 });
             }
@@ -73,7 +72,7 @@ public class FolderFragment extends Fragment {
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
                 String folderName = adapter.getDataList().get(positon);
-                viewHolder.setTextViewContent(R.id.tv_folder_text, CommonUtil.folderName(folderName).trim())
+                viewHolder.setTextViewContent(R.id.tv_folder_text, CommonUtil.folderName(folderName))
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

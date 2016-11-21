@@ -126,6 +126,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        PageChangeAnimUtil.getPageChangeAnimUtil(this).initPosition(vpHome.getCurrentItem());
+    }
 
     @Override
     public void onClick(View view) {
