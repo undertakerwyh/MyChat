@@ -61,8 +61,9 @@ public class CommonUtil {
     }
 
     public static String folderName(String fileName){
-        String substring = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
-        return substring;
+        String substring =  fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
+        String name = substring.substring(substring.lastIndexOf(".")+1,substring.length());
+        return name;
     }
 
 }

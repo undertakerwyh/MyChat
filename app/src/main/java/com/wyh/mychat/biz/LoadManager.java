@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.wyh.mychat.R;
@@ -19,6 +20,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static com.wyh.mychat.R.drawable.folder;
 
 /**
  * Created by Administrator on 2016/11/18.
@@ -177,6 +180,7 @@ public class LoadManager {
                 String folder = Environment.getExternalStorageDirectory().getPath() + "/" + folderSplit[0];
                 if (!folderSet.contains(folder)) {
                     folderSet.add(folder);
+                    Log.e("AAA",folder);
                     fileUpdate.update(folder);
                 }
                 return;
