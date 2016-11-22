@@ -16,10 +16,8 @@ import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.fragment.FolderFragment;
 import com.wyh.mychat.fragment.ResourceFragment;
 import com.wyh.mychat.view.NoTouchViewPager;
-import com.wyh.mychat.view.ViewPagerScroller;
 
 import java.io.File;
-import java.lang.reflect.Field;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,22 +46,6 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         ButterKnife.bind(this);
         initViewpager();
         showFolder();
-    }
-
-    private void initViewPagerScroll(){
-        try {
-            Field mScroller = null;
-            mScroller = ViewPager.class.getDeclaredField("mScroller");
-            mScroller.setAccessible(true);
-            ViewPagerScroller scroller = new ViewPagerScroller(vpResource.getContext());
-            mScroller.set(vpResource, scroller);
-        }catch(NoSuchFieldException e){
-
-        }catch (IllegalArgumentException e){
-
-        }catch (IllegalAccessException e){
-
-        }
     }
 
     public void setActionText(String content){

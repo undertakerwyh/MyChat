@@ -2,9 +2,11 @@ package com.wyh.mychat.biz;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.LruCache;
 
+import com.wyh.mychat.R;
 import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.util.BitmapUtil;
 
@@ -209,6 +211,11 @@ public class LoadManager {
         Bitmap bitmap = lruCache.get(file.getAbsolutePath());
         if (bitmap == null) {
             bitmap = BitmapUtil.getSmallBitmap(file.getAbsolutePath());
+            if(bitmap==null){
+                bitmap = BitmapFactory.decodeResource(contexts.getResources(), R.drawable.load_pic);
+            }else{
+                lruCache.put(file.getAbsolutePath(),bitmap);
+            }
         }
         resourceUpdate.resourceUpdate(new Picture(name, bitmap, file));
     }
