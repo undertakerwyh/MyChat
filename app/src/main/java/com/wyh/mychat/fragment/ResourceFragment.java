@@ -61,6 +61,10 @@ public class ResourceFragment extends Fragment {
 
     private List<Picture>list = new ArrayList<>();
 
+    public void clearList(){
+        list.clear();
+    }
+
     public void refresh(Picture picture) {
         list.add(picture);
         if(enter){

@@ -110,6 +110,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         if(vpResource.getCurrentItem()==1){
             vpResource.setCurrentItem(0);
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
+            resourceFragment.clearList();
             resourceFragment.getAdapter().getDataList().clear();
             return;
         }
