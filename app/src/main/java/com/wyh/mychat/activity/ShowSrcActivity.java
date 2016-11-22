@@ -62,6 +62,10 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         vpResource.setAdapter(fragmentStatePagerAdapter);
     }
 
+    public void showProgress(){
+        pbLoad.setProgress(View.VISIBLE);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();

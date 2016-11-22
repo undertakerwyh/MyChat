@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.wyh.mychat.R;
+import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
 import com.wyh.mychat.entity.Picture;
@@ -45,6 +46,12 @@ public class ResourceFragment extends Fragment {
         initAdapter();
         lvResource.setAdapter(adapter);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((ShowSrcActivity)getActivity()).showProgress();
     }
 
     private void initAdapter() {

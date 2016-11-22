@@ -74,11 +74,11 @@ public class FolderFragment extends Fragment {
             public void assignment(ViewHolder viewHolder, int positon) {
                 final String folderName = adapter.getDataList().get(positon);
                 viewHolder.setTextViewContent(R.id.tv_folder_text, CommonUtil.folderName(folderName))
-                        .setImageViewContent(R.id.iv_pic_icon,R.drawable.folder)
+                        .setImageViewContent(R.id.iv_pic_icon, R.drawable.folder)
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                ((ShowSrcActivity)getActivity()).showResource(folderName);
+                                ((ShowSrcActivity) getActivity()).showResource(folderName);
                             }
                         });
             }
