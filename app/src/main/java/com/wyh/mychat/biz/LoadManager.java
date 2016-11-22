@@ -2,15 +2,14 @@ package com.wyh.mychat.biz;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.wyh.mychat.entity.Picture;
+import com.wyh.mychat.util.BitmapUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +44,7 @@ public class LoadManager {
         this.fileUpdate = fileUpdate;
     }
 
-    private static LruCache<String,Bitmap> lruCache = new LruCache<>(3*1024*1024);
+    private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
 
     private FileUpdate fileUpdate;
 
@@ -68,7 +67,7 @@ public class LoadManager {
         return picLoadManager;
     }
 
-    public void getResource(final File file){
+    public void getResource(final File file) {
         final ExecutorService SrcService = Executors.newCachedThreadPool();
         final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         SrcService.execute(new Runnable() {
@@ -89,6 +88,7 @@ public class LoadManager {
         }, 1, 1, TimeUnit.SECONDS);
         resourceUpdate.end();
     }
+
     public void getSrcList(final File sdFile) {
         if (isFirst) {
             final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -115,13 +115,14 @@ public class LoadManager {
                 }
             }, 1, 1, TimeUnit.SECONDS);
         } else {
-            Iterator<String>iterator = folderSet.descendingIterator();
+            Iterator<String> iterator = folderSet.descendingIterator();
             while (iterator.hasNext()) {
                 fileUpdate.update(iterator.next());
             }
             fileUpdate.end();
         }
     }
+
     public void searchResource(File file) {
         if (isStop) {
             return;
@@ -139,9 +140,9 @@ public class LoadManager {
             }
             String type = file.getName().substring(endIndex + 1);
             if (type.equals("png") || type.equals("jpg") || type.equals("gif")) {
-                String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/")+1,file.getAbsolutePath().length());
-                Picture picture = new Picture(name,loadLruCache(file.getAbsolutePath()),file);
-                resourceUpdate.update(picture);
+                String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().length());
+                Picture picture = new Picture(name, loadLruCache(file.getAbsolutePath()), file);
+                resourceUpdate.resourceUpdate(picture);
             }
         }
         File[] files = file.listFiles();
@@ -199,20 +200,18 @@ public class LoadManager {
 
         void end();
     }
-    public interface ResourceUpdate{
-        void update(Picture picture);
+
+    public interface ResourceUpdate {
+        void resourceUpdate(Picture picture);
+
         void end();
     }
 
-    public Bitmap loadLruCache(String path){
-        Bitmap bitmap =  lruCache.get(path);
-        if(bitmap==null){
-            try {
-                bitmap = BitmapFactory.decodeStream(new FileInputStream(new File(path)));
-                lruCache.put(path,bitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+    public Bitmap loadLruCache(String path) {
+        Bitmap bitmap = lruCache.get(path);
+        if (bitmap == null) {
+            bitmap = BitmapUtil.getSmallBitmap(path);
+            lruCache.put(path, bitmap);
         }
         return bitmap;
     }

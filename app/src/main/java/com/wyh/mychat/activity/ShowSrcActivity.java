@@ -88,7 +88,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
     }
 
     @Override
-    public void update(Picture picture) {
+    public void resourceUpdate(Picture picture) {
         if(resourceFragment ==null){
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
         }

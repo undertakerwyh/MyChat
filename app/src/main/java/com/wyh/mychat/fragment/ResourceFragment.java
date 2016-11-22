@@ -15,6 +15,9 @@ import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
 import com.wyh.mychat.entity.Picture;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -52,15 +55,17 @@ public class ResourceFragment extends Fragment {
     }
     private boolean enter = true;
 
+    private List<Picture>list = new ArrayList<>();
+
     public void refresh(Picture picture) {
-        adapter.addData(picture);
+        list.add(picture);
         if(enter){
             enter = false;
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     enter = true;
-                    adapter.notifyDataSetChanged();
+                    adapter.addDataAddAll(list);
                 }
             },500);
         }
