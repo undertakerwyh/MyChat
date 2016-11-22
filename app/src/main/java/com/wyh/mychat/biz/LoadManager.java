@@ -3,7 +3,6 @@ package com.wyh.mychat.biz;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
-import android.util.Log;
 import android.util.LruCache;
 
 import com.wyh.mychat.entity.Picture;
