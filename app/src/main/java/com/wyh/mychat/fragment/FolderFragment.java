@@ -86,6 +86,7 @@ public class FolderFragment extends Fragment {
                             public void onClick(View view) {
                                 folderText = folderName;
                                 ((ShowSrcActivity) getActivity()).showResource(folderName);
+                                ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(folderName));
                             }
                         });
             }

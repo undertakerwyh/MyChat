@@ -16,8 +16,10 @@ import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.fragment.FolderFragment;
 import com.wyh.mychat.fragment.ResourceFragment;
 import com.wyh.mychat.view.NoTouchViewPager;
+import com.wyh.mychat.view.ViewPagerScroller;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,7 +28,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/11/18.
  */
 
-public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpdate ,LoadManager.ResourceUpdate{
+public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpdate ,LoadManager.ResourceUpdate, View.OnClickListener {
 
     @Bind(R.id.pb_load)
     ProgressBar pbLoad;
@@ -42,8 +44,30 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
+        initActionBar(getString(R.string.my_picture),-1,-1,this);
         ButterKnife.bind(this);
         initViewpager();
+        showFolder();
+    }
+
+    private void initViewPagerScroll(){
+        try {
+            Field mScroller = null;
+            mScroller = ViewPager.class.getDeclaredField("mScroller");
+            mScroller.setAccessible(true);
+            ViewPagerScroller scroller = new ViewPagerScroller(vpResource.getContext());
+            mScroller.set(vpResource, scroller);
+        }catch(NoSuchFieldException e){
+
+        }catch (IllegalArgumentException e){
+
+        }catch (IllegalAccessException e){
+
+        }
+    }
+
+    public void setActionText(String content){
+        setActionBar(content);
     }
 
     private void initViewpager() {
@@ -83,9 +107,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         pbLoad.setProgress(View.VISIBLE);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void showFolder() {
         pbLoad.setVisibility(View.VISIBLE);
         LoadManager.getPicLoadManager(this).isStop(false);
         File sdFile = Environment.getExternalStorageDirectory();
@@ -133,8 +155,14 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
             resourceFragment.clearList();
             resourceFragment.getAdapter().getDataList().clear();
+            setActionText(getString(R.string.my_picture));
             return;
         }
         finish();
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 }

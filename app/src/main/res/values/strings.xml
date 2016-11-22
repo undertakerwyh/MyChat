@@ -8,4 +8,6 @@
     <string name="xlistview_header_hint_ready">松开刷新数据</string>
     <string name="xlistview_header_hint_loading">正在加载...</string>
     <string name="xlistview_footer_hint_ready">松开载入更多</string>
+    <!--ShowSreActivity-->
+    <string name="my_picture">我的图片</string>
 </resources>
