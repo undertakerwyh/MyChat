@@ -19,6 +19,6 @@
         android:layout_alignBottom="@+id/iv_config"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="功能" />
+        android:text="@string/bottombar_config" />
 
 </RelativeLayout>

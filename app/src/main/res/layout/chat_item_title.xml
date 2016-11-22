@@ -8,8 +8,8 @@
     <ImageView
         android:layout_margin="5dp"
         android:id="@+id/iv_chat_headPortrait"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/lv_image_size"
+        android:layout_height="@dimen/lv_image_size"
         android:layout_gravity="center"
         android:background="@drawable/headportrait" />
 
@@ -34,7 +34,7 @@
                 android:layout_gravity="top"
 
                 android:text="123124"
-                android:textSize="25sp"
+                android:textSize="@dimen/tv_username_size"
                 android:textStyle="bold" />
 
             <TextView
@@ -44,7 +44,7 @@
                 android:layout_gravity="top"
                 android:gravity="top"
                 android:text="日期"
-                android:textSize="15sp" />
+                android:textSize="@dimen/tv_time_size" />
         </LinearLayout>
 
         <TextView
@@ -57,7 +57,7 @@
             android:layout_weight="0.5"
             android:gravity="top"
             android:text="1233"
-            android:textSize="20sp" />
+            android:textSize="@dimen/tv_content_size" />
 
     </LinearLayout>
 </LinearLayout>

@@ -16,9 +16,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="5dp"
-            android:text="搜索"
+            android:text="@string/setting_search"
             android:textColor="@color/colorBlack"
-            android:textSize="20sp" />
+            android:textSize="@dimen/action_setting_textsize" />
 
         <View style="@style/line_h_black"></View>
     </LinearLayout>
@@ -35,9 +35,9 @@
             android:padding="5dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="添加好友"
+            android:text="@string/setting_friend"
             android:textColor="@color/colorBlack"
-            android:textSize="20sp" />
+            android:textSize="@dimen/action_setting_textsize" />
 
         <View style="@style/line_h_black"></View>
     </LinearLayout>
@@ -53,9 +53,9 @@
             android:padding="5dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="设置"
+            android:text="@string/setting_setting"
             android:textColor="@color/colorBlack"
-            android:textSize="20sp" />
+            android:textSize="@dimen/action_setting_textsize" />
 
     </LinearLayout>
 

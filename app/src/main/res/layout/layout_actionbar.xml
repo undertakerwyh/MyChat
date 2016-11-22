@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/iv_actionbar_left"
-        android:layout_width="40dp"
+        android:layout_width="@dimen/action_left_width"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:src="@drawable/back" />
@@ -25,7 +25,7 @@
 
     <ImageView
         android:id="@+id/iv_actionbar_right"
-        android:layout_width="36dp"
+        android:layout_width="@dimen/action_right_width"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:scaleY="0.8"

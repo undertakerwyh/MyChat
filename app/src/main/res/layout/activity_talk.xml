@@ -39,11 +39,10 @@
 
         <Button
             android:id="@+id/btn_send"
-            android:layout_width="70dp"
+            android:layout_width="@dimen/send_btn_width"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
-            android:background="@drawable/btn_send"
-            android:textSize="16sp" />
+            android:background="@drawable/btn_send" />
     </LinearLayout>
 
 

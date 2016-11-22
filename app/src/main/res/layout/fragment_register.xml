@@ -7,35 +7,35 @@
 
     <ImageView
         android:id="@+id/iv_actionbar_head"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/register_headportrait_size"
+        android:layout_height="@dimen/register_headportrait_size"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="@dimen/register_headportrait_margintop"
         android:src="@drawable/headportrait" />
 
     <RelativeLayout
         android:id="@+id/layout_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="@dimen/register_user_margintop"
         android:layout_below="@+id/iv_actionbar_head"
         android:layout_alignParentStart="true">
 
         <TextView
             android:id="@+id/user_text"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/register_user_size"
+            android:layout_height="@dimen/register_user_size"
             android:layout_centerVertical="true"
             android:gravity="center"
             android:layout_toLeftOf="@+id/et_user_text"
             android:textColor="@color/colorBlack"
-            android:textSize="15sp"
-            android:text="账号" />
+            android:textSize="@dimen/register_btn_textsize"
+            android:text="@string/register_user" />
 
         <EditText
             android:id="@+id/et_user_text"
-            android:layout_width="250dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/register_edit_width"
+            android:layout_height="@dimen/register_edit_height"
             android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
             android:background="@drawable/input_bg" />
@@ -46,25 +46,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_user"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="@dimen/register_password_margintop">
 
         <EditText
             android:id="@+id/et_password_text"
-            android:layout_width="250dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/register_edit_width"
+            android:layout_height="@dimen/register_edit_height"
             android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
             android:background="@drawable/input_bg" />
 
         <TextView
             android:id="@+id/password_pic"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/register_user_size"
+            android:layout_height="@dimen/register_user_size"
             android:layout_centerVertical="true"
             android:gravity="center"
             android:textColor="@color/colorBlack"
-            android:text="密码"
-            android:textSize="15sp"
+            android:text="@string/register_password"
+            android:textSize="@dimen/register_btn_textsize"
             android:layout_toStartOf="@+id/et_password_text"
              />
 
@@ -74,37 +74,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_password"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="@dimen/register_repassword_margintop">
 
         <EditText
-            android:id="@+id/et_password_text"
-            android:layout_width="250dp"
-            android:layout_height="45dp"
+            android:id="@+id/et_repassword_text"
+            android:layout_width="@dimen/register_edit_width"
+            android:layout_height="@dimen/register_edit_height"
             android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
             android:background="@drawable/input_bg" />
 
         <TextView
-            android:id="@+id/password_pic"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
+            android:id="@+id/repassword_pic"
+            android:layout_width="@dimen/register_repassword_width"
+            android:layout_height="@dimen/register_repassword_height"
             android:layout_centerVertical="true"
             android:gravity="right|center_vertical"
             android:textColor="@color/colorBlack"
-            android:text="确认密码"
-            android:textSize="15sp"
-            android:layout_toStartOf="@+id/et_password_text"
+            android:text="@string/register_repassword"
+            android:textSize="@dimen/register_btn_textsize"
+            android:layout_toStartOf="@+id/et_repassword_text"
             />
 
     </RelativeLayout>
     <Button
         android:id="@+id/btn_register"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/register_btn_width"
+        android:layout_height="@dimen/register_btn_height"
         android:layout_below="@id/layout_password_re"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/register_btn_margintop"
         android:background="@drawable/btn"
-        android:text="注册"
+        android:text="@string/title_register"
         android:textColor="@color/colorWhite" />
 </RelativeLayout>

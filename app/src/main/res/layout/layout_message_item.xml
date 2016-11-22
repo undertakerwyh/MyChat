@@ -24,7 +24,7 @@
             android:layout_gravity="center_vertical"
             android:text="131312"
             android:textColor="@color/colorBlack"
-            android:textSize="20sp" />
+            android:textSize="@dimen/send_textsize" />
 
     </LinearLayout>
 
@@ -45,7 +45,7 @@
             android:layout_gravity="center_vertical"
             android:text="1313124123"
             android:layout_marginBottom="5dp"
-            android:textSize="20sp" />
+            android:textSize="@dimen/send_textsize" />
     </LinearLayout>
 
     <TextView

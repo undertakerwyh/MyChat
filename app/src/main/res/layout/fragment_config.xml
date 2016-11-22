@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/config_pic"
         style="@style/config_text"
-        android:text="我的图片"
+        android:text="@string/my_picture"
         android:layout_width="match_parent"
         android:layout_height="@dimen/chat_config_item_height" />
     <View
@@ -18,7 +18,7 @@
     <TextView
         android:id="@+id/config_video"
         style="@style/config_text"
-        android:text="我的视频"
+        android:text="@string/my_video"
         android:layout_width="match_parent"
         android:layout_height="@dimen/chat_config_item_height" />
     <View
@@ -27,7 +27,7 @@
     <TextView
         android:id="@+id/config_log_off"
         style="@style/config_text"
-        android:text="注销"
+        android:text="@string/my_log_off"
         android:layout_width="match_parent"
         android:layout_height="@dimen/chat_config_item_height" />
     <View
@@ -37,7 +37,7 @@
     <TextView
         android:id="@+id/config_exit"
         style="@style/config_text"
-        android:text="退出"
+        android:text="@string/my_exit"
         android:layout_width="match_parent"
         android:layout_height="@dimen/chat_config_item_height" />
     <View

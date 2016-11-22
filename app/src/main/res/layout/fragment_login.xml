@@ -8,10 +8,10 @@
 
     <ImageView
         android:id="@+id/iv_actionbar_head"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/login_headportrait"
+        android:layout_height="@dimen/login_headportrait"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="@dimen/login_headportarit_margintop"
         android:src="@drawable/headportrait" />
 
     <RelativeLayout
@@ -19,12 +19,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_user"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="@dimen/login_password_margintop">
 
         <EditText
             android:id="@+id/et_password_text"
-            android:layout_width="250dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/login_edit_width"
+            android:layout_height="@dimen/login_edit_height"
             android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
             android:background="@drawable/input_bg"
@@ -32,8 +32,8 @@
 
         <ImageView
             android:id="@+id/password_pic"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/login_icon_size"
+            android:layout_height="@dimen/login_icon_size"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/et_password_text"
             android:src="@drawable/password" />
@@ -44,13 +44,12 @@
         android:layout_width="wrap_content"
         android:layout_below="@+id/layout_password"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/login_password_margintop"
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/btn_login"
-            android:layout_width="200dp"
-            android:layout_height="40dp"
-
+            android:layout_width="@dimen/login_btn_width"
+            android:layout_height="@dimen/login_btn_height"
             android:background="@drawable/btn"
             android:text="登陆"
             android:textColor="@color/colorWhite" />
@@ -63,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_btn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="@dimen/login_register_margintop"
         android:text="注册"
         android:textColor="@color/colorBlack" />
 
@@ -71,22 +70,22 @@
         android:id="@+id/layout_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/login_headportrait_margintop"
         android:layout_below="@+id/iv_actionbar_head"
-        android:layout_marginTop="30dp">
+        android:layout_alignParentStart="true">
 
         <ImageView
             android:id="@+id/user_pic"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/login_icon_size"
+            android:layout_height="@dimen/login_icon_size"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/et_user_text"
             android:src="@drawable/user_pic" />
 
         <EditText
             android:id="@+id/et_user_text"
-            android:layout_width="250dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/login_edit_width"
+            android:layout_height="@dimen/login_edit_height"
             android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
             android:background="@drawable/input_bg"

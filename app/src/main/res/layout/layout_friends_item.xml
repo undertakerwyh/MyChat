@@ -20,6 +20,6 @@
         android:gravity="center_vertical"
         android:text="小明"
         android:textColor="@color/colorBlack"
-        android:textSize="20sp" />
+        android:textSize="@dimen/friends_textsize" />
 
 </LinearLayout>

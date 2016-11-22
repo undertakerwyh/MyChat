@@ -19,6 +19,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_alignBottom="@+id/iv_contacts"
-        android:text="联系人" />
+        android:text="@string/bottombar_contacts" />
 
 </RelativeLayout>

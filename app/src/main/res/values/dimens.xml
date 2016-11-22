@@ -8,21 +8,96 @@
     <dimen name="bottombar_height">60dp</dimen>
 
 
+    <!--..................................ActionBar......................................-->
+    <!--左图标的大小-->
+    <dimen name="action_left_width">40dp</dimen>
+    <!--右图标的大小-->
+    <dimen name="action_right_width">36dp</dimen>
+
+    <dimen name="action_setting_textsize">20sp</dimen>
+
     <!--.................................HomeActivity...................................-->
     <!--popwindow菜单的宽-->
     <dimen name="config_item_width">120dp</dimen>
+
+    <!--.................................LoginFragment....................................-->
+    <!--头像大小-->
+    <dimen name="login_headportrait">150dp</dimen>
+    <!--头像离屏幕中心的距离-->
+    <dimen name="login_headportarit_margintop">120dp</dimen>
+    <!--账户密码之间的高-->
+    <dimen name="login_password_margintop">10dp</dimen>
+    <!--头像和账户之间的距离-->
+    <dimen name="login_headportrait_margintop">28dp</dimen>
+    <!--注册和登陆之间的距离-->
+    <dimen name="login_register_margintop">30dp</dimen>
+    <!--账户密码的icon大小-->
+    <dimen name="login_icon_size">30dp</dimen>
+    <!--账户,密码的长度-->
+    <dimen name="login_edit_height">45dp</dimen>
+    <!--账户,密码的高度-->
+    <dimen name="login_edit_width">250dp</dimen>
+    <!--登陆按钮宽高-->
+    <dimen name="login_btn_width">200dp</dimen>
+    <dimen name="login_btn_height">40dp</dimen>
+
+    <!--.................................RegisterFragment.................................-->
+    <!--注册头像大小-->
+    <dimen name="register_headportrait_size">150dp</dimen>
+    <!--注册头像与屏幕中心的距离-->
+    <dimen name="register_headportrait_margintop">100dp</dimen>
+    <!--账号和头像的之间的高-->
+    <dimen name="register_user_margintop">30dp</dimen>
+    <!--账户和密码的宽高-->
+    <dimen name="register_user_size">30dp</dimen>
+    <!--注册按钮宽高-->
+    <dimen name="register_btn_width">200dp</dimen>
+    <dimen name="register_btn_height">40dp</dimen>
+    <!--注册按钮和确认密码之间的高-->
+    <dimen name="register_btn_margintop">10dp</dimen>
+    <dimen name="register_btn_textsize">15sp</dimen>
+
+    <!--账号,密码,确认密码-->
+    <dimen name="register_edit_height">45dp</dimen>
+    <dimen name="register_edit_width">250dp</dimen>
+    <!--账户和密码之间的距离-->
+    <dimen name="register_password_margintop">10dp</dimen>
+    <!--确认密码和密码之间的距离-->
+    <dimen name="register_repassword_margintop">10dp</dimen>
+    <!--确认密码的宽高-->
+    <dimen name="register_repassword_height">30dp</dimen>
+    <dimen name="register_repassword_width">60dp</dimen>
+
     <!--.................................MessageFragment..................................-->
     <!--好友回复信息的高-->
     <dimen name="chat_item_height">75dp</dimen>
+    <!--好友回复头像大小-->
+    <dimen name="lv_image_size">50dp</dimen>
+    <!--好友账号字体大小-->
+    <dimen name="tv_username_size">25sp</dimen>
+    <!--好友内容字体大小-->
+    <dimen name="tv_content_size">20sp</dimen>
+    <!--时间显示字体大小-->
+    <dimen name="tv_time_size">15sp</dimen>
+
     <!--.................................contaactsFragment.................................-->
     <!--好友列表的item高-->
     <dimen name="chat_friends_height">50dp</dimen>
+
+    <dimen name="friends_textsize">20sp</dimen>
     <!--.................................TalkActivity....................................-->
     <!--发送信息栏的高-->
     <dimen name="chat_send_height">50dp</dimen>
+    <!--发送按钮宽-->
+    <dimen name="send_btn_width">70dp</dimen>
+
+    <dimen name="send_textsize">20sp</dimen>
+
+
     <!--...................................ConfigFragment.................................-->
     <!--功能activity中每个项目的高-->
     <dimen name="chat_config_item_height">60dp</dimen>
     <!--...................................ShowSrcActivity....................................-->
+    <!--加载等待动画的大小-->
     <dimen name="chat_pic_progress_size">20dp</dimen>
 </resources>
