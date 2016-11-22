@@ -32,6 +32,10 @@ public class ResourceFragment extends Fragment {
 
     private Handler handler = new Handler(Looper.getMainLooper());
 
+    public UniversalAdapter<Picture> getAdapter() {
+        return adapter;
+    }
+
     private UniversalAdapter<Picture>adapter;
     @Nullable
     @Override

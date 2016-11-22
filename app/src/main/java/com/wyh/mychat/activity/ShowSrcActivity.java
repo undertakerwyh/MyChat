@@ -104,4 +104,15 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        if(vpResource.getCurrentItem()==1){
+            vpResource.setCurrentItem(0);
+            resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
+            resourceFragment.getAdapter().getDataList().clear();
+            return;
+        }
+        finish();
+    }
 }

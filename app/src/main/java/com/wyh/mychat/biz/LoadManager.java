@@ -2,13 +2,15 @@ package com.wyh.mychat.biz;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.LruCache;
 
 import com.wyh.mychat.entity.Picture;
-import com.wyh.mychat.util.BitmapUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +19,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import top.zibin.luban.Luban;
 
 /**
  * Created by Administrator on 2016/11/18.
@@ -140,8 +149,7 @@ public class LoadManager {
             String type = file.getName().substring(endIndex + 1);
             if (type.equals("png") || type.equals("jpg") || type.equals("gif")) {
                 String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().length());
-                Picture picture = new Picture(name, loadLruCache(file.getAbsolutePath()), file);
-                resourceUpdate.resourceUpdate(picture);
+                loadLruCache(name, file);
             }
         }
         File[] files = file.listFiles();
@@ -206,12 +214,41 @@ public class LoadManager {
         void end();
     }
 
-    public Bitmap loadLruCache(String path) {
-        Bitmap bitmap = lruCache.get(path);
+    public void loadLruCache(final String name, final File file) {
+        final Bitmap bitmap = lruCache.get(file.getAbsolutePath());
         if (bitmap == null) {
-            bitmap = BitmapUtil.getSmallBitmap(path);
-            lruCache.put(path, bitmap);
+            Luban.get(contexts)
+                    .load(file)
+                    .putGear(1)
+                    .asObservable()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError(new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                    })
+                    .onErrorResumeNext(new Func1<Throwable, Observable<? extends File>>() {
+                        @Override
+                        public Observable<? extends File> call(Throwable throwable) {
+                            return Observable.empty();
+                        }
+                    })
+                    .subscribe(new Action1<File>() {
+                        @Override
+                        public void call(File files) {
+                            try {
+                                Bitmap bitmap1 = BitmapFactory.decodeStream(new FileInputStream(file));
+                                lruCache.put(file.getAbsolutePath(),bitmap1);
+                                resourceUpdate.resourceUpdate(new Picture(name, bitmap1, file));
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+        } else {
+            resourceUpdate.resourceUpdate(new Picture(name, bitmap, file));
         }
-        return bitmap;
     }
 }
