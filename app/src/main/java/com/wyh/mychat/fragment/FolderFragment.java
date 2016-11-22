@@ -35,6 +35,12 @@ public class FolderFragment extends Fragment {
 
     private UniversalAdapter<String> adapter;
 
+    public static String getFolderText() {
+        return folderText;
+    }
+
+    private static String folderText;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,6 +84,7 @@ public class FolderFragment extends Fragment {
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                folderText = folderName;
                                 ((ShowSrcActivity) getActivity()).showResource(folderName);
                             }
                         });

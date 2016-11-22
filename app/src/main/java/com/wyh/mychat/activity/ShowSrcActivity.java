@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -60,6 +61,22 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
             }
         };
         vpResource.setAdapter(fragmentStatePagerAdapter);
+        vpResource.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                showProgress();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     public void showProgress(){
