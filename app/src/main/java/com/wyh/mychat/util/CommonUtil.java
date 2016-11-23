@@ -33,14 +33,30 @@ public class CommonUtil {
         String[] split = name.split(MYSEND);
         return split[0];
     }
+
+    /**
+     *
+     * @return 返回String类型的当前时间毫秒数
+     */
     public static String getTime(){
         return String.valueOf(System.currentTimeMillis());
     }
+
+    /**
+     *
+     * @return 返回long类型的当前时间毫秒数
+     */
     public static long getTimeLong(){
         return System.currentTimeMillis();
     }
 
+    /**
+     * 输入long型的时间毫秒数与当前的时间对比
+     * @param time 输入一个时间,必须小于当前时间
+     * @return 返回与当前时间的关系(如昨天,前天)
+     */
     public static String getTimeSelect(long time){
+        if(time>getTimeLong()){return null;}
         long nowTime = getTimeLong();
         String timeStr=null;
         if(nowTime-time<dayLong){
@@ -60,6 +76,11 @@ public class CommonUtil {
         return timeStr;
     }
 
+    /**
+     * 文件夹名转化路径
+     * @param fileName 文件夹路径
+     * @return
+     */
     public static String folderName(String fileName){
         String substring =  fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
         String name = substring.substring(substring.lastIndexOf(".")+1,substring.length());

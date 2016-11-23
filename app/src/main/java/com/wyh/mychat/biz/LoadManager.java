@@ -21,8 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.wyh.mychat.R.drawable.folder;
-
 /**
  * Created by Administrator on 2016/11/18.
  */
@@ -32,33 +30,36 @@ public class LoadManager {
     private static Context contexts;
     private boolean isFirst = true;
 
+    private FileUpdate fileUpdate;
+
+    private ResourceUpdate resourceUpdate;
+
+    private boolean isStop = false;
+
+    private static List<Picture> picList = new ArrayList<>();
+
+    private static TreeSet<String> folderSet = new TreeSet<>();
+
+    private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
+
     public static List<Picture> getPicList() {
         return picList;
     }
 
-    private static List<Picture> picList = new ArrayList<>();
 
     public static TreeSet<String> getFolderSet() {
         return folderSet;
     }
 
-    private static TreeSet<String> folderSet = new TreeSet<>();
 
     public void setFileUpdate(FileUpdate fileUpdate) {
         this.fileUpdate = fileUpdate;
     }
 
-    private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
-
-    private FileUpdate fileUpdate;
-
-    private boolean isStop = false;
-
     public void setResourceUpdate(ResourceUpdate resourceUpdate) {
         this.resourceUpdate = resourceUpdate;
     }
 
-    private ResourceUpdate resourceUpdate;
 
 
     public static LoadManager getPicLoadManager(Context context) {
@@ -70,7 +71,7 @@ public class LoadManager {
         }
         return picLoadManager;
     }
-
+    /**获取file中的图片资源*/
     public void getResource(final File file) {
         final ExecutorService SrcService = Executors.newCachedThreadPool();
         final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -92,7 +93,7 @@ public class LoadManager {
         }, 1, 1, TimeUnit.SECONDS);
         resourceUpdate.end();
     }
-
+    /**获取sd卡中有图片的文件夹*/
     public void getSrcList(final File sdFile) {
         if (isFirst) {
             final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -126,7 +127,7 @@ public class LoadManager {
             fileUpdate.end();
         }
     }
-
+    /**搜索图片资源的递归方法*/
     public void searchResource(File file) {
         if (isStop) {
             return;
@@ -157,7 +158,7 @@ public class LoadManager {
         }
 
     }
-
+    /**搜索有图片资源的文件夹的递归方法*/
     public void searchFile(File file) {
         if (isStop) {
             return;
@@ -199,18 +200,28 @@ public class LoadManager {
         isStop = stop;
     }
 
+    /**
+     * 搜索到的文件夹回调接口
+     */
     public interface FileUpdate {
         void update(String folder);
 
         void end();
     }
-
+    /**
+     * 搜索到的文件夹下资源回调接口
+     */
     public interface ResourceUpdate {
         void resourceUpdate(Picture picture);
 
         void end();
     }
 
+    /**
+     * Lrucache保存图片资源和读取图片资源
+     * @param name 图片文件夹名
+     * @param file 图片文件
+     */
     public void loadLruCache(final String name, final File file) {
         Bitmap bitmap = lruCache.get(file.getAbsolutePath());
         if (bitmap == null) {

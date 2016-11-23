@@ -73,10 +73,12 @@ public class BaseActivity extends AppCompatActivity{
     protected void myHandlerMessage(Message message){
 
     }
+    /**启动指定activity*/
     public void startActivity(Class<?>TargetActivity){
         Intent intent = new Intent(this,TargetActivity);
         startActivity(intent);
     }
+    /**启动指定activity和切换动画*/
     public void startActivity(Class<?>TargetActivity,int animStart,int animEnd){
         Intent intent = new Intent(this,TargetActivity);
         startActivity(intent);

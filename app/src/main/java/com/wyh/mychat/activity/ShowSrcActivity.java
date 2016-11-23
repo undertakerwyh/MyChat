@@ -42,16 +42,19 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
+        /**初始化标题栏*/
         initActionBar(getString(R.string.my_picture),-1,-1,this);
         ButterKnife.bind(this);
+        /**初始化Viewpager*/
         initViewpager();
+        /**显示有图片的文件夹的Fragment*/
         showFolder();
     }
-
+    /**设置标题栏的文字*/
     public void setActionText(String content){
         setActionBar(content);
     }
-
+    /**初始化Viewpager*/
     private void initViewpager() {
         fragmentStatePagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             Fragment[] fragment = {new FolderFragment(),new ResourceFragment()};
@@ -84,11 +87,12 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
             }
         });
     }
-
+    /**显示加载动画*/
     public void showProgress(){
         pbLoad.setProgress(View.VISIBLE);
     }
 
+    /**显示有图片的文件夹的fragment*/
     private void showFolder() {
         pbLoad.setVisibility(View.VISIBLE);
         LoadManager.getPicLoadManager(this).isStop(false);
@@ -97,13 +101,14 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         LoadManager.getPicLoadManager(this).getSrcList(sdFile);
     }
 
+    /**显示指定文件夹下的图片的fragment*/
     public void showResource(String name){
         LoadManager.getPicLoadManager(this).isStop(false);
         LoadManager.getPicLoadManager(this).setResourceUpdate(this);
         vpResource.setCurrentItem(1);
         LoadManager.getPicLoadManager(this).getResource(new File(name));
     }
-
+    /**更新搜索文件夹结果*/
     @Override
     public void update(final String folder) {
         if (folderFragment == null) {
@@ -111,7 +116,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         }
         folderFragment.refresh(folder);
     }
-
+    /**更新搜索图片的结果*/
     @Override
     public void resourceUpdate(Picture picture) {
         if(resourceFragment ==null){
@@ -119,7 +124,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         }
         resourceFragment.refresh(picture);
     }
-
+    /**搜索结束加载动画结束*/
     @Override
     public void end() {
         pbLoad.post(new Runnable() {
@@ -129,7 +134,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
             }
         });
     }
-
+    /**重写返回键的监听*/
     @Override
     public void onBackPressed() {
         if(vpResource.getCurrentItem()==1){

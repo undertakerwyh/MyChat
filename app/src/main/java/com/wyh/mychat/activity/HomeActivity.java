@@ -63,14 +63,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         initViewPagerScroll();
 
     }
-
+    /**获取手机屏幕宽*/
     private void initHomePageChange() {
         DisplayMetrics metrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         maxScreen = metrics.widthPixels;
         PageChangeAnimUtil.getPageChangeAnimUtil(getApplicationContext()).pageChangeAnim(vpHome, llBottomBarBg, maxScreen);
     }
-
+    /**底部菜单栏的初始化*/
     private void initTabHost() {
         View view1 = getLayoutInflater().inflate(R.layout.layout_bottom_menu1, null);
         tabWidget.addView(view1);
@@ -100,7 +100,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         });
         tabWidget.setCurrentTab(0);
     }
-
+    /**初始化viewpager的消息,联系人,功能布局*/
     private void initViewPager() {
         fragmentAdapter = new FragmentAdapter(getSupportFragmentManager());
         MessageFragment messageFragment = new MessageFragment();
@@ -110,6 +110,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         vpHome.setAdapter(fragmentAdapter);
         vpHome.setLongClickable(true);
     }
+    /**设置viewpager的滑动速度*/
     private void initViewPagerScroll(){
         try {
             Field mScroller = null;
@@ -137,7 +138,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.iv_actionbar_right:
                 ShowPopwindow();
-//                DBManager.getDbManager(this).delete();
                 break;
             case R.id.iv_message:
                 vpHome.setCurrentItem(0);
@@ -152,7 +152,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 break;
         }
     }
-
+    /**显示菜单popwindows*/
     private void ShowPopwindow() {
         View view = getLayoutInflater().inflate(R.layout.layout_config, null);
         pop = new PopupWindow(view, LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);

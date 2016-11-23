@@ -63,6 +63,7 @@ public class LoginFragment extends Fragment{
                 break;
         }
     }
+
     public interface MoveToRegister{
         void moveToRegister();
         void moveToHome();

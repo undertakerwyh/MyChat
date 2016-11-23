@@ -60,6 +60,9 @@ public class MessageFragment extends Fragment {
         return view;
     }
 
+    /**
+     * 初始化适配器
+     */
     private void initAdapter() {
         adapter = new UniversalAdapter<User>(getContext(),R.layout.chat_item_title) {
             @Override

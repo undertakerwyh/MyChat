@@ -21,10 +21,12 @@ public class DBManager {
     private final static String DBNAME = "Message.db";
     private final static int VERSION = 1;
     private static DBManager dbManager = null;
-    private static Context contexts;
     private static MySQLite mySQLite;
     private static SQLiteDatabase sqLiteDatabase;
     private boolean istrue = true;
+    /**
+     * 记录加载数据的编号
+     */
     private int maxId = -1;
 
     public long getTime() {
@@ -35,6 +37,7 @@ public class DBManager {
         DBManager.time = time;
     }
 
+    /**记录第一条数据的时间*/
     private static long time = 0;
 
     /**
@@ -60,6 +63,11 @@ public class DBManager {
         return dbManager;
     }
     private boolean isFirst = true;
+
+    /**
+     * 保存发送信息
+     * @param message 实体类,保存string类型的发送名,内容和发送时间
+     */
     public void saveMessage(Message message){
         if(isFirst){
             isFirst = false;
@@ -72,6 +80,12 @@ public class DBManager {
         sqLiteDatabase.execSQL("insert into Message (name,content,time,type) values (?,?,?,?)",new Object[]{name,content,time,type});
     }
     private int maxLoad;
+
+    /**
+     * 加载数据内容
+     * @param name 加载好友名
+     * @param size 当前加载的条数,判断是否与数据库同步
+     */
     public void loadMessageDESC(final String name, final int size){
         final List<Message> list = new ArrayList<>();
         ExecutorService executorService = Executors.newCachedThreadPool();
@@ -117,6 +131,10 @@ public class DBManager {
     public void DBClose(){
         istrue = true;
     }
+
+    /**
+     * 更新加载数据的回调接口
+     */
     public interface UpdateListener{
         void complete(List<Message>list);
     }
@@ -124,6 +142,9 @@ public class DBManager {
         sqLiteDatabase.execSQL("delete from Message where id>?",new String []{"0"});
     }
 
+    /**
+     * 数据库初始化
+     */
     static class MySQLite extends SQLiteOpenHelper {
         private static final String Message = "create table Message(id integer primary key autoincrement,name text,content text,time text,type integer)";
 

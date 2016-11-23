@@ -59,6 +59,10 @@ public class FolderFragment extends Fragment {
 
     }
 
+    /**
+     * 更新回调接口传来的值
+     * @param name 传入的值
+     */
     public void refresh(final String name) {
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.execute(new Runnable() {
@@ -74,6 +78,9 @@ public class FolderFragment extends Fragment {
         });
     }
 
+    /**
+     * 初始化适配器
+     */
     private void initAdapter() {
         adapter = new UniversalAdapter<String>(getContext(), R.layout.layout_pic_item) {
             @Override

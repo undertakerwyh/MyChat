@@ -9,10 +9,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * Created by Administrator on 2016/11/22.
+ * 图片优化
  */
 
 public class BitmapUtil {
+    /**
+     *
+     * @param filePath 图片路径
+     * @return 返回优化后的图片
+     */
     public static Bitmap getSmallBitmap(String filePath) {
 
         final BitmapFactory.Options options = new BitmapFactory.Options();

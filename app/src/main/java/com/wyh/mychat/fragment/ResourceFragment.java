@@ -47,6 +47,9 @@ public class ResourceFragment extends Fragment {
         return view;
     }
 
+    /**
+     * 初始化适配器
+     */
     private void initAdapter() {
         adapter = new UniversalAdapter<Picture>(getContext(),R.layout.layout_pic_item) {
             @Override
@@ -65,6 +68,10 @@ public class ResourceFragment extends Fragment {
         list.clear();
     }
 
+    /**
+     * 更新回调接口传来的值
+     * @param picture 图片文件的实体类
+     */
     public void refresh(Picture picture) {
         list.add(picture);
         if(enter){

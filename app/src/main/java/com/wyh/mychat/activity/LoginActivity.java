@@ -71,7 +71,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         /**适配viewpager*/
         vpLogin.setAdapter(adapter);
     }
-
+    /**初始化Fragment适配器*/
     private void initFragmentAdapter() {
         FragmentManager manager = getSupportFragmentManager();
         adapter = new FragmentAdapter(manager);
@@ -101,7 +101,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     public void moveToHome() {
         startActivity(HomeActivity.class, R.anim.right_in, R.anim.left_out);
     }
-
+    /**重写返回键的监听*/
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK&&!isLogin){

@@ -52,6 +52,9 @@ public class ContactsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * 初始化适配器
+     */
     private void initAdapter() {
         adapter = new UniversalAdapter<Friends>(getContext(),R.layout.layout_friends_item) {
             @Override

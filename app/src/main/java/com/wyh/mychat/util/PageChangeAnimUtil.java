@@ -163,6 +163,7 @@ public class PageChangeAnimUtil {
             }
         });
     }
+
     public void initPosition(int position){
         if (position == 0) {
             linearLayout.layout(0, top, (int) maxScreen, bottom);
