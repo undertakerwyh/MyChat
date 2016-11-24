@@ -94,6 +94,7 @@ public class LoadManager {
     /**获取sd卡中有图片的文件夹*/
     public void getSrcList(final File sdFile) {
         if (isFirst) {
+            folderSet.clear();
             final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
             final ExecutorService SrcService = Executors.newCachedThreadPool();
             final File[] files = sdFile.listFiles();
