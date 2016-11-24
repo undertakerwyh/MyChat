@@ -1,6 +1,7 @@
 package com.wyh.mychat.fragment;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -15,10 +16,10 @@ import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
+import com.wyh.mychat.biz.LoadManager;
 import com.wyh.mychat.util.CommonUtil;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,20 +28,22 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/11/18.
  */
 
-public class FolderFragment extends Fragment {
+public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
 
     @Bind(R.id.lv_folder)
     ListView lvFolders;
     @Bind(R.id.pb_load)
     ProgressBar pbLoad;
-    private View view;
+    private static View view;
 
-    private UniversalAdapter<String> adapter;
+    private static UniversalAdapter<String> adapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_folder, null);
+        if (view == null) {
+            view = inflater.inflate(R.layout.fragment_folder, null);
+        }
         ButterKnife.bind(this, view);
         initAdapter();
         lvFolders.setAdapter(adapter);
@@ -49,7 +52,7 @@ public class FolderFragment extends Fragment {
 
 
     public Handler getHandler() {
-        if(handler==null) {
+        if (handler == null) {
             handler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
@@ -83,25 +86,28 @@ public class FolderFragment extends Fragment {
      * @param name 传入的值
      */
     public void refresh(final String name) {
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        executorService.execute(new Runnable() {
+        handler.post(new Runnable() {
             @Override
             public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.addDataUpdate(name);
-                        ((ShowSrcActivity)getActivity()).setActionText(getResources().getString(R.string.my_picture)+"("+adapter.getDataList().size()+")");
-                    }
-                });
+                adapter.addDataUpdate(name);
+                ((ShowSrcActivity) getActivity()).setActionText(getResources().getString(R.string.my_picture) + "(" + adapter.getDataList().size() + ")");
             }
         });
+    }
+
+    private void showFolder() {
+        getHandler().sendEmptyMessage(0);
+        LoadManager.getPicLoadManager(getContext()).isStop(false);
+        File sdFile = Environment.getExternalStorageDirectory();
+        LoadManager.getPicLoadManager(getContext()).setFileUpdate(this);
+        LoadManager.getPicLoadManager(getContext()).getSrcList(sdFile);
     }
 
     /**
      * 初始化适配器
      */
     private void initAdapter() {
+        if (adapter != null) return;
         adapter = new UniversalAdapter<String>(getContext(), R.layout.layout_pic_item) {
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
@@ -124,6 +130,7 @@ public class FolderFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        showFolder();
     }
 
     @Override
@@ -131,4 +138,19 @@ public class FolderFragment extends Fragment {
         super.onDestroyView();
     }
 
+    /**
+     * 更新搜索文件夹结果
+     */
+    @Override
+    public void update(final String folder) {
+        refresh(folder);
+    }
+
+    /**
+     * 搜索结束加载动画结束
+     */
+    @Override
+    public void fileEnd() {
+        handler.sendEmptyMessage(1);
+    }
 }

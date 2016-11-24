@@ -22,8 +22,8 @@
         <activity
             android:name=".activity.HomeActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".activity.TalkActivity"></activity>
-        <activity android:name=".activity.ShowSrcActivity"></activity>
+        <activity android:name=".activity.TalkActivity" ></activity>
+        <activity android:name=".activity.ShowSrcActivity" android:launchMode="singleTop"></activity>
     </application>
 
 </manifest>

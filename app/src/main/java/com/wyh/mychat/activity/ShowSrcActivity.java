@@ -1,7 +1,6 @@
 package com.wyh.mychat.activity;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -25,15 +24,15 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/11/18.
  */
 
-public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpdate, LoadManager.ResourceUpdate, View.OnClickListener {
+public class ShowSrcActivity extends BaseActivity implements LoadManager.ResourceUpdate, View.OnClickListener {
 
     @Bind(R.id.vp_resource)
     NoTouchViewPager vpResource;
     private FragmentStatePagerAdapter fragmentStatePagerAdapter;
 
-    private FolderFragment folderFragment;
+    private static FolderFragment folderFragment;
 
-    private ResourceFragment resourceFragment;
+    private static ResourceFragment resourceFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,8 +43,6 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         ButterKnife.bind(this);
         /**初始化Viewpager*/
         initViewpager();
-        /**显示有图片的文件夹的Fragment*/
-        showFolder();
     }
 
     /**
@@ -69,8 +66,14 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
      * 初始化Viewpager
      */
     private void initViewpager() {
+        if(folderFragment==null){
+            folderFragment = new FolderFragment();
+        }
+        if(resourceFragment ==null){
+            resourceFragment = new ResourceFragment();
+        }
         fragmentStatePagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            Fragment[] fragment = {new FolderFragment(), new ResourceFragment()};
+            Fragment[] fragment = {folderFragment, resourceFragment};
 
             @Override
             public Fragment getItem(int position) {
@@ -109,18 +112,6 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
     }
 
     /**
-     * 显示有图片的文件夹的fragment
-     */
-    private void showFolder() {
-        getFolderFragment().getHandler().sendEmptyMessage(0);
-        LoadManager.getPicLoadManager(this).isStop(false);
-        File sdFile = Environment.getExternalStorageDirectory();
-        LoadManager.getPicLoadManager(this).setFileUpdate(this);
-        LoadManager.getPicLoadManager(this).getSrcList(sdFile);
-
-    }
-
-    /**
      * 显示指定文件夹下的图片的fragment
      */
     public void showResource(String name) {
@@ -131,21 +122,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         LoadManager.getPicLoadManager(this).getResource(new File(name));
     }
 
-    /**
-     * 更新搜索文件夹结果
-     */
-    @Override
-    public void update(final String folder) {
-        getFolderFragment().refresh(folder);
-    }
 
-    /**
-     * 搜索结束加载动画结束
-     */
-    @Override
-    public void fileEnd() {
-        getFolderFragment().getHandler().sendEmptyMessage(1);
-    }
 
     private FolderFragment getFolderFragment() {
         if (folderFragment == null) {
@@ -191,6 +168,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
             setActionText(getString(R.string.my_picture));
             return;
         }
+        LoadManager.getFolderSet().clear();
         finish();
     }
 

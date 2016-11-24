@@ -91,6 +91,11 @@ public class LoadManager {
             }
         }, 1, 1, TimeUnit.SECONDS);
     }
+
+    public static LoadManager getPicLoadManager() {
+        return picLoadManager;
+    }
+
     /**获取sd卡中有图片的文件夹*/
     public void getSrcList(final File sdFile) {
         if (isFirst) {
