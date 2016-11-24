@@ -15,9 +15,11 @@ import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
+import com.wyh.mychat.biz.LoadManager;
 import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.util.CommonUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,12 +30,12 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/11/19.
  */
 
-public class ResourceFragment extends Fragment {
+public class ResourceFragment extends Fragment implements LoadManager.ResourceUpdate{
     @Bind(R.id.lv_folder)
     ListView lvResource;
     @Bind(R.id.pb_load)
     ProgressBar pbLoad;
-    private View view;
+    private static View view;
 
     public UniversalAdapter<Picture> getAdapter() {
         return adapter;
@@ -44,17 +46,13 @@ public class ResourceFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_pic, null);
+        if(view ==null) {
+            view = inflater.inflate(R.layout.fragment_pic, null);
+        }
         ButterKnife.bind(this, view);
         initAdapter();
         lvResource.setAdapter(adapter);
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
     }
 
     public Handler getHandler() {
@@ -122,8 +120,34 @@ public class ResourceFragment extends Fragment {
         }
     }
 
+    /**
+     * 显示指定文件夹下的图片的fragment
+     */
+    public void showResource(String name) {
+        getHandler().sendEmptyMessage(0);
+        LoadManager.getPicLoadManager(getContext()).isStop(false);
+        LoadManager.getPicLoadManager(getContext()).setResourceUpdate(this);
+        LoadManager.getPicLoadManager(getContext()).getResource(new File(name));
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    /**
+     * 搜索结束加载动画结束
+     */
+    @Override
+    public void ResourceEnd() {
+        getHandler().sendEmptyMessage(1);
+    }
+
+    /**
+     * 更新搜索图片的结果
+     */
+    @Override
+    public void resourceUpdate(Picture picture) {
+        refresh(picture);
     }
 }

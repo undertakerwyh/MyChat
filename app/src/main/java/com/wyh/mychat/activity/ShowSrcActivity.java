@@ -9,13 +9,9 @@ import android.view.View;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.base.BaseActivity;
-import com.wyh.mychat.biz.LoadManager;
-import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.fragment.FolderFragment;
 import com.wyh.mychat.fragment.ResourceFragment;
 import com.wyh.mychat.view.NoTouchViewPager;
-
-import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/11/18.
  */
 
-public class ShowSrcActivity extends BaseActivity implements LoadManager.ResourceUpdate, View.OnClickListener {
+public class ShowSrcActivity extends BaseActivity implements View.OnClickListener {
 
     @Bind(R.id.vp_resource)
     NoTouchViewPager vpResource;
@@ -102,6 +98,11 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.Resourc
 
             }
         });
+        vpResource.setCurrentItem(0);
+    }
+    public void showResource(String folderName){
+        vpResource.setCurrentItem(1);
+        getResourceFragment().showResource(folderName);
     }
 
     /**
@@ -111,26 +112,6 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.Resourc
         handler.sendEmptyMessage(1);
     }
 
-    /**
-     * 显示指定文件夹下的图片的fragment
-     */
-    public void showResource(String name) {
-        getResourceFragment().getHandler().sendEmptyMessage(0);
-        LoadManager.getPicLoadManager(this).isStop(false);
-        LoadManager.getPicLoadManager(this).setResourceUpdate(this);
-        vpResource.setCurrentItem(1);
-        LoadManager.getPicLoadManager(this).getResource(new File(name));
-    }
-
-
-
-    private FolderFragment getFolderFragment() {
-        if (folderFragment == null) {
-            folderFragment = (FolderFragment) fragmentStatePagerAdapter.getItem(0);
-        }
-        return folderFragment;
-    }
-
     private ResourceFragment getResourceFragment() {
         if (resourceFragment == null) {
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
@@ -138,21 +119,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.Resourc
         return resourceFragment;
     }
 
-    /**
-     * 搜索结束加载动画结束
-     */
-    @Override
-    public void ResourceEnd() {
-        getResourceFragment().getHandler().sendEmptyMessage(1);
-    }
 
-    /**
-     * 更新搜索图片的结果
-     */
-    @Override
-    public void resourceUpdate(Picture picture) {
-        getResourceFragment().refresh(picture);
-    }
 
 
     /**
@@ -168,7 +135,6 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.Resourc
             setActionText(getString(R.string.my_picture));
             return;
         }
-        LoadManager.getFolderSet().clear();
         finish();
     }
 

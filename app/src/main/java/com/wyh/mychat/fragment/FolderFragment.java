@@ -36,7 +36,7 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
     ProgressBar pbLoad;
     private static View view;
 
-    private static UniversalAdapter<String> adapter;
+    private UniversalAdapter<String> adapter;
 
     @Nullable
     @Override
@@ -96,6 +96,7 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
     }
 
     private void showFolder() {
+        adapter.getDataList().clear();
         getHandler().sendEmptyMessage(0);
         LoadManager.getPicLoadManager(getContext()).isStop(false);
         File sdFile = Environment.getExternalStorageDirectory();
@@ -107,7 +108,6 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
      * 初始化适配器
      */
     private void initAdapter() {
-        if (adapter != null) return;
         adapter = new UniversalAdapter<String>(getContext(), R.layout.layout_pic_item) {
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
@@ -117,10 +117,9 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                ShowSrcActivity.setFolderName(folderName);
-                                ((ShowSrcActivity) getActivity()).showProgress();
-                                ((ShowSrcActivity) getActivity()).showResource(folderName);
                                 ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(folderName));
+                                ((ShowSrcActivity) getActivity()).showResource(folderName);
+                                ShowSrcActivity.setFolderName(folderName);
                             }
                         });
             }
