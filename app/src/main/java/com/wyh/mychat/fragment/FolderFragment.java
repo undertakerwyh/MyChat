@@ -15,7 +15,6 @@ import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
-import com.wyh.mychat.biz.LoadManager;
 import com.wyh.mychat.util.CommonUtil;
 
 import java.util.concurrent.ExecutorService;
@@ -38,12 +37,6 @@ public class FolderFragment extends Fragment {
 
     private UniversalAdapter<String> adapter;
 
-    public static String getFolderText() {
-        return folderText;
-    }
-
-    private static String folderText;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,24 +47,28 @@ public class FolderFragment extends Fragment {
         return view;
     }
 
+
     public Handler getHandler() {
+        if(handler==null) {
+            handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    switch (msg.what) {
+                        case 0:
+                            pbLoad.setVisibility(View.VISIBLE);
+                            break;
+                        case 1:
+                            pbLoad.setVisibility(View.GONE);
+                            break;
+                    }
+                }
+            };
+        }
         return handler;
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-                    pbLoad.setVisibility(View.VISIBLE);
-                    break;
-                case 1:
-                    pbLoad.setVisibility(View.GONE);
-                    break;
-            }
-        }
-    };
+    private Handler handler;
 
 
     @Override
@@ -94,6 +91,7 @@ public class FolderFragment extends Fragment {
                     @Override
                     public void run() {
                         adapter.addDataUpdate(name);
+                        ((ShowSrcActivity)getActivity()).setActionText(getResources().getString(R.string.my_picture)+"("+adapter.getDataList().size()+")");
                     }
                 });
             }
@@ -113,7 +111,7 @@ public class FolderFragment extends Fragment {
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                folderText = folderName;
+                                ShowSrcActivity.setFolderName(folderName);
                                 ((ShowSrcActivity) getActivity()).showProgress();
                                 ((ShowSrcActivity) getActivity()).showResource(folderName);
                                 ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(folderName));
@@ -131,8 +129,6 @@ public class FolderFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
-        LoadManager.getPicLoadManager(getContext()).isStop(true);
     }
 
 }

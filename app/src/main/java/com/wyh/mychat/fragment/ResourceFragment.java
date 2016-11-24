@@ -12,9 +12,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.wyh.mychat.R;
+import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
 import com.wyh.mychat.entity.Picture;
+import com.wyh.mychat.util.CommonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,24 +51,33 @@ public class ResourceFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+    }
+
     public Handler getHandler() {
+        if(handler==null) {
+            handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    switch (msg.what) {
+                        case 0:
+                            pbLoad.setVisibility(View.VISIBLE);
+                            break;
+                        case 1:
+                            pbLoad.setVisibility(View.GONE);
+                            break;
+                    }
+                }
+            };
+        }
         return handler;
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-                    pbLoad.setVisibility(View.VISIBLE);
-                    break;
-                case 1:
-                    pbLoad.setVisibility(View.GONE);
-                    break;
-            }
-        }
-    };
+    private Handler handler;
 
     /**
      * 初始化适配器
@@ -104,6 +115,7 @@ public class ResourceFragment extends Fragment {
                 public void run() {
                     enter = true;
                     adapter.addDataAddAll(list);
+                    ((ShowSrcActivity)getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName())+"("+adapter.getDataList().size()+")");
                     list.clear();
                 }
             }, 500);
@@ -113,6 +125,5 @@ public class ResourceFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 }

@@ -55,6 +55,16 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         setActionBar(content);
     }
 
+    public static String getFolderName() {
+        return folderName;
+    }
+
+    public static void setFolderName(String folderName) {
+        ShowSrcActivity.folderName = folderName;
+    }
+
+    private static String folderName;
+
     /**
      * 初始化Viewpager
      */
@@ -107,6 +117,7 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         File sdFile = Environment.getExternalStorageDirectory();
         LoadManager.getPicLoadManager(this).setFileUpdate(this);
         LoadManager.getPicLoadManager(this).getSrcList(sdFile);
+
     }
 
     /**
