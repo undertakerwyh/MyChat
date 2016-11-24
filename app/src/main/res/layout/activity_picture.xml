@@ -9,15 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></com.wyh.mychat.view.ActionBar>
 
-    <ProgressBar
-        android:background="@color/transparent"
-        android:id="@+id/pb_load"
-        android:layout_width="@dimen/chat_pic_progress_size"
-        android:layout_height="@dimen/chat_pic_progress_size"
-        android:layout_gravity="center"
-        android:indeterminateBehavior="repeat"
-        android:indeterminateOnly="true"
-        android:indeterminateDrawable="@drawable/progressbar" />
 
     <com.wyh.mychat.view.NoTouchViewPager
         android:id="@+id/vp_resource"

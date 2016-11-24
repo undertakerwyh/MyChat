@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.util.Log;
 import android.util.LruCache;
 
 import com.wyh.mychat.R;
@@ -86,12 +85,11 @@ public class LoadManager {
             @Override
             public void run() {
                 if (SrcService.isTerminated()) {
-                    fileUpdate.end();
+                    resourceUpdate.ResourceEnd();
                     scheduledExecutorService.shutdown();
                 }
             }
         }, 1, 1, TimeUnit.SECONDS);
-        resourceUpdate.end();
     }
     /**获取sd卡中有图片的文件夹*/
     public void getSrcList(final File sdFile) {
@@ -113,7 +111,7 @@ public class LoadManager {
                 @Override
                 public void run() {
                     if (SrcService.isTerminated()) {
-                        fileUpdate.end();
+                        fileUpdate.fileEnd();
                         isFirst = false;
                         scheduledExecutorService.shutdown();
                     }
@@ -124,7 +122,7 @@ public class LoadManager {
             while (iterator.hasNext()) {
                 fileUpdate.update(iterator.next());
             }
-            fileUpdate.end();
+            fileUpdate.fileEnd();
         }
     }
     /**搜索图片资源的递归方法*/
@@ -181,7 +179,6 @@ public class LoadManager {
                 String folder = Environment.getExternalStorageDirectory().getPath() + "/" + folderSplit[0];
                 if (!folderSet.contains(folder)) {
                     folderSet.add(folder);
-                    Log.e("AAA",folder);
                     fileUpdate.update(folder);
                 }
                 return;
@@ -206,7 +203,7 @@ public class LoadManager {
     public interface FileUpdate {
         void update(String folder);
 
-        void end();
+        void fileEnd();
     }
     /**
      * 搜索到的文件夹下资源回调接口
@@ -214,7 +211,7 @@ public class LoadManager {
     public interface ResourceUpdate {
         void resourceUpdate(Picture picture);
 
-        void end();
+        void ResourceEnd();
     }
 
     /**

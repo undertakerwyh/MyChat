@@ -2,13 +2,14 @@ package com.wyh.mychat.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.UniversalAdapter;
@@ -28,15 +29,16 @@ import butterknife.ButterKnife;
 public class ResourceFragment extends Fragment {
     @Bind(R.id.lv_folder)
     ListView lvResource;
+    @Bind(R.id.pb_load)
+    ProgressBar pbLoad;
     private View view;
-
-    private Handler handler = new Handler(Looper.getMainLooper());
 
     public UniversalAdapter<Picture> getAdapter() {
         return adapter;
     }
 
-    private UniversalAdapter<Picture>adapter;
+    private UniversalAdapter<Picture> adapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,34 +49,55 @@ public class ResourceFragment extends Fragment {
         return view;
     }
 
+    public Handler getHandler() {
+        return handler;
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    pbLoad.setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    pbLoad.setVisibility(View.GONE);
+                    break;
+            }
+        }
+    };
+
     /**
      * 初始化适配器
      */
     private void initAdapter() {
-        adapter = new UniversalAdapter<Picture>(getContext(),R.layout.layout_pic_item) {
+        adapter = new UniversalAdapter<Picture>(getContext(), R.layout.layout_pic_item) {
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
                 Picture picture = adapter.getDataList().get(positon);
-                viewHolder.setImageViewContent(R.id.iv_pic_icon,picture.getBitmap())
-                        .setTextViewContent(R.id.tv_folder_text,picture.getName());
+                viewHolder.setImageViewContent(R.id.iv_pic_icon, picture.getBitmap())
+                        .setTextViewContent(R.id.tv_folder_text, picture.getName());
             }
         };
     }
+
     private boolean enter = true;
 
-    private List<Picture>list = new ArrayList<>();
+    private List<Picture> list = new ArrayList<>();
 
-    public void clearList(){
+    public void clearList() {
         list.clear();
     }
 
     /**
      * 更新回调接口传来的值
+     *
      * @param picture 图片文件的实体类
      */
     public void refresh(Picture picture) {
         list.add(picture);
-        if(enter){
+        if (enter) {
             enter = false;
             handler.postDelayed(new Runnable() {
                 @Override
@@ -83,7 +106,7 @@ public class ResourceFragment extends Fragment {
                     adapter.addDataAddAll(list);
                     list.clear();
                 }
-            },500);
+            }, 500);
         }
     }
 

@@ -2,13 +2,14 @@ package com.wyh.mychat.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowSrcActivity;
@@ -31,6 +32,8 @@ public class FolderFragment extends Fragment {
 
     @Bind(R.id.lv_folder)
     ListView lvFolders;
+    @Bind(R.id.pb_load)
+    ProgressBar pbLoad;
     private View view;
 
     private UniversalAdapter<String> adapter;
@@ -51,7 +54,25 @@ public class FolderFragment extends Fragment {
         return view;
     }
 
-    private Handler handler = new Handler(Looper.getMainLooper());
+    public Handler getHandler() {
+        return handler;
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    pbLoad.setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    pbLoad.setVisibility(View.GONE);
+                    break;
+            }
+        }
+    };
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -61,6 +82,7 @@ public class FolderFragment extends Fragment {
 
     /**
      * 更新回调接口传来的值
+     *
      * @param name 传入的值
      */
     public void refresh(final String name) {
@@ -92,6 +114,7 @@ public class FolderFragment extends Fragment {
                             @Override
                             public void onClick(View view) {
                                 folderText = folderName;
+                                ((ShowSrcActivity) getActivity()).showProgress();
                                 ((ShowSrcActivity) getActivity()).showResource(folderName);
                                 ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(folderName));
                             }

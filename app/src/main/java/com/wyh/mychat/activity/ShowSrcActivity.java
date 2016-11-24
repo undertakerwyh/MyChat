@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.base.BaseActivity;
@@ -26,10 +25,8 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/11/18.
  */
 
-public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpdate ,LoadManager.ResourceUpdate, View.OnClickListener {
+public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpdate, LoadManager.ResourceUpdate, View.OnClickListener {
 
-    @Bind(R.id.pb_load)
-    ProgressBar pbLoad;
     @Bind(R.id.vp_resource)
     NoTouchViewPager vpResource;
     private FragmentStatePagerAdapter fragmentStatePagerAdapter;
@@ -43,21 +40,27 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
         /**初始化标题栏*/
-        initActionBar(getString(R.string.my_picture),-1,-1,this);
+        initActionBar(getString(R.string.my_picture), -1, -1, this);
         ButterKnife.bind(this);
         /**初始化Viewpager*/
         initViewpager();
         /**显示有图片的文件夹的Fragment*/
         showFolder();
     }
-    /**设置标题栏的文字*/
-    public void setActionText(String content){
+
+    /**
+     * 设置标题栏的文字
+     */
+    public void setActionText(String content) {
         setActionBar(content);
     }
-    /**初始化Viewpager*/
+
+    /**
+     * 初始化Viewpager
+     */
     private void initViewpager() {
         fragmentStatePagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            Fragment[] fragment = {new FolderFragment(),new ResourceFragment()};
+            Fragment[] fragment = {new FolderFragment(), new ResourceFragment()};
 
             @Override
             public Fragment getItem(int position) {
@@ -87,57 +90,89 @@ public class ShowSrcActivity extends BaseActivity implements LoadManager.FileUpd
             }
         });
     }
-    /**显示加载动画*/
-    public void showProgress(){
-        pbLoad.setProgress(View.VISIBLE);
+
+    /**
+     * 显示加载动画
+     */
+    public void showProgress() {
+        handler.sendEmptyMessage(1);
     }
 
-    /**显示有图片的文件夹的fragment*/
+    /**
+     * 显示有图片的文件夹的fragment
+     */
     private void showFolder() {
-        pbLoad.setVisibility(View.VISIBLE);
+        getFolderFragment().getHandler().sendEmptyMessage(0);
         LoadManager.getPicLoadManager(this).isStop(false);
         File sdFile = Environment.getExternalStorageDirectory();
         LoadManager.getPicLoadManager(this).setFileUpdate(this);
         LoadManager.getPicLoadManager(this).getSrcList(sdFile);
     }
 
-    /**显示指定文件夹下的图片的fragment*/
-    public void showResource(String name){
+    /**
+     * 显示指定文件夹下的图片的fragment
+     */
+    public void showResource(String name) {
+        getResourceFragment().getHandler().sendEmptyMessage(0);
         LoadManager.getPicLoadManager(this).isStop(false);
         LoadManager.getPicLoadManager(this).setResourceUpdate(this);
         vpResource.setCurrentItem(1);
         LoadManager.getPicLoadManager(this).getResource(new File(name));
     }
-    /**更新搜索文件夹结果*/
+
+    /**
+     * 更新搜索文件夹结果
+     */
     @Override
     public void update(final String folder) {
+        getFolderFragment().refresh(folder);
+    }
+
+    /**
+     * 搜索结束加载动画结束
+     */
+    @Override
+    public void fileEnd() {
+        getFolderFragment().getHandler().sendEmptyMessage(1);
+    }
+
+    private FolderFragment getFolderFragment() {
         if (folderFragment == null) {
             folderFragment = (FolderFragment) fragmentStatePagerAdapter.getItem(0);
         }
-        folderFragment.refresh(folder);
+        return folderFragment;
     }
-    /**更新搜索图片的结果*/
-    @Override
-    public void resourceUpdate(Picture picture) {
-        if(resourceFragment ==null){
+
+    private ResourceFragment getResourceFragment() {
+        if (resourceFragment == null) {
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
         }
-        resourceFragment.refresh(picture);
+        return resourceFragment;
     }
-    /**搜索结束加载动画结束*/
+
+    /**
+     * 搜索结束加载动画结束
+     */
     @Override
-    public void end() {
-        pbLoad.post(new Runnable() {
-            @Override
-            public void run() {
-                pbLoad.setVisibility(View.GONE);
-            }
-        });
+    public void ResourceEnd() {
+        getResourceFragment().getHandler().sendEmptyMessage(1);
     }
-    /**重写返回键的监听*/
+
+    /**
+     * 更新搜索图片的结果
+     */
+    @Override
+    public void resourceUpdate(Picture picture) {
+        getResourceFragment().refresh(picture);
+    }
+
+
+    /**
+     * 重写返回键的监听
+     */
     @Override
     public void onBackPressed() {
-        if(vpResource.getCurrentItem()==1){
+        if (vpResource.getCurrentItem() == 1) {
             vpResource.setCurrentItem(0);
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
             resourceFragment.clearList();
