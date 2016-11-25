@@ -12,9 +12,7 @@ import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.util.BitmapUtil;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,8 +36,6 @@ public class LoadManager {
 
     private boolean isStopFile = false;
 
-    private static List<Picture> picList = new ArrayList<>();
-
     private static TreeSet<String> folderSet = new TreeSet<>();
 
     private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
@@ -47,16 +43,6 @@ public class LoadManager {
     private ExecutorService srcService;
     private ExecutorService ServiceResource;
     private ScheduledExecutorService scheduledResourceService;
-
-    public static List<Picture> getPicList() {
-        return picList;
-    }
-
-
-    public static TreeSet<String> getFolderSet() {
-        return folderSet;
-    }
-
 
     public void setFileUpdate(FileUpdate fileUpdate) {
         this.fileUpdate = fileUpdate;
@@ -105,11 +91,6 @@ public class LoadManager {
             }
         }, 1, 1, TimeUnit.SECONDS);
     }
-
-    public static LoadManager getPicLoadManager() {
-        return picLoadManager;
-    }
-
 
     /**获取sd卡中有图片的文件夹*/
     public void getSrcList(final File sdFile) {
