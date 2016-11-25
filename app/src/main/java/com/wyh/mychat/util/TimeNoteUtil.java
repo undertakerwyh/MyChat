@@ -13,7 +13,6 @@ public class TimeNoteUtil{
         isFirst = first;
     }
 
-
     public String start(long time) {
         String timeStr = null;
         if(time-saveTime>timeDuration||isFirst){

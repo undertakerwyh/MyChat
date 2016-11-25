@@ -52,8 +52,6 @@ public class LoadManager {
         this.resourceUpdate = resourceUpdate;
     }
 
-
-
     public static LoadManager getPicLoadManager(Context context) {
         contexts = context;
         if (picLoadManager == null) {
@@ -65,37 +63,46 @@ public class LoadManager {
     }
 
     private boolean isForStop = false;
-    /**获取file中的图片资源*/
+
+    /**
+     * 获取file中的图片资源
+     */
     public void getResource(final File file) {
-        isForStop=false;
+        isForStop = false;
         isStop = false;
         ResourceFragment.initList();
         ServiceResource = Executors.newCachedThreadPool();
         scheduledResourceService = Executors.newScheduledThreadPool(1);
         final File[] files = file.listFiles();
-        for (int i = 0; i < files.length&&!isForStop; i++) {
+        ServiceResource = Executors.newCachedThreadPool();
+        for (int i = 0; i < files.length && !isForStop; i++) {
             final int finalI = i;
-            ServiceResource = Executors.newCachedThreadPool();
             ServiceResource.execute(new Runnable() {
                 @Override
                 public void run() {
                     searchResource(files[finalI]);
                 }
             });
-            ServiceResource.shutdown();
         }
+        ServiceResource.shutdown();
         scheduledResourceService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                if (ServiceResource.isTerminated()) {
-                    resourceUpdate.ResourceEnd();
-                    scheduledResourceService.shutdown();
+                try {
+                    if (ServiceResource.awaitTermination(Long.MAX_VALUE,TimeUnit.DAYS)) {
+                        resourceUpdate.ResourceEnd();
+                        scheduledResourceService.shutdown();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        }, 0, 1, TimeUnit.SECONDS);
+        }, 1, 1, TimeUnit.SECONDS);
     }
 
-    /**获取sd卡中有图片的文件夹*/
+    /**
+     * 获取sd卡中有图片的文件夹
+     */
     public void getSrcList(final File sdFile) {
         if (isFirst) {
             folderSet.clear();
@@ -129,7 +136,10 @@ public class LoadManager {
             fileUpdate.fileEnd();
         }
     }
-    /**搜索图片资源的递归方法*/
+
+    /**
+     * 搜索图片资源的递归方法
+     */
     public void searchResource(File file) {
         if (isStop) {
             return;
@@ -146,7 +156,7 @@ public class LoadManager {
                 return;
             }
             String type = file.getName().substring(endIndex + 1);
-            if (type.equals("png") || type.equals("jpg") || type.equals("gif")&&!isStop) {
+            if (type.equals("png") || type.equals("jpg") || type.equals("gif") && !isStop) {
                 String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().length());
                 loadLruCache(name, file);
             }
@@ -160,7 +170,10 @@ public class LoadManager {
         }
 
     }
-    /**搜索有图片资源的文件夹的递归方法*/
+
+    /**
+     * 搜索有图片资源的文件夹的递归方法
+     */
     public void searchFile(File file) {
         if (isStopFile) {
             return;
@@ -210,6 +223,7 @@ public class LoadManager {
 
         void fileEnd();
     }
+
     /**
      * 搜索到的文件夹下资源回调接口
      */
@@ -218,13 +232,14 @@ public class LoadManager {
 
         void ResourceEnd();
     }
-    public void stopSearch(){
+
+    public void stopSearch() {
         isStop = true;
-        isForStop=true;
-        if(scheduledResourceService!=null) {
+        isForStop = true;
+        if (scheduledResourceService != null) {
             scheduledResourceService.shutdown();
         }
-        if(ServiceResource!=null){
+        if (ServiceResource != null) {
             ServiceResource.shutdown();
         }
 
@@ -232,6 +247,7 @@ public class LoadManager {
 
     /**
      * Lrucache保存图片资源和读取图片资源
+     *
      * @param name 图片文件夹名
      * @param file 图片文件
      */
@@ -239,10 +255,10 @@ public class LoadManager {
         Bitmap bitmap = lruCache.get(file.getAbsolutePath());
         if (bitmap == null) {
             bitmap = BitmapUtil.getSmallBitmap(file.getAbsolutePath());
-            if(bitmap==null){
+            if (bitmap == null) {
                 bitmap = BitmapFactory.decodeResource(contexts.getResources(), R.drawable.load_pic);
-            }else{
-                lruCache.put(file.getAbsolutePath(),bitmap);
+            } else {
+                lruCache.put(file.getAbsolutePath(), bitmap);
             }
         }
         resourceUpdate.resourceUpdate(new Picture(name, bitmap, file));
