@@ -43,8 +43,10 @@ public class LoadManager {
     private static TreeSet<String> folderSet = new TreeSet<>();
 
     private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
-    private ScheduledExecutorService scheduledExecutorService;
+    private ScheduledExecutorService scheduledSrcService;
     private ExecutorService srcService;
+    private ExecutorService ServiceResource;
+    private ScheduledExecutorService scheduledResourceService;
 
     public static List<Picture> getPicList() {
         return picList;
@@ -79,21 +81,26 @@ public class LoadManager {
 
     /**获取file中的图片资源*/
     public void getResource(final File file) {
-        final ExecutorService SrcService = Executors.newCachedThreadPool();
-        final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-        SrcService.execute(new Runnable() {
+        ServiceResource = Executors.newCachedThreadPool();
+        scheduledResourceService = Executors.newScheduledThreadPool(1);
+        final File[] files = file.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            final int finalI = i;
+            ServiceResource = Executors.newCachedThreadPool();
+            ServiceResource.execute(new Runnable() {
+                @Override
+                public void run() {
+                    searchResource(files[finalI]);
+                }
+            });
+            ServiceResource.shutdown();
+        }
+        scheduledResourceService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                searchResource(file);
-            }
-        });
-        SrcService.shutdown();
-        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                if (SrcService.isTerminated()) {
+                if (ServiceResource.isTerminated()) {
                     resourceUpdate.ResourceEnd();
-                    scheduledExecutorService.shutdown();
+                    scheduledResourceService.shutdown();
                 }
             }
         }, 1, 1, TimeUnit.SECONDS);
@@ -108,7 +115,7 @@ public class LoadManager {
     public void getSrcList(final File sdFile) {
         if (isFirst) {
             folderSet.clear();
-            scheduledExecutorService = Executors.newScheduledThreadPool(1);
+            scheduledSrcService = Executors.newScheduledThreadPool(1);
             final File[] files = sdFile.listFiles();
             for (int i = 0; i < files.length; i++) {
                 final int finalI = i;
@@ -120,13 +127,13 @@ public class LoadManager {
                     }
                 });
             }
-            scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+            scheduledSrcService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
                     if (srcService.isTerminated()) {
                         fileUpdate.fileEnd();
                         isFirst = false;
-                        scheduledExecutorService.shutdown();
+                        scheduledSrcService.shutdown();
                     }
                 }
             }, 1, 1, TimeUnit.SECONDS);
