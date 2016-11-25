@@ -111,7 +111,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
                 public void run() {
                     enter = true;
                     adapter.addDataAddAll(list);
-                    if(ResourceFragment.this.isAdded()) {
+                    if(ResourceFragment.this.isAdded()&&!isStopText) {
                         ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
                     }
                     list.clear();
@@ -120,10 +120,18 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
         }
     }
 
+    public void setStopText(boolean stopText) {
+        isStopText = stopText;
+    }
+
+    private boolean isStopText = false;
+
+
     /**
      * 显示指定文件夹下的图片的fragment
      */
     public void showResource(String name) {
+        isStopText = false;
         getHandler().sendEmptyMessage(0);
         LoadManager.getPicLoadManager(getContext()).isStop(false);
         LoadManager.getPicLoadManager(getContext()).setResourceUpdate(this);

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.util.Log;
 import android.util.LruCache;
 
 import com.wyh.mychat.R;
@@ -148,7 +147,6 @@ public class LoadManager {
             }
             String type = file.getName().substring(endIndex + 1);
             if (type.equals("png") || type.equals("jpg") || type.equals("gif")&&!isStop) {
-                Log.e("AAA","searching");
                 String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().length());
                 loadLruCache(name, file);
             }

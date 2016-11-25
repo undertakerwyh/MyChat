@@ -126,10 +126,11 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onBackPressed() {
         if (vpResource.getCurrentItem() == 1) {
-            setActionText(getString(R.string.my_picture)+"("+getFolderFragment().getAdapter().getDataList().size()+")");
             LoadManager.getPicLoadManager(this).stopSearch();
             vpResource.setCurrentItem(0);
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
+            resourceFragment.setStopText(true);
+            setActionText(getString(R.string.my_picture)+"("+getFolderFragment().getAdapter().getDataList().size()+")");
             return;
         }
         finish();
