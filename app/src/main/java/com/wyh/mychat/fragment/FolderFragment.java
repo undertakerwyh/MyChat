@@ -36,6 +36,10 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
     ProgressBar pbLoad;
     private View view;
 
+    public UniversalAdapter<String> getAdapter() {
+        return adapter;
+    }
+
     private UniversalAdapter<String> adapter;
 
     @Nullable

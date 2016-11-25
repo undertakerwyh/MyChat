@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.base.BaseActivity;
+import com.wyh.mychat.biz.LoadManager;
 import com.wyh.mychat.fragment.FolderFragment;
 import com.wyh.mychat.fragment.ResourceFragment;
 import com.wyh.mychat.view.NoTouchViewPager;
@@ -112,9 +113,12 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
         }
         return resourceFragment;
     }
-
-
-
+    private FolderFragment getFolderFragment() {
+        if (folderFragment == null) {
+            folderFragment = (FolderFragment) fragmentStatePagerAdapter.getItem(0);
+        }
+        return folderFragment;
+    }
 
     /**
      * 重写返回键的监听
@@ -122,11 +126,10 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onBackPressed() {
         if (vpResource.getCurrentItem() == 1) {
-            resourceFragment.getAdapter().getDataList().clear();
+            setActionText(getString(R.string.my_picture)+"("+getFolderFragment().getAdapter().getDataList().size()+")");
+            LoadManager.getPicLoadManager(this).stopSearch();
             vpResource.setCurrentItem(0);
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
-            resourceFragment.clearList();
-            setActionText(getString(R.string.my_picture));
             return;
         }
         finish();

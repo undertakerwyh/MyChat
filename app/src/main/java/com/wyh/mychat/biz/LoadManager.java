@@ -9,6 +9,7 @@ import android.util.LruCache;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.entity.Picture;
+import com.wyh.mychat.fragment.ResourceFragment;
 import com.wyh.mychat.util.BitmapUtil;
 
 import java.io.File;
@@ -64,13 +65,16 @@ public class LoadManager {
         return picLoadManager;
     }
 
-
+    private boolean isForStop = false;
     /**获取file中的图片资源*/
     public void getResource(final File file) {
+        isForStop=false;
+        isStop = false;
+        ResourceFragment.initList();
         ServiceResource = Executors.newCachedThreadPool();
         scheduledResourceService = Executors.newScheduledThreadPool(1);
         final File[] files = file.listFiles();
-        for (int i = 0; i < files.length; i++) {
+        for (int i = 0; i < files.length&&!isForStop; i++) {
             final int finalI = i;
             ServiceResource = Executors.newCachedThreadPool();
             ServiceResource.execute(new Runnable() {
@@ -89,7 +93,7 @@ public class LoadManager {
                     scheduledResourceService.shutdown();
                 }
             }
-        }, 1, 1, TimeUnit.SECONDS);
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     /**获取sd卡中有图片的文件夹*/
@@ -143,7 +147,7 @@ public class LoadManager {
                 return;
             }
             String type = file.getName().substring(endIndex + 1);
-            if (type.equals("png") || type.equals("jpg") || type.equals("gif")) {
+            if (type.equals("png") || type.equals("jpg") || type.equals("gif")&&!isStop) {
                 Log.e("AAA","searching");
                 String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().length());
                 loadLruCache(name, file);
@@ -215,6 +219,17 @@ public class LoadManager {
         void resourceUpdate(Picture picture);
 
         void ResourceEnd();
+    }
+    public void stopSearch(){
+        isStop = true;
+        isForStop=true;
+        if(scheduledResourceService!=null) {
+            scheduledResourceService.shutdown();
+        }
+        if(ServiceResource!=null){
+            ServiceResource.shutdown();
+        }
+
     }
 
     /**

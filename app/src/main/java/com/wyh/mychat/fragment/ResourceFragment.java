@@ -41,7 +41,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
         return adapter;
     }
 
-    private UniversalAdapter<Picture> adapter;
+    private static UniversalAdapter<Picture> adapter;
 
     @Nullable
     @Override
@@ -88,14 +88,14 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
             }
         };
     }
+    public static void initList(){
+        list.clear();
+        adapter.getDataList().clear();
+    }
 
     private boolean enter = true;
 
-    private List<Picture> list = new ArrayList<>();
-
-    public void clearList() {
-        list.clear();
-    }
+    private static List<Picture> list = new ArrayList<>();
 
     /**
      * 更新回调接口传来的值
@@ -111,7 +111,9 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
                 public void run() {
                     enter = true;
                     adapter.addDataAddAll(list);
-                    ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
+                    if(ResourceFragment.this.isAdded()) {
+                        ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
+                    }
                     list.clear();
                 }
             }, 500);
