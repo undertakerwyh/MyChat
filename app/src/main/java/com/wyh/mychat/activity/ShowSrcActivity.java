@@ -62,14 +62,8 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
      * 初始化Viewpager
      */
     private void initViewpager() {
-        if(folderFragment==null){
-            folderFragment = new FolderFragment();
-        }
-        if(resourceFragment ==null){
-            resourceFragment = new ResourceFragment();
-        }
         fragmentStatePagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            Fragment[] fragment = {folderFragment, resourceFragment};
+            Fragment[] fragment = {new FolderFragment(), new ResourceFragment()};
 
             @Override
             public Fragment getItem(int position) {
@@ -128,10 +122,10 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onBackPressed() {
         if (vpResource.getCurrentItem() == 1) {
+            resourceFragment.getAdapter().getDataList().clear();
             vpResource.setCurrentItem(0);
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
             resourceFragment.clearList();
-            resourceFragment.getAdapter().getDataList().clear();
             setActionText(getString(R.string.my_picture));
             return;
         }

@@ -30,12 +30,12 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/11/19.
  */
 
-public class ResourceFragment extends Fragment implements LoadManager.ResourceUpdate{
+public class ResourceFragment extends Fragment implements LoadManager.ResourceUpdate {
     @Bind(R.id.lv_folder)
     ListView lvResource;
     @Bind(R.id.pb_load)
     ProgressBar pbLoad;
-    private static View view;
+    private View view;
 
     public UniversalAdapter<Picture> getAdapter() {
         return adapter;
@@ -46,9 +46,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(view ==null) {
-            view = inflater.inflate(R.layout.fragment_pic, null);
-        }
+        view = inflater.inflate(R.layout.fragment_pic, null);
         ButterKnife.bind(this, view);
         initAdapter();
         lvResource.setAdapter(adapter);
@@ -56,7 +54,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
     }
 
     public Handler getHandler() {
-        if(handler==null) {
+        if (handler == null) {
             handler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
@@ -113,7 +111,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
                 public void run() {
                     enter = true;
                     adapter.addDataAddAll(list);
-                    ((ShowSrcActivity)getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName())+"("+adapter.getDataList().size()+")");
+                    ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
                     list.clear();
                 }
             }, 500);
@@ -150,4 +148,5 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
     public void resourceUpdate(Picture picture) {
         refresh(picture);
     }
+
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.wyh.mychat.R;
@@ -35,11 +36,15 @@ public class LoadManager {
 
     private boolean isStop = false;
 
+    private boolean isStopFile = false;
+
     private static List<Picture> picList = new ArrayList<>();
 
     private static TreeSet<String> folderSet = new TreeSet<>();
 
     private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
+    private ScheduledExecutorService scheduledExecutorService;
+    private ExecutorService srcService;
 
     public static List<Picture> getPicList() {
         return picList;
@@ -70,6 +75,8 @@ public class LoadManager {
         }
         return picLoadManager;
     }
+
+
     /**获取file中的图片资源*/
     public void getResource(final File file) {
         final ExecutorService SrcService = Executors.newCachedThreadPool();
@@ -96,27 +103,27 @@ public class LoadManager {
         return picLoadManager;
     }
 
+
     /**获取sd卡中有图片的文件夹*/
     public void getSrcList(final File sdFile) {
         if (isFirst) {
             folderSet.clear();
-            final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-            final ExecutorService SrcService = Executors.newCachedThreadPool();
+            scheduledExecutorService = Executors.newScheduledThreadPool(1);
             final File[] files = sdFile.listFiles();
             for (int i = 0; i < files.length; i++) {
                 final int finalI = i;
-                SrcService.execute(new Runnable() {
+                srcService = Executors.newCachedThreadPool();
+                srcService.execute(new Runnable() {
                     @Override
                     public void run() {
                         searchFile(files[finalI]);
                     }
                 });
             }
-            SrcService.shutdown();
             scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    if (SrcService.isTerminated()) {
+                    if (srcService.isTerminated()) {
                         fileUpdate.fileEnd();
                         isFirst = false;
                         scheduledExecutorService.shutdown();
@@ -149,6 +156,7 @@ public class LoadManager {
             }
             String type = file.getName().substring(endIndex + 1);
             if (type.equals("png") || type.equals("jpg") || type.equals("gif")) {
+                Log.e("AAA","searching");
                 String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().length());
                 loadLruCache(name, file);
             }
@@ -164,7 +172,7 @@ public class LoadManager {
     }
     /**搜索有图片资源的文件夹的递归方法*/
     public void searchFile(File file) {
-        if (isStop) {
+        if (isStopFile) {
             return;
         }
         if (!file.exists() || file == null || !file.canRead()) {
@@ -186,6 +194,7 @@ public class LoadManager {
                 if (!folderSet.contains(folder)) {
                     folderSet.add(folder);
                     fileUpdate.update(folder);
+                    srcService.shutdown();
                 }
                 return;
             }
@@ -200,7 +209,7 @@ public class LoadManager {
     }
 
     public void isStop(boolean stop) {
-        isStop = stop;
+        isStopFile = stop;
     }
 
     /**

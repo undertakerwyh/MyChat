@@ -34,16 +34,14 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
     ListView lvFolders;
     @Bind(R.id.pb_load)
     ProgressBar pbLoad;
-    private static View view;
+    private View view;
 
     private UniversalAdapter<String> adapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (view == null) {
-            view = inflater.inflate(R.layout.fragment_folder, null);
-        }
+        view = inflater.inflate(R.layout.fragment_folder, null);
         ButterKnife.bind(this, view);
         initAdapter();
         lvFolders.setAdapter(adapter);
