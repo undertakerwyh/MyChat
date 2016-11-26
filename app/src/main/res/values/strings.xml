@@ -14,7 +14,7 @@
     <string name="my_video">我的视频</string>
     <string name="my_log_off">注销</string>
     <string name="my_exit">退出</string>
-    
+
     <!--RegisterFragment-->
     <string name="register_user">账号</string>
     <string name="register_password">密码</string>
