@@ -4,8 +4,7 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.pm.PackageManager;
 
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMOptions;
+import com.easemob.chat.EMChat;
 
 import java.util.Iterator;
 import java.util.List;
@@ -18,16 +17,17 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        EMOptions options = new EMOptions();
-// 默认添加好友时，是不需要验证的，改成需要验证
-        options.setAcceptInvitationAlways(false);
-//初始化
-        EMClient.getInstance().init(this, options);
-//在做打包混淆时，关闭debug模式，避免消耗不必要的资源
-        EMClient.getInstance().setDebugMode(true);
+        EMChat.getInstance().init(this);
+
+/**
+ * debugMode == true 时为打开，SDK会在log里输入调试信息
+ * @param debugMode
+ * 在做代码混淆的时候需要设置成false
+ */
+        EMChat.getInstance().setDebugMode(true);//在做打包混淆时，要关闭debug模式，避免消耗不必要的资源
     }
 
-    private String getAppName(int pID) {
+    public String getAppName(int pID) {
         String processName = null;
         ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
         List l = am.getRunningAppProcesses();
@@ -37,6 +37,10 @@ public class MyApplication extends Application {
             ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo) (i.next());
             try {
                 if (info.pid == pID) {
+                    CharSequence c = pm.getApplicationLabel(pm.getApplicationInfo(info.processName, PackageManager.GET_META_DATA));
+                    // Log.d("Process", "Id: "+ info.pid +" ProcessName: "+
+                    // info.processName +"  Label: "+c.toString());
+                    // processName = c.toString();
                     processName = info.processName;
                     return processName;
                 }
@@ -46,4 +50,5 @@ public class MyApplication extends Application {
         }
         return processName;
     }
+
 }

@@ -57,6 +57,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 break;
         }
     }
+    public void showLogin(){
+        handler.sendEmptyMessage(ACTION_LOGIN);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

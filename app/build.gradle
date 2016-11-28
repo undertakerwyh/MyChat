@@ -17,6 +17,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets { main { jniLibs.srcDirs = ["libs"] } }
+
 }
 
 dependencies {
@@ -30,6 +32,5 @@ dependencies {
     compile files('src/main/resources/gson-2.1.jar')
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.1.6'
-    compile 'top.zibin:Luban:1.0.9'
-    compile files('libs/hyphenatechat_3.2.1.jar')
+    compile files('libs/easemobchat_2.3.3.jar')
 }
