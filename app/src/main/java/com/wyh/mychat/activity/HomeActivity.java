@@ -12,6 +12,7 @@ import android.widget.TabWidget;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.FragmentAdapter;
 import com.wyh.mychat.base.BaseActivity;
+import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.fragment.ConfigFragment;
 import com.wyh.mychat.fragment.ContactsFragment;
 import com.wyh.mychat.fragment.MessageFragment;
@@ -52,7 +53,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         /**初始化actionbar*/
-        String title = getResources().getString(R.string.app_name);
+        String title = UserManager.getUserManager(this).getUserName();
         initActionBar(title, -1, R.drawable.function, this);
         /**初始化viewpager*/
         initViewPager();

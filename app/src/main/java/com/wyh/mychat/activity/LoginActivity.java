@@ -103,6 +103,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void moveToHome() {
         startActivity(HomeActivity.class, R.anim.right_in, R.anim.left_out);
+        finish();
     }
     /**重写返回键的监听*/
     @Override

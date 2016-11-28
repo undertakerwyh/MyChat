@@ -22,6 +22,7 @@ import java.util.List;
 public class BaseActivity extends AppCompatActivity{
     private static List<AppCompatActivity> activities = new ArrayList<>();
     private ActionBar actionBar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +34,7 @@ public class BaseActivity extends AppCompatActivity{
         super.onDestroy();
         activities.remove(this);
     }
+
 
     /**
      * 清除所有的活跃activity

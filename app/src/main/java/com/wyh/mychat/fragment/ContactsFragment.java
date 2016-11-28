@@ -10,11 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.easemob.chat.EMContactManager;
+import com.easemob.exceptions.EaseMobException;
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.TalkActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
-import com.wyh.mychat.entity.Friends;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +31,11 @@ public class ContactsFragment extends Fragment {
     @Bind(R.id.lv_contacts)
     ListView lvContacts;
     private View view;
-    private List<Friends> list = new ArrayList<>();
-    private UniversalAdapter<Friends> adapter;
+    private List<String> list = new ArrayList<>();
+    private UniversalAdapter<String> adapter;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        for (int i = 0; i < 30; i++) {
-            list.add(new Friends(null,"联系人"+ i));
-        }
     }
 
     @Nullable
@@ -48,24 +46,34 @@ public class ContactsFragment extends Fragment {
         /**初始化适配器*/
         initAdapter();
         lvContacts.setAdapter(adapter);
-        adapter.addDataAddAll(list);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        try {
+            list = EMContactManager.getInstance().getContactUserNames();
+            adapter.addDataAddAll(list);
+        } catch (EaseMobException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 初始化适配器
      */
     private void initAdapter() {
-        adapter = new UniversalAdapter<Friends>(getContext(),R.layout.layout_friends_item) {
+        adapter = new UniversalAdapter<String>(getContext(),R.layout.layout_friends_item) {
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
-                final Friends friends = adapter.getDataList().get(positon);
-                viewHolder.setTextViewContent(R.id.tv_friends_name,friends.getName())
+                final String friends = adapter.getDataList().get(positon);
+                viewHolder.setTextViewContent(R.id.tv_friends_name,friends)
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 Intent intent = new Intent(getActivity(), TalkActivity.class);
-                                intent.putExtra("name",friends.getName());
+                                intent.putExtra("name",friends);
                                 getActivity().startActivity(intent);
                             }
                         });

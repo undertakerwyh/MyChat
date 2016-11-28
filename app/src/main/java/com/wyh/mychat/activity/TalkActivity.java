@@ -1,5 +1,9 @@
 package com.wyh.mychat.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -7,6 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMConversation;
+import com.easemob.chat.EMMessage;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
@@ -75,6 +82,18 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         DBManager.getDbManager(getApplicationContext()).setUpdateListener(this);
         /**初始化数据*/
         DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,lvTalkMessage.getCount()-1);
+
+        initReceiver();
+    }
+
+    private void initReceiver() {
+        EMChatManager.getInstance().getChatOptions().setRequireDeliveryAck(true);
+//如果用到已发送的回执需要把这个flag设置成true
+
+        IntentFilter deliveryAckMessageIntentFilter = new IntentFilter(EMChatManager.getInstance().getDeliveryAckMessageBroadcastAction());
+        deliveryAckMessageIntentFilter.setPriority(5);
+        registerReceiver(deliveryAckMessageReceiver, deliveryAckMessageIntentFilter);
+
     }
 
     private void setXListView() {
@@ -143,4 +162,25 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         message.obj = list;
         handler.sendMessage(message);
     }
+    /**
+     * 消息送达BroadcastReceiver
+     */
+    private BroadcastReceiver deliveryAckMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            abortBroadcast();
+
+            String msgid = intent.getStringExtra("msgid");
+            String from = intent.getStringExtra("from");
+            EMConversation conversation = EMChatManager.getInstance().getConversation(from);
+            if (conversation != null) {
+                // 把message设为已读
+                EMMessage msg = conversation.getMessage(msgid);
+                if (msg != null) {
+                    msg.isDelivered = true;
+                }
+            }
+        }
+    };
+
 }
