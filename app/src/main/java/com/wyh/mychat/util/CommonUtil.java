@@ -2,6 +2,8 @@ package com.wyh.mychat.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 常用工具类,时间转换
@@ -87,4 +89,10 @@ public class CommonUtil {
         return name;
     }
 
+    public static boolean verifyPassword(String password){
+        Pattern pattern = Pattern
+                .compile("^[a-zA-Z0-9]{6,16}$");
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
 }
