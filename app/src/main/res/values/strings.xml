@@ -29,7 +29,7 @@
     <string name="setting_setting">设置</string>
 
     <!--搜索好友popwindow-->
-    <string name="pop_friend_title">搜索好友</string>
+    <string name="pop_friend_title">添加好友</string>
     <string name="pop_friend_hint">好友账号</string>
     <string name="pop_friend_content">请求说明</string>
 </resources>

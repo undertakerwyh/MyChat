@@ -1,6 +1,7 @@
 package com.wyh.mychat.biz;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.easemob.EMCallBack;
@@ -22,6 +23,7 @@ public class UserManager {
     private ExecutorService executors;
     private RegisterListener registerListener;
     private LoginListener loginListener;
+    private  SharedPreferences loginSP =null;
 
     public String getUserName() {
         return userName;
@@ -57,6 +59,19 @@ public class UserManager {
             }
         }
         return userManager;
+    }
+
+    public void saveLoginInfo(boolean auto){
+        if(loginSP==null) {
+            loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
+        }
+        loginSP.edit().putBoolean("autoLogin",auto).commit();
+    }
+    public boolean LoadLoginInfo(){
+        if(loginSP==null) {
+            loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
+        }
+        return loginSP.getBoolean("autoLogin",false);
     }
 
     private UserManager() {

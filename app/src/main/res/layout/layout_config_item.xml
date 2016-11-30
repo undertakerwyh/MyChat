@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_click_bg"
@@ -24,6 +25,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_add_friend"
         android:layout_width="match_parent"
         android:background="@drawable/btn_click_bg"
         android:layout_height="wrap_content"
@@ -42,6 +44,7 @@
         <View style="@style/line_h_black"></View>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/ll_setting"
         android:layout_width="match_parent"
         android:background="@drawable/btn_click_bg"
         android:layout_height="wrap_content"

@@ -102,8 +102,8 @@
     <dimen name="chat_pic_progress_size">20dp</dimen>\
 
     <!--搜索好友的popWindow-->
-    <dimen name="pop_friend_search_height">150dp</dimen>
-    <dimen name="pop_friend_search_weight">200dp</dimen>
+    <dimen name="pop_friend_search_height">200dp</dimen>
+    <dimen name="pop_friend_search_weight">250dp</dimen>
     <dimen name="pop_friend_title_padding">4dp</dimen>
     <dimen name="pop_friend_title_size">15sp</dimen>
 </resources>
