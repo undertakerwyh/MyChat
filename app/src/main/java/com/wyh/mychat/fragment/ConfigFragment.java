@@ -65,7 +65,7 @@ public class ConfigFragment extends Fragment implements UserManager.ExitListener
                 break;
             case R.id.config_log_off:
                 UserManager.getUserManager(getContext()).Exit();
-                UserManager.getUserManager(getContext()).saveLoginInfo(false);
+                UserManager.getUserManager(getContext()).saveLoginInfo(false,null);
                 break;
             case R.id.config_exit:
                 ((HomeActivity)getActivity()).finishAll();

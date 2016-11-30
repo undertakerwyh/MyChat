@@ -60,7 +60,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         /**初始化actionbar*/
-        String title = UserManager.getUserManager(this).getUserName();
+        String title = UserManager.getUserManager(this).loadUserName();
         initActionBar(title, -1, R.drawable.function, this);
         /**初始化viewpager*/
         initViewPager();
@@ -69,7 +69,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         /**viewpager与滚动条的交互*/
         initHomePageChange();
         initViewPagerScroll();
-
     }
 
 

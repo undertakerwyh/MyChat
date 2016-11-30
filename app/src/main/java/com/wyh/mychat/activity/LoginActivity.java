@@ -6,9 +6,12 @@ import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMGroupManager;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.FragmentAdapter;
 import com.wyh.mychat.base.BaseActivity;
+import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.fragment.LoginFragment;
 import com.wyh.mychat.fragment.RegisterFragment;
 import com.wyh.mychat.view.NoTouchViewPager;
@@ -64,15 +67,23 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
-        /**初始化ActionBar*/
-        String title = getResources().getString(R.string.title_login);
-        initActionBar(title, -1, -1, null);
-        /**初始化适配器*/
-        initFragmentAdapter();
-        /**适配viewpager*/
-        vpLogin.setAdapter(adapter);
+        if(!UserManager.getUserManager(this).loadAuto()) {
+            setContentView(R.layout.activity_login);
+            ButterKnife.bind(this);
+            /**初始化ActionBar*/
+            String title = getResources().getString(R.string.title_login);
+            initActionBar(title, -1, -1, null);
+            /**初始化适配器*/
+            initFragmentAdapter();
+            /**适配viewpager*/
+            vpLogin.setAdapter(adapter);
+        }else{
+            EMGroupManager.getInstance().loadAllGroups();
+            EMChatManager.getInstance().loadAllConversations();
+            startActivity(HomeActivity.class);
+            finish();
+        }
+
     }
     /**初始化Fragment适配器*/
     private void initFragmentAdapter() {

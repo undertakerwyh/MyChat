@@ -16,6 +16,7 @@ import com.easemob.EMConnectionListener;
 import com.easemob.EMError;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
+import com.easemob.util.NetUtils;
 import com.wyh.mychat.R;
 import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.util.SystemUtils;
@@ -31,7 +32,7 @@ import butterknife.OnClick;
  * Created by Administrator on 2016/10/19.
  */
 
-public class LoginFragment extends Fragment implements UserManager.LoginListener{
+public class LoginFragment extends Fragment implements UserManager.LoginListener {
     @Bind(R.id.et_password_text)
     EditText etPasswordText;
     @Bind(R.id.btn_login)
@@ -57,18 +58,22 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
         //注册一个监听连接状态的listener
         EMChatManager.getInstance().addConnectionListener(new MyConnectionListener());
     }
+
     //实现ConnectionListener接口
     private class MyConnectionListener implements EMConnectionListener {
         private ExecutorService executors;
-        private MyConnectionListener(){
+
+        private MyConnectionListener() {
             executors = Executors.newCachedThreadPool();
         }
+
         @Override
         public void onConnected() {
-            if(UserManager.getUserManager(getContext()).LoadLoginInfo()){
+            if (UserManager.getUserManager(getContext()).loadAuto()) {
                 moveToRegister.moveToHome();
             }
         }
+
         @Override
         public void onDisconnected(final int error) {
             executors.execute(new Runnable() {
@@ -77,28 +82,27 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
                     view.post(new Runnable() {
                         @Override
                         public void run() {
-                            if(error == EMError.USER_REMOVED){
+                            if (error == EMError.USER_REMOVED) {
                                 // 显示帐号已经被移除
                                 Toast.makeText(getContext(), "显示帐号已经被移除", Toast.LENGTH_SHORT).show();
-                            }else if (error == EMError.CONNECTION_CONFLICT) {
+                            } else if (error == EMError.CONNECTION_CONFLICT) {
                                 Toast.makeText(getContext(), "显示帐号在其他设备登录", Toast.LENGTH_SHORT).show();
                                 // 显示帐号在其他设备登录
-                            } else {
-                                if (!SystemUtils.getInstance(getContext()).isNetConn()) {
-                                    //当前网络不可用，请检查网络设置
-                                    Toast.makeText(getContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
-                                }
-                                else{
-                                    Toast.makeText(getContext(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
-                                    //连接不到聊天服务器
-                                }
+                            } else if (!SystemUtils.getInstance(getContext()).isNetConn()) {
+                                //当前网络不可用，请检查网络设置
+                                Toast.makeText(getContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
+                            } else if(!NetUtils.hasNetwork(getContext())){
+                                Toast.makeText(getContext(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
+                                //连接不到聊天服务器
                             }
                         }
-                    });
-                }
-            });
+                    }
+                );
+            }
         }
+        );
     }
+}
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -118,13 +122,12 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
             case R.id.btn_login:
                 String name = etUserText.getText().toString().trim();
                 String password = etPasswordText.getText().toString().trim();
-                if(TextUtils.isEmpty(name)){
+                if (TextUtils.isEmpty(name)) {
                     showToast("用户名不能为空");
-                }else if(TextUtils.isEmpty(password)){
+                } else if (TextUtils.isEmpty(password)) {
                     showToast("用户名不能为空");
-                }else{
-                    UserManager.getUserManager(getContext()).login(name,password);
-                    UserManager.getUserManager(getContext()).saveLoginInfo(true);
+                } else {
+                    UserManager.getUserManager(getContext()).login(name, password);
                 }
                 break;
             case R.id.tv_login_register:
@@ -137,7 +140,8 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
     public void Error(String content) {
         showToast(content);
     }
-    private void showToast(String content){
+
+    private void showToast(String content) {
         Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show();
     }
 
@@ -153,8 +157,9 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
         });
     }
 
-    public interface MoveToRegister{
-        void moveToRegister();
-        void moveToHome();
-    }
+public interface MoveToRegister {
+    void moveToRegister();
+
+    void moveToHome();
+}
 }

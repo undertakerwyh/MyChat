@@ -25,16 +25,6 @@ public class UserManager {
     private LoginListener loginListener;
     private  SharedPreferences loginSP =null;
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    private String userName;
-
     public void setExitListener(ExitListener exitListener) {
         this.exitListener = exitListener;
     }
@@ -61,18 +51,25 @@ public class UserManager {
         return userManager;
     }
 
-    public void saveLoginInfo(boolean auto){
+    public void saveLoginInfo(boolean auto,String name){
         if(loginSP==null) {
             loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
         }
-        loginSP.edit().putBoolean("autoLogin",auto).commit();
+        loginSP.edit().putBoolean("autoLogin",auto).putString("userName",name).commit();
     }
-    public boolean LoadLoginInfo(){
+    public boolean loadAuto(){
         if(loginSP==null) {
             loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
         }
         return loginSP.getBoolean("autoLogin",false);
     }
+    public String loadUserName(){
+        if(loginSP==null) {
+            loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
+        }
+        return loginSP.getString("userName",null);
+    }
+
 
     private UserManager() {
         executors = Executors.newCachedThreadPool();
@@ -126,7 +123,7 @@ public class UserManager {
             @Override
             public void onSuccess() {
                 loginListener.success();
-                UserManager.this.userName = userName;
+                UserManager.getUserManager(contexts).saveLoginInfo(true,userName);
             }
 
             @Override
