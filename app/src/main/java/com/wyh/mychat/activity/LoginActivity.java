@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
 import android.view.View;
 
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMGroupManager;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.FragmentAdapter;
 import com.wyh.mychat.base.BaseActivity;
@@ -78,8 +76,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             /**适配viewpager*/
             vpLogin.setAdapter(adapter);
         }else{
-            EMGroupManager.getInstance().loadAllGroups();
-            EMChatManager.getInstance().loadAllConversations();
             startActivity(HomeActivity.class);
             finish();
         }

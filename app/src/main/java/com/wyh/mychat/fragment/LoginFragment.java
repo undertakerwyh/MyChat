@@ -50,7 +50,7 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
         view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
         moveToRegister = (MoveToRegister) this.getActivity();
-        initLogin();
+//        initLogin();
         return view;
     }
 
@@ -147,12 +147,13 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
 
     @Override
     public void success() {
+
         view.post(new Runnable() {
             @Override
             public void run() {
+                moveToRegister.moveToHome();
                 EMGroupManager.getInstance().loadAllGroups();
                 EMChatManager.getInstance().loadAllConversations();
-                moveToRegister.moveToHome();
             }
         });
     }
