@@ -44,7 +44,6 @@ public class ListViewBar extends PopupWindow {
         this.setOutsideTouchable(true);
         this.setBackgroundDrawable(ContextCompat.getDrawable(context, R.color.transparent));
 
-        //实例化一个ColorDrawable颜色为半透明
         update();
         adapter = new UniversalAdapter<String>(context,R.layout.layout_scroll_list) {
             @Override

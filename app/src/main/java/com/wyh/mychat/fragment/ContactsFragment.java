@@ -36,6 +36,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     private List<String> list = new ArrayList<>();
     private UniversalAdapter<String> adapter;
     private ListViewBar listViewBar;
+    private String deleName;
 
     @Override
     public void onAttach(Context context) {
@@ -63,8 +64,8 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
             e.printStackTrace();
         }
         List<String>list = new ArrayList<>();
-        list.add(getResources().getString(R.string.pop_contacts_delete));
-        listViewBar = new ListViewBar(getContext(), list,this);
+        list.add(getString(R.string.pop_contacts_delete));
+        listViewBar = new ListViewBar(getContext(),list,this);
     }
     private int eventX;
     private int eventY;
@@ -89,6 +90,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
                     @Override
                     public boolean onLongClick(View v) {
                         initPopWindow(v);
+                        deleName = friends;
                         return false;
                     }
                 }).setTouchListener(new View.OnTouchListener() {
@@ -114,7 +116,13 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     }
 
     @Override
-    public void onComplete(String name) {
-
+    public void onComplete(String name)  {
+        if(name.equals(getString(R.string.pop_contacts_delete))){
+            try {
+                EMContactManager.getInstance().deleteContact(name);
+            } catch (EaseMobException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

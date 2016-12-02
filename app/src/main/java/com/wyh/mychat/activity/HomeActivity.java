@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabWidget;
+import android.widget.Toast;
 
 import com.easemob.chat.EMContactManager;
 import com.easemob.exceptions.EaseMobException;
@@ -210,6 +211,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 String request = content.getText().toString();
                 try {
                     EMContactManager.getInstance().addContact(name,request);//需异步处理
+                    Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
                 } catch (EaseMobException e) {
                     e.printStackTrace();
                 }
