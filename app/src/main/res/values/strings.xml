@@ -32,4 +32,7 @@
     <string name="pop_friend_title">添加好友</string>
     <string name="pop_friend_hint">好友账号</string>
     <string name="pop_friend_content">请求说明</string>
+
+    <!--联系人菜单-->
+    <string name="pop_contacts_delete">删除好友</string>
 </resources>

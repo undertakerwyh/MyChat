@@ -99,6 +99,14 @@ public class ViewHolder {
         textView.setTextColor(color);
         return this;
     }
+    public ViewHolder setLongClickListener(View.OnLongClickListener listener){
+        mView.setOnLongClickListener(listener);
+        return this;
+    }
+    public ViewHolder setTouchListener(View.OnTouchListener onTouchListener){
+        mView.setOnTouchListener(onTouchListener);
+        return this;
+    }
     /**
      * ----------------------------------------------------------------------------------------------------------------------------
      * 以下是自定义方法
