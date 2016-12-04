@@ -13,6 +13,7 @@ import android.widget.PopupWindow;
 import android.widget.TabWidget;
 import android.widget.Toast;
 
+import com.easemob.chat.EMContactListener;
 import com.easemob.chat.EMContactManager;
 import com.easemob.exceptions.EaseMobException;
 import com.wyh.mychat.R;
@@ -28,6 +29,7 @@ import com.wyh.mychat.view.TouchViewPager;
 import com.wyh.mychat.view.ViewPagerScroller;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -55,6 +57,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private PopupWindow friendPop;
     private float maxScreenHeight;
 
+    public void setContactListener(ContactListener contactListener) {
+        this.contactListener = contactListener;
+    }
+
+    private ContactListener contactListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +78,44 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         /**viewpager与滚动条的交互*/
         initHomePageChange();
         initViewPagerScroll();
+        initReceive();
+    }
+
+    private void initReceive() {
+        EMContactManager.getInstance().setContactListener(new EMContactListener() {
+
+            @Override
+            public void onContactAgreed(String username) {
+                //好友请求被同意
+                contactListener.refresh();
+            }
+
+            @Override
+            public void onContactRefused(String username) {
+                //好友请求被拒绝
+            }
+
+            @Override
+            public void onContactInvited(String username, String reason) {
+                //收到好友邀请
+            }
+
+            @Override
+            public void onContactDeleted(List<String> usernameList) {
+                //被删除时回调此方法
+                contactListener.refresh();
+            }
+
+            @Override
+            public void onContactAdded(List<String> usernameList) {
+                //增加了联系人时回调此方法
+                contactListener.refresh();
+            }
+        });
+    }
+
+    public interface ContactListener{
+        void refresh();
     }
 
 
@@ -238,4 +284,5 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 break;
         }
     }
+
 }

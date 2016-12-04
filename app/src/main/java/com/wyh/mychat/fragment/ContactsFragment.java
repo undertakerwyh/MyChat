@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.easemob.chat.EMContactManager;
 import com.easemob.exceptions.EaseMobException;
 import com.wyh.mychat.R;
+import com.wyh.mychat.activity.HomeActivity;
 import com.wyh.mychat.activity.TalkActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
@@ -29,7 +30,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/10/20.
  */
 
-public class ContactsFragment extends Fragment implements ListViewBar.ListViewBarListener {
+public class ContactsFragment extends Fragment implements ListViewBar.ListViewBarListener,HomeActivity.ContactListener {
     @Bind(R.id.lv_contacts)
     ListView lvContacts;
     private View view;
@@ -66,6 +67,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
         List<String>list = new ArrayList<>();
         list.add(getString(R.string.pop_contacts_delete));
         listViewBar = new ListViewBar(getContext(),list,this);
+        ((HomeActivity)getActivity()).setContactListener(this);
     }
     private int eventX;
     private int eventY;
@@ -119,10 +121,30 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     public void onComplete(String name)  {
         if(name.equals(getString(R.string.pop_contacts_delete))){
             try {
-                EMContactManager.getInstance().deleteContact(name);
+                EMContactManager.getInstance().deleteContact(deleName);
+                updateList();
             } catch (EaseMobException e) {
                 e.printStackTrace();
             }
         }
+    }
+    private void updateList(){
+        lvContacts.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    list.clear();
+                    list = EMContactManager.getInstance().getContactUserNames();
+                    adapter.addDataAllNotify(list);
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void refresh() {
+        updateList();
     }
 }

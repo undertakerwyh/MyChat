@@ -77,6 +77,11 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
         dataList.addAll(list);
         this.notifyDataSetChanged();
     }
+    public void addDataAllNotify(List<DataType> list){
+        dataList.clear();
+        dataList.addAll(list);
+        this.notifyDataSetChanged();
+    }
 
     public void addDataToAdapterHead(List<DataType> list) {
         String time = null;

@@ -53,6 +53,7 @@ public class ListViewBar extends PopupWindow {
                     @Override
                     public void onClick(View v) {
                         listViewBarListener.onComplete(content);
+                        ListViewBar.this.dismiss();
                     }
                 });
             }
