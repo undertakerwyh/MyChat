@@ -40,7 +40,7 @@ public class MessageFragment extends Fragment {
         User user1 = new User(null,"Apple","什么东西", CommonUtil.getTime(System.currentTimeMillis()));
         User user2 = new User(null,"Sina","This is a apple", CommonUtil.getTime(System.currentTimeMillis()));
         User user3 = new User(null,"Enia","Hello", CommonUtil.getTime(System.currentTimeMillis()));
-        User user4 = new User(null,"Benana","I created a new avatar instead of the old one", CommonUtil.getTime(System.currentTimeMillis()));
+        User user4 = new User(null,"Benana","I created a new_pop avatar instead of the old one", CommonUtil.getTime(System.currentTimeMillis()));
         list.add(user1);
         list.add(user2);
         list.add(user3);

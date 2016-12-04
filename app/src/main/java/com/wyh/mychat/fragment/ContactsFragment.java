@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -64,11 +65,12 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
         } catch (EaseMobException e) {
             e.printStackTrace();
         }
-        List<String>list = new ArrayList<>();
+        List<String> list = new ArrayList<>();
         list.add(getString(R.string.pop_contacts_delete));
-        listViewBar = new ListViewBar(getContext(),list,this);
-        ((HomeActivity)getActivity()).setContactListener(this);
+        listViewBar = new ListViewBar(getContext(), list, this);
+        ((HomeActivity) getActivity()).setContactListener(this);
     }
+
     private int eventX;
     private int eventY;
 
@@ -108,7 +110,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     }
 
     private void initPopWindow(View view) {
-        listViewBar.showAsDropDown(view,eventX,eventY-view.getMeasuredHeight());
+        listViewBar.showAsDropDown(view, eventX, eventY - view.getMeasuredHeight());
     }
 
     @Override
@@ -118,8 +120,8 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     }
 
     @Override
-    public void onComplete(String name)  {
-        if(name.equals(getString(R.string.pop_contacts_delete))){
+    public void onComplete(String name) {
+        if (name.equals(getString(R.string.pop_contacts_delete))) {
             try {
                 EMContactManager.getInstance().deleteContact(deleName);
                 updateList();
@@ -128,7 +130,8 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
             }
         }
     }
-    private void updateList(){
+
+    private void updateList() {
         lvContacts.post(new Runnable() {
             @Override
             public void run() {

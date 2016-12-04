@@ -13,6 +13,7 @@ import android.widget.PopupWindow;
 import android.widget.TabWidget;
 import android.widget.Toast;
 
+import com.easemob.chat.EMChat;
 import com.easemob.chat.EMContactListener;
 import com.easemob.chat.EMContactManager;
 import com.easemob.exceptions.EaseMobException;
@@ -25,6 +26,7 @@ import com.wyh.mychat.fragment.ContactsFragment;
 import com.wyh.mychat.fragment.MessageFragment;
 import com.wyh.mychat.util.PageChangeAnimUtil;
 import com.wyh.mychat.view.ActionBar;
+import com.wyh.mychat.view.PopBar;
 import com.wyh.mychat.view.TouchViewPager;
 import com.wyh.mychat.view.ViewPagerScroller;
 
@@ -55,7 +57,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private float maxScreenWidth;
     private PopupWindow pop;
     private PopupWindow friendPop;
-    private float maxScreenHeight;
+    private PopBar newPop;
 
     public void setContactListener(ContactListener contactListener) {
         this.contactListener = contactListener;
@@ -79,6 +81,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         initHomePageChange();
         initViewPagerScroll();
         initReceive();
+        newPop = new PopBar(this,R.layout.view_new);
     }
 
     private void initReceive() {
@@ -109,9 +112,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onContactAdded(List<String> usernameList) {
                 //增加了联系人时回调此方法
-                contactListener.refresh();
+
             }
         });
+        EMChat.getInstance().setAppInited();
     }
 
     public interface ContactListener{
@@ -126,7 +130,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         DisplayMetrics metrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         maxScreenWidth = metrics.widthPixels;
-        maxScreenHeight = metrics.heightPixels;
         PageChangeAnimUtil.getPageChangeAnimUtil(getApplicationContext()).pageChangeAnim(vpHome, llBottomBarBg, maxScreenWidth);
     }
 

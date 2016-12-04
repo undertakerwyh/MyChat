@@ -65,11 +65,11 @@ public class SystemUtils {
 	}
 
 //	public void locatPosition(){
-//		 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,5000,0,new LocationListener(){
+//		 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,5000,0,new_pop LocationListener(){
 //			public void onLocationChanged(Location location) {
 //				double longitude=location.getLongitude();
 //				double latitude=location.getLatitude();
-//				AsyncHttpClient client=new AsyncHttpClient();
+//				AsyncHttpClient client=new_pop AsyncHttpClient();
 //				client.get("http://maps.googleapis.com/maps/api/geocode/json?latlng="+longitude+","+latitude+"&sensor=false", handler);
 //			}
 //			public void onStatusChanged(String provider, int status,Bundle extras) {}
@@ -78,7 +78,7 @@ public class SystemUtils {
 //		 });
 //	}
 	
-//	private JsonHttpResponseHandler handler=new JsonHttpResponseHandler(){
+//	private JsonHttpResponseHandler handler=new_pop JsonHttpResponseHandler(){
 //
 //		@Override
 //		public void onSuccess(int statusCode, PreferenceActivity.Header[] headers, JSONObject response) {

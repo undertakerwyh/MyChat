@@ -110,7 +110,7 @@ public class XListView extends ListView implements OnScrollListener {
 		addHeaderView(mHeaderView);
 
 		// init footer view
-//		mFooterView = new XListViewFooter(context);
+//		mFooterView = new_pop XListViewFooter(context);
 
 		// init header height, // OnGlobalLayoutListener:view�ؼ����������ʧ�������ػ�����
 		mHeaderView.getViewTreeObserver().addOnGlobalLayoutListener(
@@ -163,7 +163,7 @@ public class XListView extends ListView implements OnScrollListener {
 //			mFooterView.show();
 //			mFooterView.setState(XListViewFooter.STATE_NORMAL);
 			// both "pull up" and "click" will invoke load more.
-//			mFooterView.setOnClickListener(new OnClickListener() {
+//			mFooterView.setOnClickListener(new_pop OnClickListener() {
 //				@Override
 //				public void onClick(View v) {
 //					startLoadMore();
