@@ -19,6 +19,7 @@ import com.wyh.mychat.activity.HomeActivity;
 import com.wyh.mychat.activity.TalkActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
+import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.view.ListViewBar;
 
 import java.util.ArrayList;
@@ -60,8 +61,11 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         try {
-            list = EMContactManager.getInstance().getContactUserNames();
-            adapter.addDataAddAll(list);
+            if(UserManager.getUserManager(getContext()).isFirstAdd()) {
+                Log.e("AAA","enter");
+                UserManager.getUserManager(getContext()).saveFriendList(EMContactManager.getInstance().getContactUserNames());
+            }
+            adapter.addDataAddAll(UserManager.getUserManager(getContext()).loadFriendList());
         } catch (EaseMobException e) {
             e.printStackTrace();
         }
@@ -124,6 +128,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
         if (name.equals(getString(R.string.pop_contacts_delete))) {
             try {
                 EMContactManager.getInstance().deleteContact(deleName);
+                UserManager.getUserManager(getContext()).deleteFriendName(deleName);
                 updateList();
             } catch (EaseMobException e) {
                 e.printStackTrace();
@@ -137,7 +142,6 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
             public void run() {
                 try {
                     List<String> contactUserNames = EMContactManager.getInstance().getContactUserNames();
-                    Log.e("AAA", "list.size():" + contactUserNames.size());
                     adapter.addDataAllNotify(contactUserNames);
                 } catch (EaseMobException e) {
                     e.printStackTrace();

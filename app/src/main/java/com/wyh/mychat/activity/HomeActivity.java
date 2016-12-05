@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -100,12 +101,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             public void onContactAgreed(String username) {
                 //好友请求被同意
                 contactListener.refresh();
+                Log.d("AAA","onContactAgreed:"+"username:"+username);
             }
 
             @Override
             public void onContactRefused(String username) {
                 //好友请求被拒绝
                 contactListener.refresh();
+                Log.d("AAA","onContactRefused");
             }
 
             @Override
@@ -117,12 +120,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 } catch (EaseMobException e) {
                     e.printStackTrace();
                 }
+                Log.d("AAA","onContactInvited"+"username:"+username+"reason:"+reason);
             }
 
             @Override
             public void onContactDeleted(List<String> usernameList) {
                 //被删除时回调此方法
                 contactListener.refresh();
+                Log.d("AAA","onContactDeleted");
             }
 
             @Override
@@ -131,6 +136,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 if (usernameList.size() > 0) {
                     contactListener.added(usernameList);
                 }
+                Log.d("AAA","onContactAdded:"+usernameList.size());
             }
         });
     }
@@ -223,6 +229,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         PageChangeAnimUtil.getPageChangeAnimUtil(this).initPosition(vpHome.getCurrentItem());
     }
 
+    private int height = 0;
+
     /**
      * 显示菜单popwindows
      */
@@ -230,10 +238,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         View view = getLayoutInflater().inflate(R.layout.layout_config, null);
         popOnClickEvent(view);
         pop = new PopupWindow(view, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        if(height==0) {
+            pop.getContentView().measure(0, 0);
+            height = pop.getContentView().getMeasuredHeight();
+        }
         pop.setFocusable(true);
         pop.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.color.transparent));
         pop.setOutsideTouchable(true);
-        pop.showAsDropDown(actionBar, (int) (maxScreenWidth - 190), 2);
+        pop.showAsDropDown(actionBar, (int) (maxScreenWidth-height-4),0);
     }
 
     /**
@@ -285,6 +297,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 } catch (EaseMobException e) {
                     e.printStackTrace();
                 }
+                friendPop.dismiss();
             }
         });
     }
