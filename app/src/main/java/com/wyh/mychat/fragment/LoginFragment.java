@@ -147,7 +147,6 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
 
     @Override
     public void success() {
-
         view.post(new Runnable() {
             @Override
             public void run() {

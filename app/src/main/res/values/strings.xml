@@ -11,7 +11,7 @@
     <!--ShowSreActivity-->
     <string name="my_picture">我的图片</string>
     <!--ConfigFragment-->
-    <string name="my_video">我的视频</string>
+    <string name="my_video">新好友</string>
     <string name="my_log_off">注销</string>
     <string name="my_exit">退出</string>
 

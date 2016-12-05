@@ -12,6 +12,7 @@ import com.wyh.mychat.util.TimeNoteUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * 万能适配器
@@ -78,6 +79,11 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
         this.notifyDataSetChanged();
     }
     public void addDataAllNotify(List<DataType> list){
+        dataList.clear();
+        dataList.addAll(list);
+        this.notifyDataSetChanged();
+    }
+    public void addDataAllNotifyTree(TreeSet<DataType> list){
         dataList.clear();
         dataList.addAll(list);
         this.notifyDataSetChanged();

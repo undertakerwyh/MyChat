@@ -1,6 +1,7 @@
 package com.wyh.mychat.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -14,6 +15,7 @@ import android.widget.TabWidget;
 import android.widget.Toast;
 
 import com.easemob.chat.EMChat;
+import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMContactListener;
 import com.easemob.chat.EMContactManager;
 import com.easemob.exceptions.EaseMobException;
@@ -58,6 +60,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private PopupWindow pop;
     private PopupWindow friendPop;
     private PopBar newPop;
+    private View view3;
+    private View view1;
 
     public void setContactListener(ContactListener contactListener) {
         this.contactListener = contactListener;
@@ -83,8 +87,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         initReceive();
         newPop = new PopBar(this,R.layout.view_new);
     }
+    public Handler getHandler(){
+        return handler;
+    }
 
     private void initReceive() {
+        EMChat.getInstance().setAppInited();
         EMContactManager.getInstance().setContactListener(new EMContactListener() {
 
             @Override
@@ -96,11 +104,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onContactRefused(String username) {
                 //好友请求被拒绝
+                contactListener.refresh();
             }
 
             @Override
             public void onContactInvited(String username, String reason) {
                 //收到好友邀请
+                try {
+                    EMChatManager.getInstance().acceptInvitation(username);
+                    contactListener.refresh();
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -112,10 +127,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onContactAdded(List<String> usernameList) {
                 //增加了联系人时回调此方法
-
+                if (usernameList.size() > 0) {
+                    for (String name : usernameList) {
+                        try {
+                            EMChatManager.getInstance().acceptInvitation(name);
+                            contactListener.refresh();
+                        } catch (EaseMobException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         });
-        EMChat.getInstance().setAppInited();
     }
 
     public interface ContactListener{
@@ -137,7 +160,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
      * 底部菜单栏的初始化
      */
     private void initTabHost() {
-        View view1 = getLayoutInflater().inflate(R.layout.layout_bottom_menu1, null);
+        view1 = getLayoutInflater().inflate(R.layout.layout_bottom_menu1, null);
         tabWidget.addView(view1);
         view1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +177,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 vpHome.setCurrentItem(1);
             }
         });
-        View view3 = getLayoutInflater().inflate(R.layout.layout_bottom_menu3, null);
+        view3 = getLayoutInflater().inflate(R.layout.layout_bottom_menu3, null);
 
         tabWidget.addView(view3);
         view3.setOnClickListener(new View.OnClickListener() {

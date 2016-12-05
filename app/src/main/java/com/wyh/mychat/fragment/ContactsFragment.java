@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -132,7 +131,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     }
 
     private void updateList() {
-        lvContacts.post(new Runnable() {
+        ((HomeActivity) getActivity()).getHandler().post(new Runnable() {
             @Override
             public void run() {
                 try {

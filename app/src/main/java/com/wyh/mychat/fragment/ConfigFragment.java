@@ -27,8 +27,6 @@ import butterknife.OnClick;
 public class ConfigFragment extends Fragment implements UserManager.ExitListener{
     @Bind(R.id.config_pic)
     TextView configPic;
-    @Bind(R.id.config_video)
-    TextView configVideo;
     @Bind(R.id.config_log_off)
     TextView configLogOff;
     @Bind(R.id.config_exit)
@@ -55,13 +53,11 @@ public class ConfigFragment extends Fragment implements UserManager.ExitListener
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.config_pic, R.id.config_video, R.id.config_log_off, R.id.config_exit})
+    @OnClick({R.id.config_pic, R.id.config_log_off, R.id.config_exit})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.config_pic:
                 ((HomeActivity)getActivity()).startActivity(ShowSrcActivity.class);
-                break;
-            case R.id.config_video:
                 break;
             case R.id.config_log_off:
                 UserManager.getUserManager(getContext()).Exit();

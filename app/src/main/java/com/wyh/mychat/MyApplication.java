@@ -30,6 +30,8 @@ public class MyApplication extends Application {
         intentFilter.setPriority(3);
         registerReceiver(msgReceiver, intentFilter);
 
+        EMChatManager.getInstance().getChatOptions().setUseRoster(true);
+
     }
 
 

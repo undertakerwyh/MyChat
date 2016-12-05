@@ -15,14 +15,7 @@
     <View
        style="@style/line_h_gray_1"></View>
 
-    <TextView
-        android:id="@+id/config_video"
-        style="@style/config_text"
-        android:text="@string/my_video"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/chat_config_item_height" />
-    <View
-        style="@style/line_h_gray_1"></View>
+
 
     <TextView
         android:id="@+id/config_log_off"
