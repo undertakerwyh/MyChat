@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,7 +31,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/10/20.
  */
 
-public class ContactsFragment extends Fragment implements ListViewBar.ListViewBarListener,HomeActivity.ContactListener {
+public class ContactsFragment extends Fragment implements ListViewBar.ListViewBarListener, HomeActivity.ContactListener {
     @Bind(R.id.lv_contacts)
     ListView lvContacts;
     private View view;
@@ -135,9 +136,9 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
             @Override
             public void run() {
                 try {
-                    list.clear();
-                    list = EMContactManager.getInstance().getContactUserNames();
-                    adapter.addDataAllNotify(list);
+                    List<String> contactUserNames = EMContactManager.getInstance().getContactUserNames();
+                    Log.e("AAA", "list.size():" + contactUserNames.size());
+                    adapter.addDataAllNotify(contactUserNames);
                 } catch (EaseMobException e) {
                     e.printStackTrace();
                 }
@@ -148,5 +149,15 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     @Override
     public void refresh() {
         updateList();
+    }
+
+    @Override
+    public void added(final List<String> usernameList) {
+        ((HomeActivity) getActivity()).getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                adapter.addDataAllNotify(usernameList);
+            }
+        });
     }
 }

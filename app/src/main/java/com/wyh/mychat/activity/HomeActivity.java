@@ -85,9 +85,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         initHomePageChange();
         initViewPagerScroll();
         initReceive();
-        newPop = new PopBar(this,R.layout.view_new);
+        newPop = new PopBar(this, R.layout.view_new);
     }
-    public Handler getHandler(){
+
+    public Handler getHandler() {
         return handler;
     }
 
@@ -128,21 +129,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             public void onContactAdded(List<String> usernameList) {
                 //增加了联系人时回调此方法
                 if (usernameList.size() > 0) {
-                    for (String name : usernameList) {
-                        try {
-                            EMChatManager.getInstance().acceptInvitation(name);
-                            contactListener.refresh();
-                        } catch (EaseMobException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    contactListener.added(usernameList);
                 }
             }
         });
     }
 
-    public interface ContactListener{
+    public interface ContactListener {
         void refresh();
+
+        void added(List<String> usernameList);
     }
 
 
@@ -237,14 +233,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         pop.setFocusable(true);
         pop.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.color.transparent));
         pop.setOutsideTouchable(true);
-        pop.showAsDropDown(actionBar,(int) (maxScreenWidth-190), 2);
+        pop.showAsDropDown(actionBar, (int) (maxScreenWidth - 190), 2);
     }
 
     /**
      * popWindow菜单点击事件
+     *
      * @param view
      */
-    private void popOnClickEvent(View view){
+    private void popOnClickEvent(View view) {
         LinearLayout friend = (LinearLayout) view.findViewById(R.id.ll_add_friend);
         friend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,14 +262,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         friendPop.setFocusable(true);
         friendPop.setOutsideTouchable(true);
         friendPop.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.color.transparent));
-        friendPop.showAtLocation(actionBar, Gravity.CENTER,0,0);
+        friendPop.showAtLocation(actionBar, Gravity.CENTER, 0, 0);
     }
 
     /**
      * 添加好友界面的点击事件
+     *
      * @param view
      */
-    private void FriendOnClickEvent(View view){
+    private void FriendOnClickEvent(View view) {
         ImageView imageView = (ImageView) view.findViewById(R.id.iv_send_request);
         final EditText userName = (EditText) view.findViewById(R.id.et_friend_name);
         final EditText content = (EditText) view.findViewById(R.id.et_friend_content);
@@ -282,7 +280,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 String name = userName.getText().toString();
                 String request = content.getText().toString();
                 try {
-                    EMContactManager.getInstance().addContact(name,request);//需异步处理
+                    EMContactManager.getInstance().addContact(name, request);//需异步处理
                     Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
                 } catch (EaseMobException e) {
                     e.printStackTrace();

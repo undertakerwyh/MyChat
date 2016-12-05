@@ -31,7 +31,6 @@ public class MyApplication extends Application {
         registerReceiver(msgReceiver, intentFilter);
 
         EMChatManager.getInstance().getChatOptions().setUseRoster(true);
-
     }
 
 
