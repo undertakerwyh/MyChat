@@ -106,4 +106,10 @@
     <dimen name="pop_friend_search_weight">250dp</dimen>
     <dimen name="pop_friend_title_padding">4dp</dimen>
     <dimen name="pop_friend_title_size">15sp</dimen>
+
+    <!--alertDialog-->
+    <dimen name="dialog_textSize">20sp</dimen>
+    <dimen name="dialog_text_marginLeft">10dp</dimen>
+    <dimen name="dialog_padding">10dp</dimen>
+
 </resources>

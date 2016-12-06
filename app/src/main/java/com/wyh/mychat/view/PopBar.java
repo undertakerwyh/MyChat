@@ -18,10 +18,9 @@ public class PopBar extends PopupWindow {
     private View parentView;
     public PopBar(Context context,int ResId){
         this.context = context;
-        initView(ResId);
     }
 
-    private void initView(int resId) {
+    public void show(int resId) {
         parentView = LayoutInflater.from(context).inflate(resId,null);
         setContentView(parentView);
         //设置弹出窗体的高

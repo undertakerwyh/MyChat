@@ -1,5 +1,7 @@
 package com.wyh.mychat.base;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,6 +46,19 @@ public class BaseActivity extends AppCompatActivity{
         while (iterator.hasNext()){
             iterator.next().finish();
         }
+    }
+    private ProgressDialog progressDialog = null;
+
+    public void showWaitBar(Context context){
+        if(progressDialog ==null) {
+            progressDialog = new ProgressDialog(context);
+        }
+        progressDialog.setMessage(getString(R.string.dialog_wait));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+    public void dismissWaitBar(){
+        progressDialog.dismiss();
     }
 
     /**

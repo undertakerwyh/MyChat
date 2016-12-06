@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/config_bg"
+    android:padding="@dimen/dialog_padding">
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateBehavior="repeat"
+        android:layout_centerVertical="true"
+        android:indeterminateDrawable="@drawable/waitbar"
+        android:indeterminateOnly="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/dialog_text_marginLeft"
+        android:text="@string/dialog_wait"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dialog_textSize" />
+
+
+</RelativeLayout>

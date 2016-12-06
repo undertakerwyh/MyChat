@@ -99,37 +99,27 @@ public class UserManager {
     }
 
     public void saveLoginInfo(boolean auto, String name) {
-        if (loginSP == null) {
-            loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
-        }
+        loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
         loginSP.edit().putBoolean("autoLogin", auto).putString("userName", name).commit();
     }
 
     public boolean isFirstAdd() {
-        if (loginSP == null) {
-            loginSP = contexts.getSharedPreferences("isFirstAdd", Context.MODE_PRIVATE);
-        }
+        loginSP = contexts.getSharedPreferences("isFirstAdd", Context.MODE_PRIVATE);
         return loginSP.getBoolean("isFirstAdd", true);
     }
 
     public void saveFirstAdd(boolean isFirst) {
-        if (loginSP == null) {
-            loginSP = contexts.getSharedPreferences("isFirstAdd", Context.MODE_PRIVATE);
-        }
+        loginSP = contexts.getSharedPreferences("isFirstAdd", Context.MODE_PRIVATE);
         loginSP.edit().putBoolean("isFirstAdd", isFirst).commit();
     }
 
     public boolean loadAuto() {
-        if (loginSP == null) {
-            loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
-        }
+        loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
         return loginSP.getBoolean("autoLogin", false);
     }
 
     public String loadUserName() {
-        if (loginSP == null) {
-            loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
-        }
+        loginSP = contexts.getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
         return loginSP.getString("userName", null);
     }
 
@@ -176,13 +166,15 @@ public class UserManager {
             });
         }
     }
-
     public void login(final String userName, String password) {
+        loginListener.showWaitBar();
         EMChatManager.getInstance().login(userName, password, new EMCallBack() {//回调
             @Override
             public void onSuccess() {
+                loginListener.stopWaitBar();
                 loginListener.success();
-                UserManager.getUserManager(contexts).saveLoginInfo(true, userName);
+                UserManager.this.saveLoginInfo(true, userName);
+                UserManager.this.saveUserName(userName);
             }
 
             @Override
@@ -196,6 +188,21 @@ public class UserManager {
             }
         });
     }
+
+    public void saveUserName(String userName) {
+        loginSP = contexts.getSharedPreferences("UserName", Context.MODE_PRIVATE);
+        loginSP.edit().putString("UserName", userName).commit();
+    }
+
+    public boolean isUserName(String userName) {
+        loginSP = contexts.getSharedPreferences("UserName", Context.MODE_PRIVATE);
+        String userName1 = loginSP.getString("UserName", null);
+        if(userName.equals(userName1)){
+            return true;
+        }
+        return false;
+    }
+
 
     public void Exit() {
         //此方法为异步方法
@@ -231,7 +238,8 @@ public class UserManager {
 
     public interface LoginListener {
         void Error(String content);
-
+        void showWaitBar();
+        void stopWaitBar();
         void success();
     }
 

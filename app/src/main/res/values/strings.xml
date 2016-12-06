@@ -35,4 +35,8 @@
 
     <!--联系人菜单-->
     <string name="pop_contacts_delete">删除好友</string>
+
+    <!--AlertDialog 等待-->
+    <string name="dialog_wait">等待..</string>
+    <string name="dialog_text_marginLeft"></string>
 </resources>

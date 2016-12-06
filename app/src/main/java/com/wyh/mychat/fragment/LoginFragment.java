@@ -1,5 +1,6 @@
 package com.wyh.mychat.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,8 +19,10 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.util.NetUtils;
 import com.wyh.mychat.R;
+import com.wyh.mychat.activity.LoginActivity;
 import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.util.SystemUtils;
+import com.wyh.mychat.view.WaitBar;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,6 +46,8 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
     TextView tvLoginRegister;
     private View view;
     private MoveToRegister moveToRegister;
+    private WaitBar waitBar;
+    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -77,32 +82,32 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
         @Override
         public void onDisconnected(final int error) {
             executors.execute(new Runnable() {
-                @Override
-                public void run() {
-                    view.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (error == EMError.USER_REMOVED) {
-                                // 显示帐号已经被移除
-                                Toast.makeText(getContext(), "显示帐号已经被移除", Toast.LENGTH_SHORT).show();
-                            } else if (error == EMError.CONNECTION_CONFLICT) {
-                                Toast.makeText(getContext(), "显示帐号在其他设备登录", Toast.LENGTH_SHORT).show();
-                                // 显示帐号在其他设备登录
-                            } else if (!SystemUtils.getInstance(getContext()).isNetConn()) {
-                                //当前网络不可用，请检查网络设置
-                                Toast.makeText(getContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
-                            } else if(!NetUtils.hasNetwork(getContext())){
-                                Toast.makeText(getContext(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
-                                //连接不到聊天服务器
-                            }
-                        }
-                    }
-                );
-            }
+                                  @Override
+                                  public void run() {
+                                      view.post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        if (error == EMError.USER_REMOVED) {
+                                                            // 显示帐号已经被移除
+                                                            Toast.makeText(getContext(), "显示帐号已经被移除", Toast.LENGTH_SHORT).show();
+                                                        } else if (error == EMError.CONNECTION_CONFLICT) {
+                                                            Toast.makeText(getContext(), "显示帐号在其他设备登录", Toast.LENGTH_SHORT).show();
+                                                            // 显示帐号在其他设备登录
+                                                        } else if (!SystemUtils.getInstance(getContext()).isNetConn()) {
+                                                            //当前网络不可用，请检查网络设置
+                                                            Toast.makeText(getContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
+                                                        } else if (!NetUtils.hasNetwork(getContext())) {
+                                                            Toast.makeText(getContext(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
+                                                            //连接不到聊天服务器
+                                                        }
+                                                    }
+                                                }
+                                      );
+                                  }
+                              }
+            );
         }
-        );
     }
-}
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -141,6 +146,18 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
         showToast(content);
     }
 
+    @Override
+    public void showWaitBar() {
+        ((LoginActivity) getActivity()).showWaitBar(getContext());
+    }
+
+    @Override
+    public void stopWaitBar() {
+        if (waitBar != null) {
+            ((LoginActivity) getActivity()).dismissWaitBar();
+        }
+    }
+
     private void showToast(String content) {
         Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show();
     }
@@ -157,9 +174,9 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
         });
     }
 
-public interface MoveToRegister {
-    void moveToRegister();
+    public interface MoveToRegister {
+        void moveToRegister();
 
-    void moveToHome();
-}
+        void moveToHome();
+    }
 }
