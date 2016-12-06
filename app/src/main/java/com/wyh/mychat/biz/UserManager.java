@@ -35,6 +35,12 @@ public class UserManager {
     private Friend friend;
     private final SQLiteDatabase sqLiteDatabase;
 
+    private UserManager() {
+        executors = Executors.newCachedThreadPool();
+        friend = new Friend(contexts, FRIENDNAME, null, VERSION);
+        sqLiteDatabase = friend.getWritableDatabase();
+    }
+
     public void setExitListener(ExitListener exitListener) {
         this.exitListener = exitListener;
     }
@@ -69,7 +75,7 @@ public class UserManager {
     }
 
     public void sqliteAdd(String name) {
-        sqLiteDatabase.execSQL("insert into Friend(name)values(?)", new Object[]{name});
+        sqLiteDatabase.execSQL("insert into Friend (name) values(?)", new Object[]{name});
     }
 
     public List<String> loadFriendList() {
@@ -80,7 +86,7 @@ public class UserManager {
                 list.add(cursor.getString(cursor.getColumnIndex("name")));
             } while (cursor.moveToNext());
         }
-        Log.e("AAA","list.size()--loadFriendList:"+list.size());
+        Log.e("AAA", "list.size()--loadFriendList:" + list.size());
         return list;
     }
 
@@ -127,12 +133,6 @@ public class UserManager {
         return loginSP.getString("userName", null);
     }
 
-
-    private UserManager() {
-        executors = Executors.newCachedThreadPool();
-        friend = new Friend(contexts, FRIENDNAME, null, VERSION);
-        sqLiteDatabase = friend.getWritableDatabase();
-    }
 
     /**
      * 注册用户

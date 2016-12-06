@@ -135,6 +135,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 //增加了联系人时回调此方法
                 if (usernameList.size() > 0) {
                     contactListener.added(usernameList);
+                    UserManager.getUserManager(getApplicationContext()).saveFriendList(usernameList);
                 }
                 Log.d("AAA","onContactAdded:"+usernameList.size());
             }
