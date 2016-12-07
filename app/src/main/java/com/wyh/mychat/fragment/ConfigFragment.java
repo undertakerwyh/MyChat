@@ -1,6 +1,5 @@
 package com.wyh.mychat.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,11 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.HomeActivity;
-import com.wyh.mychat.activity.LoginActivity;
 import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.biz.UserManager;
 
@@ -24,7 +21,7 @@ import butterknife.OnClick;
  * Created by Administrator on 2016/10/20.
  */
 
-public class ConfigFragment extends Fragment implements UserManager.ExitListener{
+public class ConfigFragment extends Fragment{
     @Bind(R.id.config_pic)
     TextView configPic;
     @Bind(R.id.config_log_off)
@@ -44,7 +41,6 @@ public class ConfigFragment extends Fragment implements UserManager.ExitListener
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        UserManager.getUserManager(getContext()).setExitListener(this);
     }
 
     @Override
@@ -69,14 +65,5 @@ public class ConfigFragment extends Fragment implements UserManager.ExitListener
         }
     }
 
-    @Override
-    public void Error(String content) {
-        Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public void success() {
-        startActivity(new Intent(getActivity(),LoginActivity.class));
-        ((HomeActivity)getActivity()).finish();
-    }
 }

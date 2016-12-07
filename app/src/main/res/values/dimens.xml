@@ -92,6 +92,8 @@
     <dimen name="send_btn_width">70dp</dimen>
 
     <dimen name="send_textsize">20sp</dimen>
+    发送状态提示图标的大小
+    <dimen name="send_message_icon_size">22dp</dimen>
 
 
     <!--...................................ConfigFragment.................................-->

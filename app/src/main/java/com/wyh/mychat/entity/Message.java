@@ -8,6 +8,10 @@ public class Message {
     private String name;
     private String time;
     private String content;
+
+
+
+    private int errorType=0;
     /**
      * 0为自己发送的信息,1为对方发送的信息.
      */
@@ -28,6 +32,14 @@ public class Message {
                 ", content='" + content + '\'' +
                 ", type=" + type +
                 '}';
+    }
+
+    public int getErrorType() {
+        return errorType;
+    }
+
+    public void setErrorType(int errorType) {
+        this.errorType = errorType;
     }
 
     public String getName() {

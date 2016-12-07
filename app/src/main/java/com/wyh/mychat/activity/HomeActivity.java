@@ -1,5 +1,6 @@
 package com.wyh.mychat.activity;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -30,6 +31,7 @@ import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.fragment.ConfigFragment;
 import com.wyh.mychat.fragment.ContactsFragment;
 import com.wyh.mychat.fragment.MessageFragment;
+import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
 import com.wyh.mychat.util.PageChangeAnimUtil;
 import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.view.ActionBar;
@@ -48,7 +50,7 @@ import butterknife.ButterKnife;
 /**
  * 主界面HomeActivity
  */
-public class HomeActivity extends BaseActivity implements View.OnClickListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener,UserManager.ExitListener {
 
 
     @Bind(R.id.action_bar)
@@ -92,9 +94,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         initHomePageChange();
         initViewPagerScroll();
         initReceive();
+        initBroadcastReceiver();
+        UserManager.getUserManager(getApplicationContext()).setExitListener(this);
         newPop = new PopBar(this, R.layout.view_new);
         //注册一个监听连接状态的listener
         EMChatManager.getInstance().addConnectionListener(new MyConnectionListener());
+    }
+
+    private void initBroadcastReceiver() {
+        NewMessageBroadcastReceiver msgReceiver = new NewMessageBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter(EMChatManager.getInstance().getNewMessageBroadcastAction());
+        intentFilter.setPriority(3);
+        registerReceiver(msgReceiver, intentFilter);
     }
 
     public Handler getHandler() {
@@ -152,7 +163,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
     public interface ContactListener {
         void refresh();
-
         void added(List<String> usernameList);
     }
 
@@ -369,8 +379,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                                                         if (error == EMError.USER_REMOVED) {
                                                             // 显示帐号已经被移除
                                                             Toast.makeText(getApplicationContext(), "显示帐号已经被移除", Toast.LENGTH_SHORT).show();
+                                                            UserManager.getUserManager(getApplicationContext()).Exit();
+                                                            UserManager.getUserManager(getApplicationContext()).saveLoginInfo(false,null);
                                                         } else if (error == EMError.CONNECTION_CONFLICT) {
                                                             Toast.makeText(getApplicationContext(), "显示帐号在其他设备登录", Toast.LENGTH_SHORT).show();
+                                                            UserManager.getUserManager(getApplicationContext()).Exit();
+                                                            UserManager.getUserManager(getApplicationContext()).saveLoginInfo(false,null);
                                                             // 显示帐号在其他设备登录
                                                         } else if (!SystemUtils.getInstance(getApplicationContext()).isNetConn()) {
                                                             //当前网络不可用，请检查网络设置
@@ -386,6 +400,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                               }
             );
         }
+    }
+    @Override
+    public void Error(String content) {
+        Toast.makeText(getApplicationContext(), content, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void success() {
+        startActivity(LoginActivity.class);
+        finish();
     }
 
 }

@@ -1,6 +1,5 @@
 package com.wyh.mychat.fragment;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,7 +17,6 @@ import com.easemob.chat.EMGroupManager;
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.LoginActivity;
 import com.wyh.mychat.biz.UserManager;
-import com.wyh.mychat.view.WaitBar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,8 +37,6 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
     TextView tvLoginRegister;
     private View view;
     private MoveToRegister moveToRegister;
-    private WaitBar waitBar;
-    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -50,9 +46,6 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
         moveToRegister = (MoveToRegister) this.getActivity();
         return view;
     }
-
-
-
 
 
     @Override
@@ -99,9 +92,7 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
 
     @Override
     public void stopWaitBar() {
-        if (waitBar != null) {
-            ((LoginActivity) getActivity()).dismissWaitBar();
-        }
+        ((LoginActivity) getActivity()).dismissWaitBar();
     }
 
     private void showToast(String content) {

@@ -15,6 +15,10 @@ public class CommonUtil {
     public final static int TYPE_RIGHT = 1;
     public final static int TYPE_TIME = 2;
 
+    public final static int SEND_ERROR = 2;
+    public final static int SEND_LOAD = 1;
+    public final static int SEND_SUCCESS = 0;
+
     private final static long dayLong = 1000*60*60*24;
 
     /**

@@ -34,7 +34,7 @@ public class SendManager {
      */
     public void sendTextMessage(@NonNull String userName, String content, EMCallBack emCallBack) {
         //获取到与聊天人的会话对象。参数username为聊天人的userid或者groupid，后文中的username皆是如此
-        if(!userNameSave.equals(userName)) {
+        if(!userName.equals(userNameSave)) {
             conversation = EMChatManager.getInstance().getConversation(userName);
         }
         userNameSave = userName;

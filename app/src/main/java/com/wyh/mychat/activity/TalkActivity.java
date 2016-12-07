@@ -1,20 +1,14 @@
 package com.wyh.mychat.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.easemob.EMCallBack;
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMConversation;
-import com.easemob.chat.EMMessage;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
@@ -85,17 +79,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         /**初始化数据*/
         DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,lvTalkMessage.getCount()-1);
 
-        initReceiver();
-    }
-
-    private void initReceiver() {
-        EMChatManager.getInstance().getChatOptions().setRequireDeliveryAck(true);
-//如果用到已发送的回执需要把这个flag设置成true
-
-        IntentFilter deliveryAckMessageIntentFilter = new IntentFilter(EMChatManager.getInstance().getDeliveryAckMessageBroadcastAction());
-        deliveryAckMessageIntentFilter.setPriority(5);
-        registerReceiver(deliveryAckMessageReceiver, deliveryAckMessageIntentFilter);
-
     }
 
     private void setXListView() {
@@ -114,7 +97,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void assignment(ViewHolder viewHolder, int positon) {
                 Message message = adapter.getDataList().get(positon);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
-                        R.id.tv_chat_right,R.id.tv_time_text, message.getContent(), message.getType());
+                        R.id.tv_chat_right,R.id.tv_time_text, message.getContent(), message.getType())
+                            .setSendErrorListener(message.getErrorType());
             }
         };
     }
@@ -142,22 +126,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
     private void mySendMessage(String content) {
         if(!TextUtils.isEmpty(content)) {
-            SendManager.getSendMessage(this).sendTextMessage(name, content, new EMCallBack() {
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onError(int i, String s) {
-
-                }
-
-                @Override
-                public void onProgress(int i, String s) {
-
-                }
-            });
             Message message = new Message(name,CommonUtil.getTime(), content, CommonUtil.TYPE_RIGHT);
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
             String time = timeNoteUtil.sendStart(Long.parseLong(message.getTime()));
@@ -169,6 +137,28 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             }
             adapter.addDataUpdate(message);
             lvTalkMessage.setSelection(adapter.getDataList().size());
+            SendManager.getSendMessage(this).sendTextMessage(name, content, new EMCallBack() {
+                @Override
+                public void onSuccess() {
+                    Log.e("AAA","onSuccess");
+                    adapter.getDataList().get(adapter.getCount()-1).setErrorType(CommonUtil.SEND_SUCCESS);
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    Log.e("AAA","onError");
+                    adapter.getDataList().get(adapter.getCount()-1).setErrorType(CommonUtil.SEND_ERROR);
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onProgress(int i, String s) {
+                    Log.e("AAA","onProgress");
+                    adapter.getDataList().get(adapter.getCount()-1).setErrorType(CommonUtil.SEND_LOAD);
+                    adapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 
@@ -179,25 +169,4 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         message.obj = list;
         handler.sendMessage(message);
     }
-    /**
-     * 消息送达BroadcastReceiver
-     */
-    private BroadcastReceiver deliveryAckMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            abortBroadcast();
-
-            String msgid = intent.getStringExtra("msgid");
-            String from = intent.getStringExtra("from");
-            EMConversation conversation = EMChatManager.getInstance().getConversation(from);
-            if (conversation != null) {
-                // 把message设为已读
-                EMMessage msg = conversation.getMessage(msgid);
-                if (msg != null) {
-                    msg.isDelivered = true;
-                }
-            }
-        }
-    };
-
 }

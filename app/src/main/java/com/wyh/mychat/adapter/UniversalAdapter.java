@@ -21,6 +21,7 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
 
     private Context context;
     private int layoutRes;
+    private ViewHolder viewHolder;
 
     public List<DataType> getDataList() {
         return dataList;
@@ -55,7 +56,7 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = ViewHolder.getViewHolder(convertView, context, layoutRes, parent);
+        viewHolder = ViewHolder.getViewHolder(convertView, context, layoutRes, parent);
         assignment(viewHolder, position);
         return viewHolder.getmView();
     }

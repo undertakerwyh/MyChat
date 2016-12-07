@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="10dp"
+    android:paddingBottom="5dp"
     android:paddingLeft="10dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:paddingRight="10dp"
+    android:paddingTop="5dp">
 
     <LinearLayout
         android:id="@+id/ll_chat_left"
@@ -19,9 +19,9 @@
         <TextView
             android:id="@+id/tv_chat_left"
             android:layout_width="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginBottom="5dp"
             android:text="131312"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/send_textsize" />
@@ -29,32 +29,62 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_chat_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:background="@drawable/dialog_right"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="@dimen/send_message_icon_size"
+            android:layout_height="@dimen/send_message_icon_size">
+            <ProgressBar
+                android:id="@+id/pb_chat_loading"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:indeterminateDrawable="@drawable/wait"
+                android:indeterminateBehavior="repeat"
+                android:indeterminateOnly="true"
+                android:visibility="gone"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/iv_chat_error"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:src="@drawable/send_error"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tv_chat_right"
+        <LinearLayout
+            android:id="@+id/ll_chat_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorBlack"
-            android:layout_gravity="center_vertical"
-            android:text="1313124123"
-            android:layout_marginBottom="5dp"
-            android:textSize="@dimen/send_textsize" />
+            android:background="@drawable/dialog_right"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/tv_chat_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="5dp"
+                android:text="1313124123"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/send_textsize" />
+        </LinearLayout>
+
+
     </LinearLayout>
 
     <TextView
         android:id="@+id/tv_time_text"
         android:layout_width="match_parent"
-        android:text="1231423123"
+        android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textColor="@color/colorGray"
         android:padding="6dp"
-        android:layout_height="wrap_content" />
+        android:text="1231423123"
+        android:textColor="@color/colorGray" />
 
 </LinearLayout>
