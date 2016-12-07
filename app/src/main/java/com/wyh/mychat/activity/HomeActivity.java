@@ -334,6 +334,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 break;
         }
     }
+
     //实现ConnectionListener接口
     private class MyConnectionListener implements EMConnectionListener {
         private ExecutorService executors;

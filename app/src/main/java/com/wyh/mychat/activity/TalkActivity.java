@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
@@ -19,6 +20,7 @@ import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
 import com.wyh.mychat.base.BaseActivity;
 import com.wyh.mychat.biz.DBManager;
+import com.wyh.mychat.biz.SendManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.util.TimeNoteUtil;
@@ -138,9 +140,24 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         super.onDestroy();
         DBManager.getDbManager(getApplicationContext()).DBClose();
     }
-
     private void mySendMessage(String content) {
         if(!TextUtils.isEmpty(content)) {
+            SendManager.getSendMessage(this).sendTextMessage(name, content, new EMCallBack() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(int i, String s) {
+
+                }
+
+                @Override
+                public void onProgress(int i, String s) {
+
+                }
+            });
             Message message = new Message(name,CommonUtil.getTime(), content, CommonUtil.TYPE_RIGHT);
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
             String time = timeNoteUtil.sendStart(Long.parseLong(message.getTime()));
