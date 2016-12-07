@@ -13,19 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.easemob.EMConnectionListener;
-import com.easemob.EMError;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
-import com.easemob.util.NetUtils;
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.LoginActivity;
 import com.wyh.mychat.biz.UserManager;
-import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.view.WaitBar;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -55,59 +48,12 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
         view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
         moveToRegister = (MoveToRegister) this.getActivity();
-//        initLogin();
         return view;
     }
 
-    private void initLogin() {
-        //注册一个监听连接状态的listener
-        EMChatManager.getInstance().addConnectionListener(new MyConnectionListener());
-    }
 
-    //实现ConnectionListener接口
-    private class MyConnectionListener implements EMConnectionListener {
-        private ExecutorService executors;
 
-        private MyConnectionListener() {
-            executors = Executors.newCachedThreadPool();
-        }
 
-        @Override
-        public void onConnected() {
-            if (UserManager.getUserManager(getContext()).loadAuto()) {
-                moveToRegister.moveToHome();
-            }
-        }
-
-        @Override
-        public void onDisconnected(final int error) {
-            executors.execute(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      view.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        if (error == EMError.USER_REMOVED) {
-                                                            // 显示帐号已经被移除
-                                                            Toast.makeText(getContext(), "显示帐号已经被移除", Toast.LENGTH_SHORT).show();
-                                                        } else if (error == EMError.CONNECTION_CONFLICT) {
-                                                            Toast.makeText(getContext(), "显示帐号在其他设备登录", Toast.LENGTH_SHORT).show();
-                                                            // 显示帐号在其他设备登录
-                                                        } else if (!SystemUtils.getInstance(getContext()).isNetConn()) {
-                                                            //当前网络不可用，请检查网络设置
-                                                            Toast.makeText(getContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
-                                                        } else if (!NetUtils.hasNetwork(getContext())) {
-                                                            Toast.makeText(getContext(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
-                                                            //连接不到聊天服务器
-                                                        }
-                                                    }
-                                                }
-                                      );
-                                  }
-                              }
-            );
-        }
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

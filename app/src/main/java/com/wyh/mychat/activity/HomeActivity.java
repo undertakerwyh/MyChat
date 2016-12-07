@@ -15,11 +15,14 @@ import android.widget.PopupWindow;
 import android.widget.TabWidget;
 import android.widget.Toast;
 
+import com.easemob.EMConnectionListener;
+import com.easemob.EMError;
 import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMContactListener;
 import com.easemob.chat.EMContactManager;
 import com.easemob.exceptions.EaseMobException;
+import com.easemob.util.NetUtils;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.FragmentAdapter;
 import com.wyh.mychat.base.BaseActivity;
@@ -28,6 +31,7 @@ import com.wyh.mychat.fragment.ConfigFragment;
 import com.wyh.mychat.fragment.ContactsFragment;
 import com.wyh.mychat.fragment.MessageFragment;
 import com.wyh.mychat.util.PageChangeAnimUtil;
+import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.view.ActionBar;
 import com.wyh.mychat.view.PopBar;
 import com.wyh.mychat.view.TouchViewPager;
@@ -35,6 +39,8 @@ import com.wyh.mychat.view.ViewPagerScroller;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -87,6 +93,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         initViewPagerScroll();
         initReceive();
         newPop = new PopBar(this, R.layout.view_new);
+        //注册一个监听连接状态的listener
+        EMChatManager.getInstance().addConnectionListener(new MyConnectionListener());
     }
 
     public Handler getHandler() {
@@ -324,6 +332,58 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 break;
             default:
                 break;
+        }
+    }
+    //实现ConnectionListener接口
+    private class MyConnectionListener implements EMConnectionListener {
+        private ExecutorService executors;
+        private boolean isNetError=false;
+
+        private MyConnectionListener() {
+            executors = Executors.newCachedThreadPool();
+        }
+
+        @Override
+        public void onConnected() {
+            if(isNetError){
+                getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(HomeActivity.this, "连接成功", Toast.LENGTH_SHORT).show();
+                        isNetError = false;
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onDisconnected(final int error) {
+            isNetError = true;
+            executors.execute(new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      getHandler().post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        if (error == EMError.USER_REMOVED) {
+                                                            // 显示帐号已经被移除
+                                                            Toast.makeText(getApplicationContext(), "显示帐号已经被移除", Toast.LENGTH_SHORT).show();
+                                                        } else if (error == EMError.CONNECTION_CONFLICT) {
+                                                            Toast.makeText(getApplicationContext(), "显示帐号在其他设备登录", Toast.LENGTH_SHORT).show();
+                                                            // 显示帐号在其他设备登录
+                                                        } else if (!SystemUtils.getInstance(getApplicationContext()).isNetConn()) {
+                                                            //当前网络不可用，请检查网络设置
+                                                            Toast.makeText(getApplicationContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
+                                                        } else if (!NetUtils.hasNetwork(getApplicationContext())) {
+                                                            Toast.makeText(getApplicationContext(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
+                                                            //连接不到聊天服务器
+                                                        }
+                                                    }
+                                                }
+                                      );
+                                  }
+                              }
+            );
         }
     }
 

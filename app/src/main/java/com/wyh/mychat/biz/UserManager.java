@@ -245,7 +245,6 @@ public class UserManager {
 
     public interface RegisterListener {
         void Error(String content);
-
         void success();
     }
 
