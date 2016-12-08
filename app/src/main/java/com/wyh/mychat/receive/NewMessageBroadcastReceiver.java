@@ -11,6 +11,9 @@ import android.util.Log;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMMessage;
+import com.wyh.mychat.biz.DBManager;
+import com.wyh.mychat.biz.UserManager;
+import com.wyh.mychat.util.CommonUtil;
 
 /**
  * 消息送达BroadcastReceiver
@@ -29,5 +32,10 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
         //更方便的方法是通过msgId直接获取整个message
         EMMessage message = EMChatManager.getInstance().getMessage(msgId);
         EMChatManager.getInstance().getNewMessageBroadcastAction();
+
+        DBManager.getDbManager(context).createReceivedTextMsg(UserManager.getUserManager(context).loadUserName()
+                ,msgFrom
+                ,message.getBody().toString()
+                , CommonUtil.getTimeLong());
     }
 }

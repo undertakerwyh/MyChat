@@ -15,6 +15,7 @@ import com.wyh.mychat.adapter.ViewHolder;
 import com.wyh.mychat.base.BaseActivity;
 import com.wyh.mychat.biz.DBManager;
 import com.wyh.mychat.biz.SendManager;
+import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.util.TimeNoteUtil;
@@ -77,7 +78,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         setXListView();
         DBManager.getDbManager(getApplicationContext()).setUpdateListener(this);
         /**初始化数据*/
-        DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,lvTalkMessage.getCount()-1);
+        DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,true);
 
     }
 
@@ -86,7 +87,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onRefresh() {
                 /**更新数据*/
-                DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,lvTalkMessage.getCount()-1);
+                DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,false);
             }
         });
     }
@@ -126,13 +127,13 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
     private void mySendMessage(String content) {
         if(!TextUtils.isEmpty(content)) {
-            Message message = new Message(name,CommonUtil.getTime(), content, CommonUtil.TYPE_RIGHT);
+            Message message = new Message(name,CommonUtil.getTimeLong(), content, CommonUtil.TYPE_RIGHT);
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
-            String time = timeNoteUtil.sendStart(Long.parseLong(message.getTime()));
+            String time = timeNoteUtil.sendStart(message.getTime());
             if (time!=null||isFirst) {
                 isFirst=false;
-                Message timeMsg = new Message(null, null,CommonUtil.getTimeSelect(Long.parseLong(message.getTime())), CommonUtil.TYPE_TIME);
-                DBManager.getDbManager(this).setTime(Long.parseLong(message.getTime()));
+                Message timeMsg = new Message(null,0,CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
+                DBManager.getDbManager(this).setTime(message.getTime());
                 adapter.addDataUpdate(timeMsg);
             }
             adapter.addDataUpdate(message);
@@ -159,6 +160,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                     adapter.notifyDataSetChanged();
                 }
             });
+            DBManager.getDbManager(getApplicationContext()).createSentTextMsg(name
+                    , UserManager.getUserManager(getApplicationContext()).loadUserName()
+                    ,message.getContent(),message.getTime());
         }
     }
 

@@ -6,18 +6,26 @@ package com.wyh.mychat.entity;
 
 public class Message {
     private String name;
-    private String time;
+    private long time;
     private String content;
+    private int type;
+    private int errorType = 0;
 
 
+    public long getTime() {
+        return time;
+    }
 
-    private int errorType=0;
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+
     /**
      * 0为自己发送的信息,1为对方发送的信息.
      */
-    private int type;
 
-    public Message(String name, String time, String content, int type) {
+    public Message(String name, long time, String content, int type) {
         this.name = name;
         this.time = time;
         this.content = content;
@@ -48,14 +56,6 @@ public class Message {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
     public String getContent() {

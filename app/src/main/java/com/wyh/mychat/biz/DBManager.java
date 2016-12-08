@@ -1,11 +1,16 @@
 package com.wyh.mychat.biz;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMConversation;
+import com.easemob.chat.EMMessage;
+import com.easemob.chat.TextMessageBody;
 import com.wyh.mychat.entity.Message;
+import com.wyh.mychat.util.CommonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +28,12 @@ public class DBManager {
     private static DBManager dbManager = null;
     private static MySQLite mySQLite;
     private static SQLiteDatabase sqLiteDatabase;
+    private static Context contexts;
     private boolean istrue = true;
+
     /**
      * 记录加载数据的编号
      */
-    private int maxId = -1;
 
     public long getTime() {
         return time;
@@ -43,7 +49,7 @@ public class DBManager {
     /**
      * 过去消息加载条数
      */
-    public static final int loadNum = 18;
+    public static final int loadNum = 20;
 
     public void setUpdateListener(UpdateListener updateListener) {
         this.updateListener = updateListener;
@@ -57,6 +63,7 @@ public class DBManager {
             synchronized (context){
                 dbManager = new DBManager();
             }
+            contexts = context;
             mySQLite = new MySQLite(context,DBNAME,null,VERSION);
             sqLiteDatabase = mySQLite.getWritableDatabase();
         }
@@ -71,58 +78,57 @@ public class DBManager {
     public void saveMessage(Message message){
         if(isFirst){
             isFirst = false;
-            time = Long.parseLong(message.getTime());
+            time = message.getTime();
         }
         String name = message.getName();
         String content = message.getContent();
-        String time = message.getTime();
+        long time = message.getTime();
         int type = message.getType();
-        sqLiteDatabase.execSQL("insert into Message (name,content,time,type) values (?,?,?,?)",new Object[]{name,content,time,type});
+//        sqLiteDatabase.execSQL("insert into Message (name,content,time,type) values (?,?,?,?)",new Object[]{name,content,time,type});
+        createSentTextMsg(name,UserManager.getUserManager(contexts).loadUserName(),content,time);
     }
-    private int maxLoad;
+    private String msgId;
 
     /**
      * 加载数据内容
      * @param name 加载好友名
-     * @param size 当前加载的条数,判断是否与数据库同步
      */
-    public void loadMessageDESC(final String name, final int size){
+    public void loadMessageDESC(final String name,boolean isDBInit){
+        EMConversation conversation = EMChatManager.getInstance().getConversation(name);
         final List<Message> list = new ArrayList<>();
+        List<EMMessage> messages=null;
+        if(isDBInit) {
+            messages = conversation.getAllMessages();
+            Log.e("AAA","true");
+        }else{
+            messages =  conversation.loadMoreMsgFromDB(msgId,loadNum);
+            Log.e("AAA","false");
+        }
         ExecutorService executorService = Executors.newCachedThreadPool();
+        final List<EMMessage> finalMessages = messages;
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                int loop =0;
-                String nameLoad;
-                int idLoad;
-                int typeLoad;
-                String timeLoad;
-                String contentLoad;
-                Cursor cursor = sqLiteDatabase.rawQuery("select * from Message order by id DESC",null);
-                if(cursor.moveToFirst()){
-                    do {
-                        nameLoad = cursor.getString(cursor.getColumnIndex("name"));
-                        idLoad = cursor.getInt(cursor.getColumnIndex("id"));
-                        if(maxLoad<idLoad){
-                            maxLoad = idLoad;
-                        }
-                        if(maxLoad>size) {
-                            if (name.equals(nameLoad) && (idLoad < maxId || istrue) && loop < loadNum) {
-                                typeLoad = cursor.getType(cursor.getColumnIndex("type"));
-                                timeLoad = cursor.getString(cursor.getColumnIndex("time"));
-                                if (istrue) {
-                                    isFirst = false;
-                                    time = Long.parseLong(timeLoad);
-                                }
-                                contentLoad = cursor.getString(cursor.getColumnIndex("content"));
-                                Message message = new Message(nameLoad, timeLoad, contentLoad, typeLoad);
-                                list.add(0, message);
-                                istrue = false;
-                                maxId = idLoad;
-                                loop++;
-                            }
-                        }
-                    }while (cursor.moveToNext());
+                boolean isFirst = true;
+                for(EMMessage emMessage: finalMessages){
+                    String name = emMessage.getFrom();
+                    long time = emMessage.getMsgTime();
+                    String msgBody = emMessage.getBody().toString();
+                    String []msgType =msgBody.split(":");
+                    String content = null;
+                    if(msgType[0].equals("txt")){
+                        content = msgType[1].substring(msgType[1].indexOf("\"")+1,msgType[1].lastIndexOf("\""));
+                    }
+                    int type = CommonUtil.TYPE_LEFT;
+                    if(name.equals(UserManager.getUserManager(contexts).loadUserName())){
+                        type = CommonUtil.TYPE_RIGHT;
+                    }
+                    Message message = new Message(name,time,content,type);
+                    list.add(message);
+                    if(isFirst){
+                        msgId = emMessage.getMsgId();
+                        isFirst = false;
+                    }
                 }
                 updateListener.complete(list);
             }
@@ -161,5 +167,25 @@ public class DBManager {
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
         }
+    }
+    public EMMessage createSentTextMsg(String to,String from,String content,long time) {
+        EMMessage msg = EMMessage.createSendMessage(EMMessage.Type.TXT);
+        TextMessageBody body = new TextMessageBody(content);
+        msg.addBody(body);
+        msg.setTo(to);
+        msg.setFrom(from);
+        msg.setMsgTime(time);
+        return msg;
+    }
+
+    //创建一条接收TextMsg
+    public EMMessage createReceivedTextMsg(String to,String from,String content,long time) {
+        EMMessage msg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
+        TextMessageBody body = new TextMessageBody(content);
+        msg.addBody(body);
+        msg.setFrom(from);
+        msg.setTo(to);
+        msg.setMsgTime(time);
+        return msg;
     }
 }
