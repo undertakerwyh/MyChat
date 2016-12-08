@@ -1,8 +1,6 @@
 package com.wyh.mychat.biz;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.easemob.chat.EMChatManager;
@@ -26,8 +24,6 @@ public class DBManager {
     private final static String DBNAME = "Message.db";
     private final static int VERSION = 1;
     private static DBManager dbManager = null;
-    private static MySQLite mySQLite;
-    private static SQLiteDatabase sqLiteDatabase;
     private static Context contexts;
     private boolean istrue = true;
 
@@ -36,15 +32,17 @@ public class DBManager {
      */
 
     public long getTime() {
-        return time;
+        return saveTime;
     }
 
     public void setTime(long time) {
-        DBManager.time = time;
+        DBManager.saveTime = time;
     }
 
-    /**记录第一条数据的时间*/
-    private static long time = 0;
+    /**
+     * 记录第一条数据的时间
+     */
+    private static long saveTime = 0;
 
     /**
      * 过去消息加载条数
@@ -58,74 +56,100 @@ public class DBManager {
     private UpdateListener updateListener;
 
 
-    public static DBManager getDbManager(Context context){
-        if(dbManager==null){
-            synchronized (context){
+    public static DBManager getDbManager(Context context) {
+        if (dbManager == null) {
+            synchronized (context) {
                 dbManager = new DBManager();
             }
             contexts = context;
-            mySQLite = new MySQLite(context,DBNAME,null,VERSION);
-            sqLiteDatabase = mySQLite.getWritableDatabase();
         }
         return dbManager;
     }
+
+
     private boolean isFirst = true;
 
     /**
      * 保存发送信息
+     *
      * @param message 实体类,保存string类型的发送名,内容和发送时间
      */
-    public void saveMessage(Message message){
-        if(isFirst){
+    public void saveMessage(Message message) {
+        if (isFirst) {
             isFirst = false;
-            time = message.getTime();
+            saveTime = message.getTime();
         }
         String name = message.getName();
         String content = message.getContent();
         long time = message.getTime();
         int type = message.getType();
-//        sqLiteDatabase.execSQL("insert into Message (name,content,time,type) values (?,?,?,?)",new Object[]{name,content,time,type});
-        createSentTextMsg(name,UserManager.getUserManager(contexts).loadUserName(),content,time);
+        createSentTextMsg(name, UserManager.getUserManager(contexts).loadUserName(), content, time);
     }
+
     private String msgId;
+
+    public void setFirstLoad(boolean firstLoad) {
+        isFirstLoad = firstLoad;
+    }
+
+    private boolean isFirstLoad = true;
+
+    private String saveName;
+    private boolean isSaveNull = true;
 
     /**
      * 加载数据内容
+     *
      * @param name 加载好友名
      */
-    public void loadMessageDESC(final String name,boolean isDBInit){
+    public void loadMessageDESC(final String name, boolean isDBInit) {
         EMConversation conversation = EMChatManager.getInstance().getConversation(name);
         final List<Message> list = new ArrayList<>();
-        List<EMMessage> messages=null;
-        if(isDBInit) {
+        List<EMMessage> messages = null;
+        if(isDBInit){
             messages = conversation.getAllMessages();
-            Log.e("AAA","true");
+            Log.e("DBManager", "messages.size():" + messages.size());
+            if (messages.size() < 20) {
+                isFirstLoad = true;
+            }else{
+                msgId = messages.get(0).getMsgId();
+                isFirstLoad = false;
+            }
         }else{
-            messages =  conversation.loadMoreMsgFromDB(msgId,loadNum);
-            Log.e("AAA","false");
+            if (isFirstLoad) {
+                updateListener.complete(list);
+                return;
+            }
+            messages = conversation.loadMoreMsgFromDB(msgId, loadNum);
         }
+
         ExecutorService executorService = Executors.newCachedThreadPool();
         final List<EMMessage> finalMessages = messages;
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 boolean isFirst = true;
-                for(EMMessage emMessage: finalMessages){
+                for (EMMessage emMessage : finalMessages) {
                     String name = emMessage.getFrom();
                     long time = emMessage.getMsgTime();
                     String msgBody = emMessage.getBody().toString();
-                    String []msgType =msgBody.split(":");
+                    String[] msgType = msgBody.split(":");
                     String content = null;
-                    if(msgType[0].equals("txt")){
-                        content = msgType[1].substring(msgType[1].indexOf("\"")+1,msgType[1].lastIndexOf("\""));
+                    if (istrue) {
+                        isFirst = false;
+                        saveTime = time;
+                    }
+                    istrue = false;
+                    if (msgType[0].equals("txt")) {
+                        content = msgType[1].substring(msgType[1].indexOf("\"") + 1, msgType[1].lastIndexOf("\""));
                     }
                     int type = CommonUtil.TYPE_LEFT;
-                    if(name.equals(UserManager.getUserManager(contexts).loadUserName())){
+                    if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
                         type = CommonUtil.TYPE_RIGHT;
                     }
-                    Message message = new Message(name,time,content,type);
+                    Message message = new Message(name, time, content, type);
                     list.add(message);
-                    if(isFirst){
+                    if (isFirst) {
                         msgId = emMessage.getMsgId();
                         isFirst = false;
                     }
@@ -134,41 +158,19 @@ public class DBManager {
             }
         });
     }
-    public void DBClose(){
+
+    public void DBClose() {
         istrue = true;
     }
 
     /**
      * 更新加载数据的回调接口
      */
-    public interface UpdateListener{
-        void complete(List<Message>list);
-    }
-    public static void DeleteData(){
-        sqLiteDatabase.execSQL("delete from Message where id>?",new String []{"0"});
+    public interface UpdateListener {
+        void complete(List<Message> list);
     }
 
-    /**
-     * 数据库初始化
-     */
-    static class MySQLite extends SQLiteOpenHelper {
-        private static final String Message = "create table Message(id integer primary key autoincrement,name text,content text,time text,type integer)";
-
-        public MySQLite(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-            super(context, name, factory, version);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase sqLiteDatabase) {
-            sqLiteDatabase.execSQL(Message);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
-        }
-    }
-    public EMMessage createSentTextMsg(String to,String from,String content,long time) {
+    public EMMessage createSentTextMsg(String to, String from, String content, long time) {
         EMMessage msg = EMMessage.createSendMessage(EMMessage.Type.TXT);
         TextMessageBody body = new TextMessageBody(content);
         msg.addBody(body);
@@ -179,7 +181,7 @@ public class DBManager {
     }
 
     //创建一条接收TextMsg
-    public EMMessage createReceivedTextMsg(String to,String from,String content,long time) {
+    public EMMessage createReceivedTextMsg(String to, String from, String content, long time) {
         EMMessage msg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
         TextMessageBody body = new TextMessageBody(content);
         msg.addBody(body);

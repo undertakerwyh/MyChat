@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.easemob.EMCallBack;
+import com.easemob.chat.EMMessage;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
@@ -17,6 +18,7 @@ import com.wyh.mychat.biz.DBManager;
 import com.wyh.mychat.biz.SendManager;
 import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.entity.Message;
+import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
 import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.util.TimeNoteUtil;
 import com.wyh.mychat.view.ActionBar;
@@ -28,7 +30,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TalkActivity extends BaseActivity implements View.OnClickListener, DBManager.UpdateListener {
+public class TalkActivity extends BaseActivity implements View.OnClickListener, DBManager.UpdateListener, NewMessageBroadcastReceiver.NewMessageTalk {
 
     @Bind(R.id.action_bar)
     ActionBar actionBar;
@@ -47,13 +49,15 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             super.handleMessage(msg);
             switch (msg.what){
                 case 1:
-                    int startIndex = adapter.getDataList().size();
-                    adapter.addDataToAdapterHead((List<Message>) msg.obj);
-                    int endIndex = adapter.getDataList().size();
-                    if(endIndex==startIndex){
-                        lvTalkMessage.setSelection(0);
-                    }else{
-                        lvTalkMessage.setSelection(endIndex-startIndex+1);
+                    if(((List<Message>)msg.obj).size()>0){
+                        int startIndex = adapter.getDataList().size();
+                        adapter.addDataToAdapterHead((List<Message>) msg.obj);
+                        int endIndex = adapter.getDataList().size();
+                        if(endIndex==startIndex){
+                            lvTalkMessage.setSelection(0);
+                        }else{
+                            lvTalkMessage.setSelection(endIndex-startIndex+1);
+                        }
                     }
                     lvTalkMessage.stopRefresh();
                     break;
@@ -79,7 +83,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         DBManager.getDbManager(getApplicationContext()).setUpdateListener(this);
         /**初始化数据*/
         DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,true);
-
+        NewMessageBroadcastReceiver.setNewMessageTalk(this);
     }
 
     private void setXListView() {
@@ -113,7 +117,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.btn_send:
                 String content = edInputMessage.getText().toString();
-                mySendMessage(content);
+                mySendMessage(content,CommonUtil.TYPE_RIGHT);
                 edInputMessage.setText("");
                 break;
         }
@@ -124,10 +128,11 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     protected void onDestroy() {
         super.onDestroy();
         DBManager.getDbManager(getApplicationContext()).DBClose();
+        DBManager.getDbManager(getApplicationContext()).setFirstLoad(false);
     }
-    private void mySendMessage(String content) {
+    private void mySendMessage(String content,int type) {
         if(!TextUtils.isEmpty(content)) {
-            Message message = new Message(name,CommonUtil.getTimeLong(), content, CommonUtil.TYPE_RIGHT);
+            Message message = new Message(name,CommonUtil.getTimeLong(), content,type);
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
             String time = timeNoteUtil.sendStart(message.getTime());
             if (time!=null||isFirst) {
@@ -138,31 +143,34 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             }
             adapter.addDataUpdate(message);
             lvTalkMessage.setSelection(adapter.getDataList().size());
-            SendManager.getSendMessage(this).sendTextMessage(name, content, new EMCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.e("AAA","onSuccess");
-                    adapter.getDataList().get(adapter.getCount()-1).setErrorType(CommonUtil.SEND_SUCCESS);
-                    adapter.notifyDataSetChanged();
-                }
+            if(type ==CommonUtil.TYPE_RIGHT) {
+                SendManager.getSendMessage(this).sendTextMessage(name, content, new EMCallBack() {
+                    @Override
+                    public void onSuccess() {
+                        Log.e("AAA", "onSuccess");
+                        adapter.getDataList().get(adapter.getCount() - 1).setErrorType(CommonUtil.SEND_SUCCESS);
+                        adapter.notifyDataSetChanged();
+                    }
 
-                @Override
-                public void onError(int i, String s) {
-                    Log.e("AAA","onError");
-                    adapter.getDataList().get(adapter.getCount()-1).setErrorType(CommonUtil.SEND_ERROR);
-                    adapter.notifyDataSetChanged();
-                }
+                    @Override
+                    public void onError(int i, String s) {
+                        Log.e("AAA", "onError");
+                        adapter.getDataList().get(adapter.getCount() - 1).setErrorType(CommonUtil.SEND_ERROR);
+                        adapter.notifyDataSetChanged();
+                    }
 
-                @Override
-                public void onProgress(int i, String s) {
-                    Log.e("AAA","onProgress");
-                    adapter.getDataList().get(adapter.getCount()-1).setErrorType(CommonUtil.SEND_LOAD);
-                    adapter.notifyDataSetChanged();
-                }
-            });
-            DBManager.getDbManager(getApplicationContext()).createSentTextMsg(name
-                    , UserManager.getUserManager(getApplicationContext()).loadUserName()
-                    ,message.getContent(),message.getTime());
+                    @Override
+                    public void onProgress(int i, String s) {
+                        Log.e("AAA", "onProgress");
+                        adapter.getDataList().get(adapter.getCount() - 1).setErrorType(CommonUtil.SEND_LOAD);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                DBManager.getDbManager(getApplicationContext()).createSentTextMsg(name
+                        , UserManager.getUserManager(getApplicationContext()).loadUserName()
+                        ,message.getContent(),message.getTime());
+            }
+
         }
     }
 
@@ -172,5 +180,22 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         message.what = 1;
         message.obj = list;
         handler.sendMessage(message);
+    }
+
+    @Override
+    public void update(EMMessage mMMessage) {
+        String msgBody = mMMessage.getBody().toString();
+        String []msgType =msgBody.split(":");
+        String content = null;
+        if(msgType[0].equals("txt")){
+            content = msgType[1].substring(msgType[1].indexOf("\"")+1,msgType[1].lastIndexOf("\""));
+        }
+        final String finalContent = content;
+        lvTalkMessage.post(new Runnable() {
+            @Override
+            public void run() {
+                mySendMessage(finalContent,CommonUtil.TYPE_LEFT);
+            }
+        });
     }
 }

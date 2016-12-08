@@ -19,6 +19,11 @@ import com.wyh.mychat.util.CommonUtil;
  * 消息送达BroadcastReceiver
  */
 public class NewMessageBroadcastReceiver extends BroadcastReceiver {
+    public static void setNewMessageTalk(NewMessageTalk newMessageTalk) {
+        NewMessageBroadcastReceiver.newMessageTalk = newMessageTalk;
+    }
+
+    private static NewMessageTalk newMessageTalk;
     @Override
     public void onReceive(Context context, Intent intent) {
         //消息id
@@ -32,10 +37,16 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
         //更方便的方法是通过msgId直接获取整个message
         EMMessage message = EMChatManager.getInstance().getMessage(msgId);
         EMChatManager.getInstance().getNewMessageBroadcastAction();
-
+        newMessageTalk.update(message);
         DBManager.getDbManager(context).createReceivedTextMsg(UserManager.getUserManager(context).loadUserName()
                 ,msgFrom
                 ,message.getBody().toString()
                 , CommonUtil.getTimeLong());
+    }
+    public interface NewMessageTalk{
+        void update(EMMessage message);
+    }
+    public interface NewMessageHome{
+        void update();
     }
 }
