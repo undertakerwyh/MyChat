@@ -1,5 +1,7 @@
 package com.wyh.mychat.activity;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -42,20 +44,20 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     XListView lvTalkMessage;
     private UniversalAdapter<Message> adapter;
     private String name;
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
-                    if(((List<Message>)msg.obj).size()>0){
+                    if (((List<Message>) msg.obj).size() > 0) {
                         int startIndex = adapter.getDataList().size();
                         adapter.addDataToAdapterHead((List<Message>) msg.obj);
                         int endIndex = adapter.getDataList().size();
-                        if(endIndex==startIndex){
+                        if (endIndex == startIndex) {
                             lvTalkMessage.setSelection(0);
-                        }else{
-                            lvTalkMessage.setSelection(endIndex-startIndex+1);
+                        } else {
+                            lvTalkMessage.setSelection(endIndex - startIndex + 1);
                         }
                     }
                     lvTalkMessage.stopRefresh();
@@ -81,7 +83,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         setXListView();
         DBManager.getDbManager(getApplicationContext()).setUpdateListener(this);
         /**初始化数据*/
-        DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,true);
+        DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name, true);
         NewMessageBroadcastReceiver.setNewMessageTalk(this);
     }
 
@@ -90,7 +92,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onRefresh() {
                 /**更新数据*/
-                DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,false);
+                DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name, false);
+
                 TimeNoteUtil.getTimeNoteUtil().setRefresh(false);
             }
         });
@@ -102,8 +105,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void assignment(ViewHolder viewHolder, int positon) {
                 Message message = adapter.getDataList().get(positon);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
-                        R.id.tv_chat_right,R.id.tv_time_text, message.getContent(), message.getType())
-                            .setSendErrorListener(message.getErrorType());
+                        R.id.tv_chat_right, R.id.tv_time_text, message.getContent(), message.getType())
+                        .setSendErrorListener(message.getErrorType());
             }
         };
     }
@@ -116,8 +119,13 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 finish();
                 break;
             case R.id.btn_send:
-                String content = edInputMessage.getText().toString();
-                mySendMessage(content,CommonUtil.TYPE_RIGHT);
+                final String content = edInputMessage.getText().toString();
+                lvTalkMessage.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mySendMessage(content, CommonUtil.TYPE_RIGHT);
+                    }
+                });
                 edInputMessage.setText("");
                 break;
         }
@@ -129,19 +137,21 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         DBManager.getDbManager(getApplicationContext()).DBClose();
         DBManager.getDbManager(getApplicationContext()).setFirstLoad(false);
     }
-    private void mySendMessage(String content,int type) {
-        if(!TextUtils.isEmpty(content)) {
-            Message message = new Message(name,CommonUtil.getTimeLong(), content,type);
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void mySendMessage(String content, int type) {
+        if (!TextUtils.isEmpty(content)) {
+            Message message = new Message(name, CommonUtil.getTimeLong(), content, type);
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
             String time = TimeNoteUtil.getTimeNoteUtil().sendStart(message.getTime());
-            if (time!=null) {
-                Message timeMsg = new Message(null,0,CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
+            if (time != null) {
+                Message timeMsg = new Message(null, 0, CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
                 DBManager.getDbManager(this).setTime(message.getTime());
                 adapter.addDataUpdate(timeMsg);
             }
             adapter.addDataUpdate(message);
-            lvTalkMessage.setSelection(adapter.getDataList().size());
-            if(type ==CommonUtil.TYPE_RIGHT) {
+            lvTalkMessage.setSelection(lvTalkMessage.getCount()-1);
+            if (type == CommonUtil.TYPE_RIGHT) {
                 SendManager.getSendMessage(this).sendTextMessage(name, content, new EMCallBack() {
                     @Override
                     public void onSuccess() {
@@ -166,7 +176,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 });
                 DBManager.getDbManager(getApplicationContext()).createSentTextMsg(name
                         , UserManager.getUserManager(getApplicationContext()).loadUserName()
-                        ,message.getContent(),message.getTime());
+                        , message.getContent(), message.getTime());
             }
 
         }
@@ -183,16 +193,16 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void update(EMMessage mMMessage) {
         String msgBody = mMMessage.getBody().toString();
-        String []msgType =msgBody.split(":");
+        String[] msgType = msgBody.split(":");
         String content = null;
-        if(msgType[0].equals("txt")){
-            content = msgType[1].substring(msgType[1].indexOf("\"")+1,msgType[1].lastIndexOf("\""));
+        if (msgType[0].equals("txt")) {
+            content = msgType[1].substring(msgType[1].indexOf("\"") + 1, msgType[1].lastIndexOf("\""));
         }
         final String finalContent = content;
         lvTalkMessage.post(new Runnable() {
             @Override
             public void run() {
-                mySendMessage(finalContent,CommonUtil.TYPE_LEFT);
+                mySendMessage(finalContent, CommonUtil.TYPE_LEFT);
             }
         });
     }
