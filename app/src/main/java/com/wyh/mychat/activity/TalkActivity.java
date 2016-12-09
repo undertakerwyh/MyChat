@@ -62,6 +62,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                     }
                     lvTalkMessage.stopRefresh();
                     break;
+                case 2:
+                    adapter.notifyDataSetChanged();
             }
         }
     };
@@ -93,7 +95,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void onRefresh() {
                 /**更新数据*/
                 DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name, false);
-
                 TimeNoteUtil.getTimeNoteUtil().setRefresh(false);
             }
         });
@@ -157,21 +158,21 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                     public void onSuccess() {
                         Log.e("AAA", "onSuccess");
                         adapter.getDataList().get(adapter.getCount() - 1).setErrorType(CommonUtil.SEND_SUCCESS);
-                        adapter.notifyDataSetChanged();
+                        handler.sendEmptyMessage(2);
                     }
 
                     @Override
                     public void onError(int i, String s) {
                         Log.e("AAA", "onError");
                         adapter.getDataList().get(adapter.getCount() - 1).setErrorType(CommonUtil.SEND_ERROR);
-                        adapter.notifyDataSetChanged();
+                        handler.sendEmptyMessage(2);
                     }
 
                     @Override
                     public void onProgress(int i, String s) {
                         Log.e("AAA", "onProgress");
                         adapter.getDataList().get(adapter.getCount() - 1).setErrorType(CommonUtil.SEND_LOAD);
-                        adapter.notifyDataSetChanged();
+                        handler.sendEmptyMessage(2);
                     }
                 });
                 DBManager.getDbManager(getApplicationContext()).createSentTextMsg(name

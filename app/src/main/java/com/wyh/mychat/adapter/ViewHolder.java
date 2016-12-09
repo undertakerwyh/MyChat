@@ -69,6 +69,12 @@ public class ViewHolder {
         return this;
     }
 
+    public ViewHolder setViewOnClickListener(int ViewId,View.OnClickListener listener){
+        View view = this.getView(ViewId);
+        view.setOnClickListener(listener);
+        return this;
+    }
+
     public ViewHolder setImageViewContent(int ViewId, Drawable icon) {
         ImageView imageView = this.getView(ViewId);
         imageView.setBackground(icon);
