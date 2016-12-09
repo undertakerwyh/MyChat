@@ -42,7 +42,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     XListView lvTalkMessage;
     private UniversalAdapter<Message> adapter;
     private String name;
-    private TimeNoteUtil timeNoteUtil = new TimeNoteUtil();
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -92,6 +91,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void onRefresh() {
                 /**更新数据*/
                 DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name,false);
+                TimeNoteUtil.getTimeNoteUtil().setRefresh(false);
             }
         });
     }
@@ -122,7 +122,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 break;
         }
     }
-    private boolean isFirst = true;
 
     @Override
     protected void onDestroy() {
@@ -134,9 +133,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         if(!TextUtils.isEmpty(content)) {
             Message message = new Message(name,CommonUtil.getTimeLong(), content,type);
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
-            String time = timeNoteUtil.sendStart(message.getTime());
-            if (time!=null||isFirst) {
-                isFirst=false;
+            String time = TimeNoteUtil.getTimeNoteUtil().sendStart(message.getTime());
+            if (time!=null) {
                 Message timeMsg = new Message(null,0,CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
                 DBManager.getDbManager(this).setTime(message.getTime());
                 adapter.addDataUpdate(timeMsg);

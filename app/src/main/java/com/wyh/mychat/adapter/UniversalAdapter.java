@@ -29,14 +29,10 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
 
     private List<DataType> dataList = new ArrayList<>();
 
-    private TimeNoteUtil timeNoteUtil;
-
-
     public UniversalAdapter(Context context, int layoutRes) {
         this.context = context;
         this.layoutRes = layoutRes;
         LayoutInflater.from(context);
-        timeNoteUtil = new TimeNoteUtil();
     }
 
     @Override
@@ -93,9 +89,9 @@ public abstract class UniversalAdapter<DataType> extends BaseAdapter {
     public void addDataToAdapterHead(List<DataType> list) {
         String time = null;
         List<DataType>dataTypeList = new ArrayList<>();
-        timeNoteUtil.setFirst(true);
+        TimeNoteUtil.getTimeNoteUtil().setFirst(true);
         for(DataType dataType:list){
-            time = timeNoteUtil.start(((Message) dataType).getTime());
+            time = TimeNoteUtil.getTimeNoteUtil().start(((Message) dataType).getTime());
             if(time!=null){
                 Message message = new Message(null,0,time, CommonUtil.TYPE_TIME);
                 dataTypeList.add(dataTypeList.size(),(DataType) message);
