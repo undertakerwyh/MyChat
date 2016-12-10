@@ -1,6 +1,9 @@
 package com.wyh.mychat.biz;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.easemob.chat.EMChatManager;
@@ -26,6 +29,9 @@ public class DBManager {
     private static DBManager dbManager = null;
     private static Context contexts;
     private boolean istrue = true;
+
+    private static SaveNewMessage saveNewMessage = null;
+    private static SQLiteDatabase saveNewMessagedb = null;
 
     /**
      * 记录加载数据的编号
@@ -62,8 +68,46 @@ public class DBManager {
                 dbManager = new DBManager();
             }
             contexts = context;
+            saveNewMessage = new SaveNewMessage(contexts, DBNAME, null, VERSION);
+            saveNewMessagedb = saveNewMessage.getWritableDatabase();
         }
         return dbManager;
+    }
+
+    private DBManager() {
+
+    }
+
+    public void saveNewMessage(Message message) {
+        saveNewMessagedb.execSQL("insert into message(name,content,time) values (?,?,?)", new Object[]{message.getName(), message.getContent(), message.getTime()});
+    }
+    public void changeNewMessage(Message message){
+        saveNewMessagedb.execSQL("update message set content = ? , time = ? where name = ?",new Object[]{message.getContent(),message.getTime(),message.getName()});
+    }
+
+    public List<Message> loadNewMessage() {
+        List<Message> list = new ArrayList<>();
+        Cursor cursor = saveNewMessagedb.rawQuery("select * from message", null);
+        String name = null;
+        long time = 0;
+        String content = null;
+        int type;
+        if (cursor.moveToFirst()) {
+            do {
+                name = cursor.getString(cursor.getColumnIndex("name"));
+                time = cursor.getInt(cursor.getColumnIndex("time"));
+                Log.e("AAA",time+"=========time");
+                content = cursor.getString(cursor.getColumnIndex("content"));
+                if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
+                    type = CommonUtil.TYPE_RIGHT;
+                } else {
+                    type = CommonUtil.TYPE_LEFT;
+                }
+                Message message = new Message(name, time, content, type);
+                list.add(message);
+            } while (cursor.moveToNext());
+        }
+        return list;
     }
 
 
@@ -106,16 +150,16 @@ public class DBManager {
         EMConversation conversation = EMChatManager.getInstance().getConversation(name);
         final List<Message> list = new ArrayList<>();
         List<EMMessage> messages = null;
-        if(isDBInit){
+        if (isDBInit) {
             messages = conversation.getAllMessages();
             Log.e("DBManager", "messages.size():" + messages.size());
             if (messages.size() < 20) {
                 isFirstLoad = true;
-            }else{
+            } else {
                 msgId = messages.get(0).getMsgId();
                 isFirstLoad = false;
             }
-        }else{
+        } else {
             if (isFirstLoad) {
                 updateListener.complete(list);
                 return;
@@ -189,5 +233,24 @@ public class DBManager {
         msg.setTo(to);
         msg.setMsgTime(time);
         return msg;
+    }
+
+    static class SaveNewMessage extends SQLiteOpenHelper {
+
+        private final static String NEW_MESSAGE = "create table message(id integer primary key autoincrement,name text,content text,time real)";
+
+        public SaveNewMessage(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+            super(context, name, factory, version);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL(NEW_MESSAGE);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        }
     }
 }

@@ -41,8 +41,8 @@
                 android:id="@+id/tv_chat_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:gravity="top"
+                android:layout_gravity="start"
+                android:layout_marginRight="@dimen/tv_time_marginRight"
                 android:text="日期"
                 android:textSize="@dimen/tv_time_size" />
         </LinearLayout>

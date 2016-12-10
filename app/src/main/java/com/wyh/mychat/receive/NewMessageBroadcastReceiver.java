@@ -23,6 +23,11 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
         NewMessageBroadcastReceiver.newMessageTalk = newMessageTalk;
     }
 
+    public static void setNewMessageHome(NewMessageHome newMessageHome) {
+        NewMessageBroadcastReceiver.newMessageHome = newMessageHome;
+    }
+
+    private static NewMessageHome newMessageHome;
     private static NewMessageTalk newMessageTalk;
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -37,16 +42,17 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
         //更方便的方法是通过msgId直接获取整个message
         EMMessage message = EMChatManager.getInstance().getMessage(msgId);
         EMChatManager.getInstance().getNewMessageBroadcastAction();
-        newMessageTalk.update(message);
+//        newMessageTalk.updateTalk(message);
+        newMessageHome.updateHome(message);
         DBManager.getDbManager(context).createReceivedTextMsg(UserManager.getUserManager(context).loadUserName()
                 ,msgFrom
                 ,message.getBody().toString()
                 , CommonUtil.getTimeLong());
     }
     public interface NewMessageTalk{
-        void update(EMMessage message);
+        void updateTalk(EMMessage message);
     }
     public interface NewMessageHome{
-        void update();
+        void updateHome(EMMessage emMessage);
     }
 }

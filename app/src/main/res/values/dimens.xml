@@ -79,6 +79,8 @@
     <dimen name="tv_content_size">20sp</dimen>
     <!--时间显示字体大小-->
     <dimen name="tv_time_size">15sp</dimen>
+    <!--时间显示距离右边的距离-->
+    <dimen name="tv_time_marginRight">5dp</dimen>
 
     <!--.................................contaactsFragment.................................-->
     <!--好友列表的item高-->

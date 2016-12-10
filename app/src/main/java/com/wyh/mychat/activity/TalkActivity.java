@@ -189,7 +189,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void update(EMMessage mMMessage) {
+    public void updateTalk(EMMessage mMMessage) {
         String msgBody = mMMessage.getBody().toString();
         String[] msgType = msgBody.split(":");
         String content = null;

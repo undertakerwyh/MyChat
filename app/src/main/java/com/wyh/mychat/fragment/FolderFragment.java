@@ -79,7 +79,6 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     /**
