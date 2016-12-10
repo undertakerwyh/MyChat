@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -304,23 +305,25 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,U
     private void FriendOnClickEvent(View view) {
         ImageView imageView = (ImageView) view.findViewById(R.id.iv_send_request);
         final EditText userName = (EditText) view.findViewById(R.id.et_friend_name);
-        final EditText content = (EditText) view.findViewById(R.id.et_friend_content);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name = userName.getText().toString();
-                String request = content.getText().toString();
-                if(!UserManager.getUserManager(getApplicationContext()).isUserName(name)) {
-                    try {
-                        EMContactManager.getInstance().addContact(name, request);//需异步处理
-                        Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
-                    } catch (EaseMobException e) {
-                        e.printStackTrace();
+                if (!TextUtils.isEmpty(name)) {
+                    if (!UserManager.getUserManager(getApplicationContext()).isUserName(name)) {
+                        try {
+                            EMContactManager.getInstance().addContact(name, null);//需异步处理
+                            Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
+                        } catch (EaseMobException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(HomeActivity.this, "不能对自己帐号发送请求", Toast.LENGTH_SHORT).show();
                     }
+                    friendPop.dismiss();
                 }else{
-                    Toast.makeText(HomeActivity.this, "不能对自己发送请求", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
                 }
-                friendPop.dismiss();
             }
         });
     }

@@ -1,7 +1,5 @@
 package com.wyh.mychat.activity;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -139,7 +137,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         DBManager.getDbManager(getApplicationContext()).setFirstLoad(false);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void mySendMessage(String content, int type) {
         if (!TextUtils.isEmpty(content)) {
             Message message = new Message(name, CommonUtil.getTimeLong(), content, type);
