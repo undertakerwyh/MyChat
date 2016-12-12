@@ -79,10 +79,10 @@ public class DBManager {
     }
 
     public void saveNewMessage(Message message) {
-        saveNewMessagedb.execSQL("insert into message(name,content,time) values (?,?,?)", new Object[]{message.getName(), message.getContent(), message.getTime()});
+        saveNewMessagedb.execSQL("insert into message(name,content,time) values (?,?,?)", new Object[]{message.getName(), message.getContent(),String.valueOf(message.getTime()) });
     }
     public void changeNewMessage(Message message){
-        saveNewMessagedb.execSQL("update message set content = ? , time = ? where name = ?",new Object[]{message.getContent(),message.getTime(),message.getName()});
+        saveNewMessagedb.execSQL("update message set content = ? , time = ? where name = ?",new Object[]{message.getContent(),message.getTime(),String.valueOf(message.getTime())});
     }
 
     public List<Message> loadNewMessage() {
@@ -95,8 +95,7 @@ public class DBManager {
         if (cursor.moveToFirst()) {
             do {
                 name = cursor.getString(cursor.getColumnIndex("name"));
-                time = cursor.getInt(cursor.getColumnIndex("time"));
-                Log.e("AAA",time+"=========time");
+                time = Long.parseLong(cursor.getString(cursor.getColumnIndex("time")));
                 content = cursor.getString(cursor.getColumnIndex("content"));
                 if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
                     type = CommonUtil.TYPE_RIGHT;
@@ -237,7 +236,7 @@ public class DBManager {
 
     static class SaveNewMessage extends SQLiteOpenHelper {
 
-        private final static String NEW_MESSAGE = "create table message(id integer primary key autoincrement,name text,content text,time real)";
+        private final static String NEW_MESSAGE = "create table message(id integer primary key autoincrement,name text,content text,time text)";
 
         public SaveNewMessage(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
             super(context, name, factory, version);
