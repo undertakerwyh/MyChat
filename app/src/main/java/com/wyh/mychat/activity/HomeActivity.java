@@ -36,11 +36,13 @@ import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
 import com.wyh.mychat.util.PageChangeAnimUtil;
 import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.view.ActionBar;
+import com.wyh.mychat.view.ListViewBar;
 import com.wyh.mychat.view.PopBar;
 import com.wyh.mychat.view.TouchViewPager;
 import com.wyh.mychat.view.ViewPagerScroller;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,7 +53,7 @@ import butterknife.ButterKnife;
 /**
  * 主界面HomeActivity
  */
-public class HomeActivity extends BaseActivity implements View.OnClickListener, UserManager.ExitListener,NewMessageBroadcastReceiver.NewMessagePop {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, UserManager.ExitListener, NewMessageBroadcastReceiver.NewMessagePop {
 
 
     @Bind(R.id.action_bar)
@@ -68,6 +70,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
      */
     private float maxScreenWidth;
     private PopupWindow pop;
+    private ListViewBar listViewBar;
     private PopupWindow friendPop;
     private PopBar newPop;
     private View view3;
@@ -101,6 +104,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         newPop = new PopBar(this, R.layout.view_new);
         //注册一个监听连接状态的listener
         EMChatManager.getInstance().addConnectionListener(new MyConnectionListener());
+        List<String> list = new ArrayList<>();
+        list.add(getString(R.string.setting_friend));
+        listViewBar = new ListViewBar(this, list, new ListViewBar.ListViewBarListener() {
+            @Override
+            public void onComplete(String name) {
+                listViewBar.dismiss();
+                ShowAddFriend();
+            }
+        });
     }
 
     private void initBroadcastReceiver() {
@@ -167,7 +179,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         getHandler().post(new Runnable() {
             @Override
             public void run() {
-                newPop.showAsDropDown(vpHome,(int)maxScreenWidth/6,newPop.getHeight());
+                newPop.showAsDropDown(vpHome, (int) maxScreenWidth / 6, newPop.getHeight());
             }
         });
     }
@@ -253,8 +265,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         }
     }
-    public void dismissPop(){
-        if(newPop.isShowing()){
+
+    public void dismissPop() {
+        if (newPop.isShowing()) {
             newPop.dismiss();
         }
     }
@@ -271,33 +284,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
      * 显示菜单popwindows
      */
     private void ShowPopwindow() {
-        View view = getLayoutInflater().inflate(R.layout.layout_config, null);
-        popOnClickEvent(view);
-        pop = new PopupWindow(view, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        if (height == 0) {
-            pop.getContentView().measure(0, 0);
-            height = pop.getContentView().getMeasuredHeight();
-        }
-        pop.setFocusable(true);
-        pop.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.color.transparent));
-        pop.setOutsideTouchable(true);
-        pop.showAsDropDown(actionBar, (int) (maxScreenWidth - height - 4), 0);
-    }
-
-    /**
-     * popWindow菜单点击事件
-     *
-     * @param view
-     */
-    private void popOnClickEvent(View view) {
-        LinearLayout friend = (LinearLayout) view.findViewById(R.id.ll_add_friend);
-        friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pop.dismiss();
-                ShowAddFriend();
-            }
-        });
+        listViewBar.showAsDropDown(actionBar, (int) (maxScreenWidth - height - 4), 0);
     }
 
     /**
@@ -327,14 +314,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 String name = userName.getText().toString();
                 if (!TextUtils.isEmpty(name)) {
                     if (!UserManager.getUserManager(getApplicationContext()).isUserName(name)) {
-                        if(!UserManager.getUserManager(getApplicationContext()).isFriendExist(name)) {
+                        if (!UserManager.getUserManager(getApplicationContext()).isFriendExist(name)) {
                             try {
                                 EMContactManager.getInstance().addContact(name, null);//需异步处理
                                 Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
                             } catch (EaseMobException e) {
                                 e.printStackTrace();
                             }
-                        }else{
+                        } else {
                             Toast.makeText(HomeActivity.this, "已是好友", Toast.LENGTH_SHORT).show();
                         }
                     } else {
