@@ -137,6 +137,13 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         DBManager.getDbManager(getApplicationContext()).setFirstLoad(false);
     }
 
+    public static void setMySendUpdate(MySendUpdate mySendUpdate) {
+        TalkActivity.mySendUpdate = mySendUpdate;
+    }
+
+    private static MySendUpdate mySendUpdate;
+
+
     private void mySendMessage(String content, int type) {
         if (!TextUtils.isEmpty(content)) {
             Message message = new Message(name, CommonUtil.getTimeLong(), content, type);
@@ -149,6 +156,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             }
             adapter.addDataUpdate(message);
             lvTalkMessage.setSelection(lvTalkMessage.getCount()-1);
+            mySendUpdate.SendUpdate(message);
             if (type == CommonUtil.TYPE_RIGHT) {
                 SendManager.getSendMessage(this).sendTextMessage(name, content, new EMCallBack() {
                     @Override
@@ -178,6 +186,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             }
 
         }
+    }
+    public interface MySendUpdate{
+        void SendUpdate(Message message);
     }
 
     @Override

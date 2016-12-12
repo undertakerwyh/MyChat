@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/10/20.
  */
 
-public class MessageFragment extends Fragment implements NewMessageBroadcastReceiver.NewMessageHome{
+public class MessageFragment extends Fragment implements NewMessageBroadcastReceiver.NewMessageHome,TalkActivity.MySendUpdate{
     @Bind(R.id.lv_message)
     ListView lvMessage;
     private View view;
@@ -69,6 +69,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         NewMessageBroadcastReceiver.setNewMessageHome(this);
+        TalkActivity.setMySendUpdate(this);
     }
 
     /**
@@ -124,6 +125,27 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             });
         }else{
             Message message = new Message(userName,emMessage.getMsgTime(),content, CommonUtil.TYPE_LEFT);
+            messageHash.put(message.getName(),adapter.getCount()-1);
+            DBManager.getDbManager(getContext()).saveNewMessage(message);
+            adapter.addDataUpdate(message);
+        }
+    }
+
+    @Override
+    public void SendUpdate(Message message) {
+        String userName = message.getName();
+        if(messageHash.containsKey(userName)){
+            Message messageMain = adapter.getDataList().get(messageHash.get(userName));
+            messageMain.setContent(message.getContent());
+            messageMain.setTime(message.getTime());
+            DBManager.getDbManager(getContext()).changeNewMessage(message);
+            lvMessage.post(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+           });
+        }else{
             messageHash.put(message.getName(),adapter.getCount()-1);
             DBManager.getDbManager(getContext()).saveNewMessage(message);
             adapter.addDataUpdate(message);
