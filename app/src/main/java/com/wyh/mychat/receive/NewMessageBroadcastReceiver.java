@@ -42,7 +42,9 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
         //更方便的方法是通过msgId直接获取整个message
         EMMessage message = EMChatManager.getInstance().getMessage(msgId);
         EMChatManager.getInstance().getNewMessageBroadcastAction();
-//        newMessageTalk.updateTalk(message);
+        if(UserManager.getUserManager(context).isTalkSend()) {
+            newMessageTalk.updateTalk(message);
+        }
         newMessageHome.updateHome(message);
         DBManager.getDbManager(context).createReceivedTextMsg(UserManager.getUserManager(context).loadUserName()
                 ,msgFrom

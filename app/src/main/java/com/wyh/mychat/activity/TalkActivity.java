@@ -85,6 +85,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         /**初始化数据*/
         DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name, true);
         NewMessageBroadcastReceiver.setNewMessageTalk(this);
+        UserManager.getUserManager(this).setTalkSend(true);
     }
 
     private void setXListView() {
@@ -135,6 +136,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         super.onDestroy();
         DBManager.getDbManager(getApplicationContext()).DBClose();
         DBManager.getDbManager(getApplicationContext()).setFirstLoad(false);
+        UserManager.getUserManager(this).setTalkSend(false);
     }
 
     public static void setMySendUpdate(MySendUpdate mySendUpdate) {

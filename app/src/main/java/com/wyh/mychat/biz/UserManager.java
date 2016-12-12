@@ -34,6 +34,16 @@ public class UserManager {
     private final String FRIENDNAME = "Friend.db";
     private final int VERSION = 1;
     private Friend friend;
+
+    public boolean isTalkSend() {
+        return isTalkSend;
+    }
+
+    public void setTalkSend(boolean talkSend) {
+        isTalkSend = talkSend;
+    }
+
+    private boolean isTalkSend = false;
     private final SQLiteDatabase sqLiteDatabase;
 
     private UserManager() {
