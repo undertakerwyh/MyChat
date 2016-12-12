@@ -51,7 +51,7 @@ import butterknife.ButterKnife;
 /**
  * 主界面HomeActivity
  */
-public class HomeActivity extends BaseActivity implements View.OnClickListener,UserManager.ExitListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, UserManager.ExitListener {
 
 
     @Bind(R.id.action_bar)
@@ -121,14 +121,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,U
             public void onContactAgreed(String username) {
                 //好友请求被同意
                 contactListener.refresh();
-                Log.d("AAA","onContactAgreed:"+"username:"+username);
+                Log.d("AAA", "onContactAgreed:" + "username:" + username);
             }
 
             @Override
             public void onContactRefused(String username) {
                 //好友请求被拒绝
                 contactListener.refresh();
-                Log.d("AAA","onContactRefused");
+                Log.d("AAA", "onContactRefused");
             }
 
             @Override
@@ -140,14 +140,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,U
                 } catch (EaseMobException e) {
                     e.printStackTrace();
                 }
-                Log.d("AAA","onContactInvited"+"username:"+username+"reason:"+reason);
+                Log.d("AAA", "onContactInvited" + "username:" + username + "reason:" + reason);
             }
 
             @Override
             public void onContactDeleted(List<String> usernameList) {
                 //被删除时回调此方法
                 contactListener.refresh();
-                Log.d("AAA","onContactDeleted");
+                Log.d("AAA", "onContactDeleted");
             }
 
             @Override
@@ -155,15 +155,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,U
                 //增加了联系人时回调此方法
                 if (usernameList.size() > 0) {
                     contactListener.added(usernameList);
-                    UserManager.getUserManager(getApplicationContext()).saveFriendList(usernameList);
                 }
-                Log.d("AAA","onContactAdded:"+usernameList.size());
+                Log.d("AAA", "onContactAdded:" + usernameList.size());
             }
         });
     }
 
     public interface ContactListener {
         void refresh();
+
         void added(List<String> usernameList);
     }
 
@@ -258,14 +258,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,U
         View view = getLayoutInflater().inflate(R.layout.layout_config, null);
         popOnClickEvent(view);
         pop = new PopupWindow(view, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        if(height==0) {
+        if (height == 0) {
             pop.getContentView().measure(0, 0);
             height = pop.getContentView().getMeasuredHeight();
         }
         pop.setFocusable(true);
         pop.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.color.transparent));
         pop.setOutsideTouchable(true);
-        pop.showAsDropDown(actionBar, (int) (maxScreenWidth-height-4),0);
+        pop.showAsDropDown(actionBar, (int) (maxScreenWidth - height - 4), 0);
     }
 
     /**
@@ -311,17 +311,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,U
                 String name = userName.getText().toString();
                 if (!TextUtils.isEmpty(name)) {
                     if (!UserManager.getUserManager(getApplicationContext()).isUserName(name)) {
-                        try {
-                            EMContactManager.getInstance().addContact(name, null);//需异步处理
-                            Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
-                        } catch (EaseMobException e) {
-                            e.printStackTrace();
+                        if(!UserManager.getUserManager(getApplicationContext()).isFriendExist(name)) {
+                            try {
+                                EMContactManager.getInstance().addContact(name, null);//需异步处理
+                                Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
+                            } catch (EaseMobException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            Toast.makeText(HomeActivity.this, "已是好友", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(HomeActivity.this, "不能对自己帐号发送请求", Toast.LENGTH_SHORT).show();
                     }
                     friendPop.dismiss();
-                }else{
+                } else {
                     Toast.makeText(HomeActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -351,7 +355,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,U
     //实现ConnectionListener接口
     private class MyConnectionListener implements EMConnectionListener {
         private ExecutorService executors;
-        private boolean isNetError=false;
+        private boolean isNetError = false;
 
         private MyConnectionListener() {
             executors = Executors.newCachedThreadPool();
@@ -359,7 +363,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,U
 
         @Override
         public void onConnected() {
-            if(isNetError){
+            if (isNetError) {
                 getHandler().post(new Runnable() {
                     @Override
                     public void run() {
@@ -377,33 +381,34 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,U
                                   @Override
                                   public void run() {
                                       getHandler().post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        if (error == EMError.USER_REMOVED) {
-                                                            // 显示帐号已经被移除
-                                                            Toast.makeText(getApplicationContext(), "显示帐号已经被移除", Toast.LENGTH_SHORT).show();
-                                                            UserManager.getUserManager(getApplicationContext()).Exit();
-                                                            UserManager.getUserManager(getApplicationContext()).saveLoginInfo(false,null);
-                                                        } else if (error == EMError.CONNECTION_CONFLICT) {
-                                                            Toast.makeText(getApplicationContext(), "显示帐号在其他设备登录", Toast.LENGTH_SHORT).show();
-                                                            UserManager.getUserManager(getApplicationContext()).Exit();
-                                                            UserManager.getUserManager(getApplicationContext()).saveLoginInfo(false,null);
-                                                            // 显示帐号在其他设备登录
-                                                        } else if (!SystemUtils.getInstance(getApplicationContext()).isNetConn()) {
-                                                            //当前网络不可用，请检查网络设置
-                                                            Toast.makeText(getApplicationContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
-                                                        } else if (!NetUtils.hasNetwork(getApplicationContext())) {
-                                                            Toast.makeText(getApplicationContext(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
-                                                            //连接不到聊天服务器
+                                                            @Override
+                                                            public void run() {
+                                                                if (error == EMError.USER_REMOVED) {
+                                                                    // 显示帐号已经被移除
+                                                                    Toast.makeText(getApplicationContext(), "显示帐号已经被移除", Toast.LENGTH_SHORT).show();
+                                                                    UserManager.getUserManager(getApplicationContext()).Exit();
+                                                                    UserManager.getUserManager(getApplicationContext()).saveLoginInfo(false, null);
+                                                                } else if (error == EMError.CONNECTION_CONFLICT) {
+                                                                    Toast.makeText(getApplicationContext(), "显示帐号在其他设备登录", Toast.LENGTH_SHORT).show();
+                                                                    UserManager.getUserManager(getApplicationContext()).Exit();
+                                                                    UserManager.getUserManager(getApplicationContext()).saveLoginInfo(false, null);
+                                                                    // 显示帐号在其他设备登录
+                                                                } else if (!SystemUtils.getInstance(getApplicationContext()).isNetConn()) {
+                                                                    //当前网络不可用，请检查网络设置
+                                                                    Toast.makeText(getApplicationContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
+                                                                } else if (!NetUtils.hasNetwork(getApplicationContext())) {
+                                                                    Toast.makeText(getApplicationContext(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
+                                                                    //连接不到聊天服务器
+                                                                }
+                                                            }
                                                         }
-                                                    }
-                                                }
                                       );
                                   }
                               }
             );
         }
     }
+
     @Override
     public void Error(String content) {
         Toast.makeText(getApplicationContext(), content, Toast.LENGTH_SHORT).show();

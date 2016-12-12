@@ -16,6 +16,7 @@ import com.wyh.mychat.util.CommonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -77,13 +78,28 @@ public class UserManager {
     public void sqliteAdd(String name) {
         sqLiteDatabase.execSQL("insert into Friend (name) values(?)", new Object[]{name});
     }
+    private TreeSet<String>friendSet = new TreeSet<>();
+
+    public void saveFriendExist(@NonNull String name){
+        friendSet.add(name);
+        sqliteAdd(name);
+    }
+
+    public boolean isFriendExist(@NonNull String name){
+        if(friendSet.contains(name)){
+            return true;
+        }
+        return false;
+    }
 
     public List<String> loadFriendList() {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from Friend", null);
         List<String> list = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                list.add(cursor.getString(cursor.getColumnIndex("name")));
+                String name = cursor.getString(cursor.getColumnIndex("name"));
+                list.add(name);
+                friendSet.add(name);
             } while (cursor.moveToNext());
         }
         Log.e("AAA", "list.size()--loadFriendList:" + list.size());
@@ -96,6 +112,7 @@ public class UserManager {
 
     public void deleteFriendName(String name) {
         sqLiteDatabase.execSQL("delete from Friend where name = ?", new Object[]{name});
+        friendSet.remove(name);
     }
 
     public void saveLoginInfo(boolean auto, String name) {

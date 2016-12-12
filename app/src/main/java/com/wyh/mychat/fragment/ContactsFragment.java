@@ -36,7 +36,6 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     @Bind(R.id.lv_contacts)
     ListView lvContacts;
     private View view;
-    private List<String> list = new ArrayList<>();
     private UniversalAdapter<String> adapter;
     private ListViewBar listViewBar;
     private String deleName;
@@ -157,11 +156,16 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
 
     @Override
     public void added(final List<String> usernameList) {
-        ((HomeActivity) getActivity()).getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                adapter.addDataAllNotify(usernameList);
+        for(final String name:usernameList){
+            if(!UserManager.getUserManager(getContext()).isFriendExist(name)){
+                ((HomeActivity) getActivity()).getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserManager.getUserManager(getContext()).saveFriendExist(name);
+                        adapter.addDataUpdate(name);
+                    }
+                });
             }
-        });
+        }
     }
 }
