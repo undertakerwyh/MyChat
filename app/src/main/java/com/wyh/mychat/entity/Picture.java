@@ -3,12 +3,13 @@ package com.wyh.mychat.entity;
 import android.graphics.Bitmap;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * Created by Administrator on 2016/11/18.
  */
 
-public class Picture {
+public class Picture implements Serializable{
     private String name;
     private Bitmap bitmap;
     private File file;

@@ -2,10 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wyh.mychat">
 
-    <!--appKey :  1151161126115337#mychat-->
-    <!--Client Id:	YXA6dtZfULOyEeaR8Y-ko5mKUQ-->
-    <!--Client Secret:	YXA6PyCEDEEdiud_bjvfM4ZnEscht0E-->
-
+    <!-- appKey :  1151161126115337#mychat -->
+    <!-- Client Id:	YXA6dtZfULOyEeaR8Y-ko5mKUQ -->
+    <!-- Client Secret:	YXA6PyCEDEEdiud_bjvfM4ZnEscht0E -->
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
@@ -28,7 +27,6 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -38,11 +36,12 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".activity.LoginActivity"
-            android:windowSoftInputMode="adjustPan"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -50,8 +49,8 @@
             android:name=".activity.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activity.TalkActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
@@ -64,13 +63,13 @@
         <activity
             android:name=".activity.ShowPicActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <!-- 设置环信应用的AppKey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
             android:value="1151161126115337#mychat" />
-        <!-- 声明sdk所需的service SDK核心功能-->
+        <!-- 声明sdk所需的service SDK核心功能 -->
         <service android:name="com.easemob.chat.EMChatService" />
 
     </application>

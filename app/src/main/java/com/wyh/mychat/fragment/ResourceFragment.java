@@ -82,13 +82,20 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
         adapter = new UniversalAdapter<Picture>(getContext(), R.layout.layout_pic_item) {
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
-                Picture picture = adapter.getDataList().get(positon);
+                final Picture picture = adapter.getDataList().get(positon);
                 viewHolder.setImageViewContent(R.id.iv_pic_icon, picture.getBitmap())
-                        .setTextViewContent(R.id.tv_folder_text, picture.getName());
+                        .setTextViewContent(R.id.tv_folder_text, picture.getName())
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // TODO: 2016/12/12 打开图片
+                            }
+                        });
             }
         };
     }
-    public static void initList(){
+
+    public static void initList() {
         list.clear();
         adapter.getDataList().clear();
     }
@@ -111,7 +118,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
                 public void run() {
                     enter = true;
                     adapter.addDataAddAll(list);
-                    if(ResourceFragment.this.isAdded()&&!isStopText) {
+                    if (ResourceFragment.this.isAdded() && !isStopText) {
                         ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
                     }
                     list.clear();
