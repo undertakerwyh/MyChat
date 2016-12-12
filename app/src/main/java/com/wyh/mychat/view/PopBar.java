@@ -18,6 +18,7 @@ public class PopBar extends PopupWindow {
     private View parentView;
     public PopBar(Context context,int ResId){
         this.context = context;
+        show(ResId);
     }
 
     public void show(int resId) {
@@ -32,8 +33,4 @@ public class PopBar extends PopupWindow {
         this.setBackgroundDrawable(ContextCompat.getDrawable(context, R.color.transparent));
         update();
     }
-    public void disShow(){
-        this.dismiss();
-    }
-
 }

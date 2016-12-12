@@ -91,6 +91,9 @@
     <dimen name="tv_time_size">15sp</dimen>
     <!--时间显示距离右边的距离-->
     <dimen name="tv_time_marginRight">15dp</dimen>
+    <!--new_icon图标大小-->
+    <dimen name="tv_new_icon_width">30dp</dimen>
+    <dimen name="tv_new_icon_height">30dp</dimen>
 
     <!--.................................contactsFragment.................................-->
     <!--好友列表的item高-->

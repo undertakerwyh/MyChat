@@ -51,7 +51,7 @@ import butterknife.ButterKnife;
 /**
  * 主界面HomeActivity
  */
-public class HomeActivity extends BaseActivity implements View.OnClickListener, UserManager.ExitListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, UserManager.ExitListener,NewMessageBroadcastReceiver.NewMessagePop {
 
 
     @Bind(R.id.action_bar)
@@ -97,6 +97,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         initReceive();
         initBroadcastReceiver();
         UserManager.getUserManager(getApplicationContext()).setExitListener(this);
+        NewMessageBroadcastReceiver.setNewMessagePop(this);
         newPop = new PopBar(this, R.layout.view_new);
         //注册一个监听连接状态的listener
         EMChatManager.getInstance().addConnectionListener(new MyConnectionListener());
@@ -157,6 +158,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     contactListener.added(usernameList);
                 }
                 Log.d("AAA", "onContactAdded:" + usernameList.size());
+            }
+        });
+    }
+
+    @Override
+    public void updatePop() {
+        getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                newPop.showAsDropDown(vpHome,(int)maxScreenWidth/6,newPop.getHeight());
             }
         });
     }
@@ -240,6 +251,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         } catch (IllegalAccessException e) {
 
+        }
+    }
+    public void dismissPop(){
+        if(newPop.isShowing()){
+            newPop.dismiss();
         }
     }
 

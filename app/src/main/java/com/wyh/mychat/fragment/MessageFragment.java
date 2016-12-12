@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import android.widget.ListView;
 
 import com.easemob.chat.EMMessage;
 import com.wyh.mychat.R;
+import com.wyh.mychat.activity.HomeActivity;
 import com.wyh.mychat.activity.TalkActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
@@ -86,9 +86,13 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                         .setTextViewContent(R.id.tv_chat_lastContent,message.getContent())
                         .setTextViewContent(R.id.tv_chat_data,CommonUtil.getTimeSelect(message.getTime()))
                         .setImageViewContent(R.id.iv_chat_headPortrait,R.drawable.headportrait)
+                        .setLayoutVisivity(R.id.iv_new_icon,message.isNew())
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        message.setNew(false);
+                        adapter.notifyDataSetChanged();
+                        ((HomeActivity)getActivity()).dismissPop();
                         Intent intent = new Intent(getActivity(), TalkActivity.class);
                         intent.putExtra("name",message.getName());
                         getActivity().startActivity(intent);
@@ -114,8 +118,8 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         }
         String userName = emMessage.getFrom();
         if(messageHash.containsKey(userName)){
-            Log.e("MessageFragment", "messageHash.size():" + messageHash.size());
             Message message =adapter.getDataList().get(messageHash.get(userName));
+            message.setNew(true);
             message.setContent(content);
             message.setTime(emMessage.getMsgTime());
             DBManager.getDbManager(getContext()).changeNewMessage(message);
@@ -127,6 +131,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             });
         }else{
             Message message = new Message(userName,emMessage.getMsgTime(),content, CommonUtil.TYPE_LEFT);
+            message.setNew(true);
             messageHash.put(message.getName(),adapter.getCount()-1);
             DBManager.getDbManager(getContext()).saveNewMessage(message);
             adapter.addDataUpdate(message);

@@ -29,6 +29,12 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
 
     private static NewMessageHome newMessageHome;
     private static NewMessageTalk newMessageTalk;
+
+    public static void setNewMessagePop(NewMessagePop newMessagePop) {
+        NewMessageBroadcastReceiver.newMessagePop = newMessagePop;
+    }
+
+    private static NewMessagePop newMessagePop;
     @Override
     public void onReceive(Context context, Intent intent) {
         //消息id
@@ -38,7 +44,7 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
         //消息类型，文本、图片、语音消息等，这里返回的值为msg.type.ordinal()。
         //所以消息type实际为是enum类型
         int msgType = intent.getIntExtra("type", 0);
-        Log.d("main", "new message id:" + msgId + " from:" + msgFrom + " type:" + msgType);
+        Log.d("main", "new_icon message id:" + msgId + " from:" + msgFrom + " type:" + msgType);
         //更方便的方法是通过msgId直接获取整个message
         EMMessage message = EMChatManager.getInstance().getMessage(msgId);
         EMChatManager.getInstance().getNewMessageBroadcastAction();
@@ -46,6 +52,7 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
             newMessageTalk.updateTalk(message);
         }
         newMessageHome.updateHome(message);
+        newMessagePop.updatePop();
         DBManager.getDbManager(context).createReceivedTextMsg(UserManager.getUserManager(context).loadUserName()
                 ,msgFrom
                 ,message.getBody().toString()
@@ -56,5 +63,8 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
     }
     public interface NewMessageHome{
         void updateHome(EMMessage emMessage);
+    }
+    public interface NewMessagePop{
+        void updatePop();
     }
 }

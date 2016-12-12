@@ -11,6 +11,16 @@ public class Message {
     private int type;
     private int errorType = 0;
 
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
+    private boolean isNew = false;
+
 
     public long getTime() {
         return time;
