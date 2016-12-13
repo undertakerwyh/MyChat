@@ -79,31 +79,39 @@ public class DBManager {
     }
 
     public void saveNewMessage(Message message) {
-        saveNewMessagedb.execSQL("insert into message(name,content,time) values (?,?,?)", new Object[]{message.getName(), message.getContent(),String.valueOf(message.getTime()) });
+        saveNewMessagedb.execSQL("insert into message(username,name,content,time) values (?,?,?,?)"
+                , new Object[]{UserManager.getUserManager(contexts).loadUserName(),message.getName()
+                        , message.getContent(),String.valueOf(message.getTime()) });
     }
     public void changeNewMessage(Message message){
-        saveNewMessagedb.execSQL("update message set content = ? , time = ? where name = ?",new Object[]{message.getContent(),message.getTime(),String.valueOf(message.getTime())});
+        saveNewMessagedb.execSQL("update message set content = ? , time = ? where name = ? & username = ?"
+                ,new Object[]{message.getContent(),message.getTime()
+                ,String.valueOf(message.getName()),UserManager.getUserManager(contexts).loadUserName()});
     }
 
-    public List<Message> loadNewMessage() {
+    public List<Message> loadNewMessage(String nameDB) {
         List<Message> list = new ArrayList<>();
         Cursor cursor = saveNewMessagedb.rawQuery("select * from message", null);
         String name = null;
         long time = 0;
         String content = null;
         int type;
+        String userName = null;
         if (cursor.moveToFirst()) {
             do {
-                name = cursor.getString(cursor.getColumnIndex("name"));
-                time = Long.parseLong(cursor.getString(cursor.getColumnIndex("time")));
-                content = cursor.getString(cursor.getColumnIndex("content"));
-                if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
-                    type = CommonUtil.TYPE_RIGHT;
-                } else {
-                    type = CommonUtil.TYPE_LEFT;
+                userName = cursor.getString(cursor.getColumnIndex("username"));
+                if(nameDB.equals(userName)) {
+                    name = cursor.getString(cursor.getColumnIndex("name"));
+                    time = Long.parseLong(cursor.getString(cursor.getColumnIndex("time")));
+                    content = cursor.getString(cursor.getColumnIndex("content"));
+                    if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
+                        type = CommonUtil.TYPE_RIGHT;
+                    } else {
+                        type = CommonUtil.TYPE_LEFT;
+                    }
+                    Message message = new Message(name, time, content, type);
+                    list.add(message);
                 }
-                Message message = new Message(name, time, content, type);
-                list.add(message);
             } while (cursor.moveToNext());
         }
         return list;
@@ -236,7 +244,7 @@ public class DBManager {
 
     static class SaveNewMessage extends SQLiteOpenHelper {
 
-        private final static String NEW_MESSAGE = "create table message(id integer primary key autoincrement,name text,content text,time text)";
+        private final static String NEW_MESSAGE = "create table message(id integer primary key autoincrement,username text,name text,content text,time text)";
 
         public SaveNewMessage(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
             super(context, name, factory, version);

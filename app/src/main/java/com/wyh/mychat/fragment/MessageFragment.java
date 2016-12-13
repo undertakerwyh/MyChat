@@ -18,6 +18,7 @@ import com.wyh.mychat.activity.TalkActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
 import com.wyh.mychat.biz.DBManager;
+import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
 import com.wyh.mychat.util.CommonUtil;
@@ -49,7 +50,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                list = DBManager.getDbManager(context).loadNewMessage();
+                list = DBManager.getDbManager(context).loadNewMessage(UserManager.getUserManager(context).loadUserName());
             }
         });
     }

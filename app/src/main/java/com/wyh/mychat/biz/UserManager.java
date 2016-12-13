@@ -118,6 +118,7 @@ public class UserManager {
 
     public void deleteFriendList() {
         sqLiteDatabase.execSQL("delete from Friend where id > ?", new Object[]{0});
+        friendSet.clear();
     }
 
     public void deleteFriendName(String name) {
