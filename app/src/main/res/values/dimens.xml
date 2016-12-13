@@ -112,6 +112,8 @@
     <!--发送状态提示图标的大小-->
     <dimen name="send_message_icon_size">25dp</dimen>
 
+    <dimen name="other_padding">4dp</dimen>
+
 
     <!--...................................ConfigFragment.................................-->
     <!--功能activity中每个项目的高-->

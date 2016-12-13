@@ -1,10 +1,13 @@
 package com.wyh.mychat.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 
 public class SystemUtils {
@@ -50,6 +53,15 @@ public class SystemUtils {
 			type = "电信";
 		}
 		return type;
+	}
+	public void hideSoftKeyboard(Activity activity){
+		if (activity == null) return;
+
+		View view = activity.getCurrentFocus();
+		if (view != null) {
+			InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		}
 	}
 
 	/**

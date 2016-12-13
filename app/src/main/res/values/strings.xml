@@ -39,4 +39,8 @@
     <!--AlertDialog 等待-->
     <string name="dialog_wait">等待..</string>
     <string name="dialog_text_marginLeft"></string>
+
+    <!--TalkActivity-->
+    <string name="talk_pic">图片</string>
+    <string name="talk_other">待完善</string>
 </resources>

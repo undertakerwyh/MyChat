@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMMessage;
@@ -20,6 +24,7 @@ import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
 import com.wyh.mychat.util.CommonUtil;
+import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.util.TimeNoteUtil;
 import com.wyh.mychat.view.ActionBar;
 import com.wyh.mychat.view.xlistview.XListView;
@@ -34,12 +39,22 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     @Bind(R.id.action_bar)
     ActionBar actionBar;
+    @Bind(R.id.lv_talk_message)
+    XListView lvTalkMessage;
+    @Bind(R.id.iv_other_bar_icon)
+    ImageView ivOtherBarIcon;
     @Bind(R.id.ed_input_message)
     EditText edInputMessage;
     @Bind(R.id.btn_send)
     Button btnSend;
-    @Bind(R.id.lv_talk_message)
-    XListView lvTalkMessage;
+    @Bind(R.id.talk_pic_icon)
+    ImageView talkPicIcon;
+    @Bind(R.id.talk_other)
+    ImageView talkOther;
+    @Bind(R.id.ll_other_bar)
+    LinearLayout llOtherBar;
+    @Bind(R.id.activity_talk)
+    LinearLayout activityTalk;
     private UniversalAdapter<Message> adapter;
     private String name;
     private Handler handler = new Handler() {
@@ -86,6 +101,30 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name, true);
         NewMessageBroadcastReceiver.setNewMessageTalk(this);
         UserManager.getUserManager(this).setTalkSend(true);
+        edInputMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.e("AAA", "hasFocus:" + hasFocus);
+            }
+        });
+        if (activityTalk instanceof ViewGroup) {
+            for (int i = 0; i < activityTalk.getChildCount(); i++) {
+                View innerView = activityTalk.getChildAt(i);
+                setupUI(innerView);
+            }
+        }
+    }
+
+    public void setupUI(View view) {
+        //Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    SystemUtils.getInstance(getApplicationContext()).hideSoftKeyboard(TalkActivity.this);
+                    return false;
+                }
+            });
+        }
     }
 
     private void setXListView() {
@@ -111,7 +150,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         };
     }
 
-    @OnClick({R.id.btn_send, R.id.iv_actionbar_left})
+    @OnClick({R.id.btn_send, R.id.iv_actionbar_left, R.id.iv_other_bar_icon,R.id.ed_input_message})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_actionbar_left:
@@ -127,6 +166,17 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                     }
                 });
                 edInputMessage.setText("");
+                break;
+            case R.id.iv_other_bar_icon:
+                if (llOtherBar.isShown()) {
+                    llOtherBar.setVisibility(View.GONE);
+                } else {
+                    llOtherBar.setVisibility(View.VISIBLE);
+                }
+                SystemUtils.getInstance(this).hideSoftKeyboard(this);
+                break;
+            case R.id.ed_input_message:
+                llOtherBar.setVisibility(View.GONE);
                 break;
         }
     }
@@ -145,7 +195,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     private static MySendUpdate mySendUpdate;
 
-
     private void mySendMessage(String content, int type) {
         if (!TextUtils.isEmpty(content)) {
             Message message = new Message(name, CommonUtil.getTimeLong(), content, type);
@@ -157,7 +206,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 adapter.addDataUpdate(timeMsg);
             }
             adapter.addDataUpdate(message);
-            lvTalkMessage.setSelection(lvTalkMessage.getCount()-1);
+            lvTalkMessage.setSelection(lvTalkMessage.getCount() - 1);
             mySendUpdate.SendUpdate(message);
             if (type == CommonUtil.TYPE_RIGHT) {
                 SendManager.getSendMessage(this).sendTextMessage(name, content, new EMCallBack() {
@@ -189,7 +238,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
         }
     }
-    public interface MySendUpdate{
+
+    public interface MySendUpdate {
         void SendUpdate(Message message);
     }
 
