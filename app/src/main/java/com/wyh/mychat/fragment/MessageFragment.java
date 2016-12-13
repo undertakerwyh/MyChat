@@ -7,10 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMMessage;
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.HomeActivity;
@@ -22,6 +24,7 @@ import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
 import com.wyh.mychat.util.CommonUtil;
+import com.wyh.mychat.view.ListViewBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,13 +39,17 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/10/20.
  */
 
-public class MessageFragment extends Fragment implements NewMessageBroadcastReceiver.NewMessageHome,TalkActivity.MySendUpdate{
+public class MessageFragment extends Fragment implements NewMessageBroadcastReceiver.NewMessageHome,TalkActivity.MySendUpdate, ListViewBar.ListViewBarListener {
     @Bind(R.id.lv_message)
     ListView lvMessage;
     private View view;
     private UniversalAdapter<Message>adapter;
     private HashMap<String,Integer>messageHash = new HashMap<>();
     private List<Message>list = new ArrayList<>();
+    private ListViewBar listViewBar;
+    private int eventX;
+    private int eventY;
+
     @Override
     public void onAttach(final Context context) {
         super.onAttach(context);
@@ -74,6 +81,9 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         super.onActivityCreated(savedInstanceState);
         NewMessageBroadcastReceiver.setNewMessageHome(this);
         TalkActivity.setMySendUpdate(this);
+        List<String> list = new ArrayList<>();
+        list.add(getString(R.string.pop_contacts_dele_record));
+        listViewBar = new ListViewBar(getContext(), list, this);
     }
 
     /**
@@ -99,6 +109,19 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                         Intent intent = new Intent(getActivity(), TalkActivity.class);
                         intent.putExtra("name",message.getName());
                         getActivity().startActivity(intent);
+                    }
+                }).setLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        listViewBar.showAsDropDown(v, eventX, eventY - v.getMeasuredHeight());
+                        return false;
+                    }
+                }).setTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        eventX = (int) event.getX();
+                        eventY = (int) event.getY();
+                        return false;
                     }
                 });
             }
@@ -159,6 +182,20 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             messageHash.put(message.getName(),adapter.getCount()-1);
             DBManager.getDbManager(getContext()).saveNewMessage(message);
             adapter.addDataUpdate(message);
+        }
+    }
+
+    @Override
+    public void onComplete(String name) {
+        if (name.equals(getString(R.string.pop_contacts_dele_record))) {
+            adapter.getDataList().remove(messageHash.get(name));
+            EMChatManager.getInstance().deleteConversation(name);
+            lvMessage.post(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 }

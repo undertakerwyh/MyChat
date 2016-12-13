@@ -11,50 +11,53 @@
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></com.wyh.mychat.view.ActionBar>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
         <ImageView
+            android:id="@+id/iv_show_pictrue"
+            android:layout_width="@dimen/chat_show_pic_size"
+            android:layout_height="@dimen/chat_show_pic_size"
+            android:layout_centerInParent="true"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:id="@+id/iv_show_pictrue"
-            android:layout_centerInParent="true"
-            android:scaleType="fitCenter"
-            android:layout_width="@dimen/chat_show_pic_size"
-            android:layout_height="@dimen/chat_show_pic_size" />
+            android:scaleType="fitCenter" />
     </RelativeLayout>
-    
+
     <LinearLayout
         android:id="@+id/ll_show_pic"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="@dimen/chat_show_bar_height">
+        android:layout_height="@dimen/chat_show_bar_height"
+        android:orientation="horizontal">
+
         <CheckBox
             android:id="@+id/cb_show_pic"
             android:layout_width="wrap_content"
-            android:text="原图"
-            android:scaleY="1.5"
-            android:scaleX="1.5"
-            android:layout_marginLeft="@dimen/chat_show_checkbox_marginLeft"
-            android:layout_gravity="center_vertical"
             android:layout_height="match_parent"
-            android:layout_weight="0.06" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/chat_show_checkbox_marginLeft"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:text="原图" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"></View>
+
         <Button
             android:id="@+id/btn_pic_send"
             android:layout_width="@dimen/send_btn_width"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:layout_margin="3dp"
-            android:focusableInTouchMode="false"
-            android:background="@drawable/btn_send" />
+            android:background="@drawable/btn_send"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
     </LinearLayout>
 
 </LinearLayout>

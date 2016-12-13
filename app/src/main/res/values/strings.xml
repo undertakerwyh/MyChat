@@ -43,4 +43,6 @@
     <!--TalkActivity-->
     <string name="talk_pic">图片</string>
     <string name="talk_other">待完善</string>
+    
+    <string name="pop_contacts_dele_record">删除记录</string>
 </resources>

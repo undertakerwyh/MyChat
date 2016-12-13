@@ -1,5 +1,6 @@
 package com.wyh.mychat.util;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -38,6 +39,19 @@ public class CommonUtil {
     public static String getDBLoadName(String name){
         String[] split = name.split(MYSEND);
         return split[0];
+    }
+
+    public static String getFileSize(long length){
+        DecimalFormat format = new DecimalFormat("#.00");
+        if(length>1024*1024*1024){
+            return format.format((double) length/1024/1024/1024)+"G";
+        }else if(length>1024*1024){
+            return format.format((double)length/1024/1024)+"M";
+        }else if(length>1024){
+            return format.format((double)length/1024)+"K";
+        }else{
+            return format.format((double)length)+"B";
+        }
     }
 
     /**

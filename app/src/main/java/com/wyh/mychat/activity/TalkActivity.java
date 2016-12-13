@@ -150,7 +150,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         };
     }
 
-    @OnClick({R.id.btn_send, R.id.iv_actionbar_left, R.id.iv_other_bar_icon,R.id.ed_input_message})
+    @OnClick({R.id.btn_send, R.id.iv_actionbar_left, R.id.iv_other_bar_icon,R.id.ed_input_message,R.id.talk_pic_icon})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_actionbar_left:
@@ -177,6 +177,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.ed_input_message:
                 llOtherBar.setVisibility(View.GONE);
+                break;
+            case R.id.talk_pic_icon:
+                startActivity(ShowSrcActivity.class);
                 break;
         }
     }

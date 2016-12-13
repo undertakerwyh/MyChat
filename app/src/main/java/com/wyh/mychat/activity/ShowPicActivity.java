@@ -1,7 +1,6 @@
 package com.wyh.mychat.activity;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +11,11 @@ import android.widget.LinearLayout;
 import com.wyh.mychat.R;
 import com.wyh.mychat.base.BaseActivity;
 import com.wyh.mychat.fragment.ConfigFragment;
+import com.wyh.mychat.util.BitmapUtil;
+import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.view.ActionBar;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -36,16 +39,17 @@ public class ShowPicActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.activity_show_pic);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        String picFile = intent.getStringExtra("PicFile");
+        File picFile = new File(intent.getStringExtra("PicFile"));
         String FromClass = intent.getStringExtra("FromClass");
         String name = intent.getStringExtra("PicName");
-        if(FromClass.equals(ConfigFragment.class.getSimpleName())){
+        if(ConfigFragment.class.getSimpleName().equals(FromClass)){
             llShowPic.setVisibility(View.GONE);
         }else{
             llShowPic.setVisibility(View.VISIBLE);
         }
         initActionBar(name,R.drawable.back,-1,this);
-        ivShowPictrue.setImageBitmap(BitmapFactory.decodeFile(picFile));
+        cbShowPic.setText("原图("+ CommonUtil.getFileSize(picFile.length())+")");
+        ivShowPictrue.setImageBitmap(BitmapUtil.getBigBitmap(picFile.getAbsolutePath()));
     }
 
     @Override

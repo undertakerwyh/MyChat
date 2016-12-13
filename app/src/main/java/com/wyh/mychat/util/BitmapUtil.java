@@ -52,6 +52,40 @@ public class BitmapUtil {
         return bm ;
 
     }
+    public static Bitmap getBigBitmap(String filePath) {
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options,1000,1000);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        Bitmap bm = BitmapFactory.decodeFile(filePath, options);
+        if(bm == null){
+            return  null;
+        }
+        int degree = readPictureDegree(filePath);
+        bm = rotateBitmap(bm,degree) ;
+        ByteArrayOutputStream baos = null ;
+        try{
+            baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 30, baos);
+
+        }finally{
+            try {
+                if(baos != null)
+                    baos.close() ;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bm ;
+
+    }
 
     private static int calculateInSampleSize(BitmapFactory.Options options,
                                              int reqWidth, int reqHeight) {

@@ -125,7 +125,7 @@
     <dimen name="chat_show_pic_size">350dp</dimen>
 
     <dimen name="chat_show_bar_height">50dp</dimen>
-
-    <dimen name="chat_show_checkbox_marginLeft">15dp</dimen>
+    <!--checkbox距离左边的距离-->
+    <dimen name="chat_show_checkbox_marginLeft">30dp</dimen>
 
 </resources>

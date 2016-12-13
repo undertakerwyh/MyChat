@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,7 +60,6 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
         super.onActivityCreated(savedInstanceState);
         try {
             if(UserManager.getUserManager(getContext()).isFirstAdd()) {
-                Log.e("AAA","enter");
                 UserManager.getUserManager(getContext()).saveFriendList(EMContactManager.getInstance().getContactUserNames());
             }
             adapter.addDataAddAll(UserManager.getUserManager(getContext()).loadFriendList());
