@@ -14,10 +14,13 @@
 
     <TextView
         android:id="@+id/tv_actionbar_text"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/action_text_width"
+        android:gravity="center"
+        android:lines="1"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:ellipsize="end"
         android:text="Talk"
         android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
         android:textColor="@color/colorBlack"

@@ -31,13 +31,20 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
 
     private static ResourceFragment resourceFragment;
 
+    public String getFromClass() {
+        return FromClass;
+    }
+
+    private String FromClass;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
         /**初始化标题栏*/
-        initActionBar(getString(R.string.my_picture), -1, -1, this);
+        initActionBar(getString(R.string.my_picture), R.drawable.back, -1, this);
         ButterKnife.bind(this);
+        FromClass = getIntent().getStringExtra("FromClass");
         /**初始化Viewpager*/
         initViewpager();
     }
@@ -138,6 +145,10 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-
+        switch (view.getId()){
+            case R.id.iv_actionbar_left:
+                finish();
+                break;
+        }
     }
 }

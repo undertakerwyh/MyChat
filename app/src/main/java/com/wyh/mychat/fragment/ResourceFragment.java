@@ -1,5 +1,6 @@
 package com.wyh.mychat.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.wyh.mychat.R;
+import com.wyh.mychat.activity.ShowPicActivity;
 import com.wyh.mychat.activity.ShowSrcActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
@@ -88,7 +90,11 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                // TODO: 2016/12/12 打开图片
+                                Intent intent = new Intent(getActivity(), ShowPicActivity.class);
+                                intent.putExtra("PicFile",picture.getFile().getAbsolutePath());
+                                intent.putExtra("FromClass",((ShowSrcActivity)getActivity()).getFromClass());
+                                intent.putExtra("PicName",picture.getName());
+                                getActivity().startActivity(intent);
                             }
                         });
             }

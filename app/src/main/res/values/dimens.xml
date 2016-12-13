@@ -16,6 +16,8 @@
 
     <dimen name="action_setting_textsize">20sp</dimen>
 
+    <dimen name="action_text_width">200dp</dimen>
+
     <!--.................................HomeActivity...................................-->
     <!--popwindow菜单的宽-->
     <dimen name="config_item_width">120dp</dimen>
@@ -116,7 +118,12 @@
     <dimen name="chat_config_item_height">60dp</dimen>
     <!--...................................ShowSrcActivity....................................-->
     <!--加载等待动画的大小-->
-    <dimen name="chat_pic_progress_size">20dp</dimen>\
+    <dimen name="chat_pic_progress_size">20dp</dimen>
+    <!--...................................showPicActivity......................................-->
+    <dimen name="chat_show_pic_size">350dp</dimen>
 
+    <dimen name="chat_show_bar_height">50dp</dimen>
+
+    <dimen name="chat_show_checkbox_marginLeft">15dp</dimen>
 
 </resources>

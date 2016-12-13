@@ -1,5 +1,6 @@
 package com.wyh.mychat.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -53,7 +54,9 @@ public class ConfigFragment extends Fragment{
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.config_pic:
-                ((HomeActivity)getActivity()).startActivity(ShowSrcActivity.class);
+                Intent intent = new Intent(getActivity(),ShowSrcActivity.class);
+                intent.putExtra("FromClass",ConfigFragment.class.getSimpleName());
+                getActivity().startActivity(intent);
                 break;
             case R.id.config_log_off:
                 UserManager.getUserManager(getContext()).Exit();
