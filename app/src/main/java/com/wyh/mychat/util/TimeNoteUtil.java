@@ -43,6 +43,10 @@ public class TimeNoteUtil {
 
     private long sendSaveTime;
 
+    public void cleanTime(){
+        sendSaveTime = 0;
+    }
+
     public String sendStart(long time) {
         String timeStrs = null;
         if (time - sendSaveTime > timeDuration) {

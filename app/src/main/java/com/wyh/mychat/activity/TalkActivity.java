@@ -196,6 +196,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         DBManager.getDbManager(getApplicationContext()).DBClose();
         DBManager.getDbManager(getApplicationContext()).setFirstLoad(false);
         UserManager.getUserManager(this).setTalkSend(false);
+        TimeNoteUtil.getTimeNoteUtil().cleanTime();
     }
 
     public static void setMySendUpdate(MySendUpdate mySendUpdate) {
