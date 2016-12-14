@@ -202,17 +202,21 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
 
     @Override
     public void onComplete(String name) {
-        if (name.equals(getString(R.string.pop_contacts_dele_record))) {
-            messageAdapter.getDataList().remove((int) messageHash.get(deleName));
-            DBManager.getDbManager(getContext()).deleNewMessage(deleName);
-            EMChatManager.getInstance().deleteConversation(deleName);
-            savePosition();
-            lvMessage.post(new Runnable() {
-                @Override
-                public void run() {
-                    messageAdapter.notifyDataSetChanged();
+        if (isAdded()) {
+            if (name.equals(getString(R.string.pop_contacts_dele_record))) {
+                if (messageHash.get(deleName) != null) {
+                    messageAdapter.getDataList().remove((int) messageHash.get(deleName));
                 }
-            });
+                DBManager.getDbManager(getContext()).deleNewMessage(deleName);
+                EMChatManager.getInstance().deleteConversation(deleName);
+                savePosition();
+                lvMessage.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        messageAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
         }
     }
 }

@@ -156,14 +156,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onContactAgreed(String username) {
                 //好友请求被同意
-                contactListener.refresh();
                 Log.d("AAA", "onContactAgreed:" + "username:" + username);
             }
 
             @Override
             public void onContactRefused(String username) {
                 //好友请求被拒绝
-                contactListener.refresh();
                 Log.d("AAA", "onContactRefused");
             }
 

@@ -121,7 +121,6 @@ public class UserManager {
 
     public void deleteFriendName(String name) {
         sqLiteDatabase.execSQL("delete from Friend where name = ?", new Object[]{name});
-
         friendSet.remove(name);
     }
 
