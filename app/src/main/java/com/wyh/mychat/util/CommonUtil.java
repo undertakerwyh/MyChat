@@ -15,6 +15,8 @@ public class CommonUtil {
     public final static int TYPE_LEFT = 0;
     public final static int TYPE_RIGHT = 1;
     public final static int TYPE_TIME = 2;
+    public final static int TYPT_PICLEFT = 3;
+    public final static int TYPE_PICRIGHT = 4;
 
     public final static int SEND_ERROR = 5;
     public final static int SEND_LOAD = 4;

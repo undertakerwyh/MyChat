@@ -35,6 +35,12 @@
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/send_textsize" />
 
+        <ImageView
+            android:id="@+id/iv_pic_left"
+            android:visibility="gone"
+            android:layout_width="@dimen/send_pic_size"
+            android:layout_height="@dimen/send_pic_size" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -82,11 +88,13 @@
                 android:text="1313124123"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/send_textsize" />
+            <ImageView
+                android:id="@+id/iv_pic_right"
+                android:visibility="gone"
+                android:layout_width="@dimen/send_pic_size"
+                android:layout_height="@dimen/send_pic_size" />
         </LinearLayout>
 
-
     </LinearLayout>
-
-
 
 </LinearLayout>

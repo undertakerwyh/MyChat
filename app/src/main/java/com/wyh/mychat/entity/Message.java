@@ -1,5 +1,7 @@
 package com.wyh.mychat.entity;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by Administrator on 2016/11/7.
  */
@@ -10,6 +12,16 @@ public class Message {
     private String content;
     private int type;
     private int errorType = 0;
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    private Bitmap bitmap;
 
     public boolean isNew() {
         return isNew;
@@ -39,6 +51,12 @@ public class Message {
         this.name = name;
         this.time = time;
         this.content = content;
+        this.type = type;
+    }
+    public Message(String name, long time, Bitmap bitmap,int type){
+        this.name = name;
+        this.time = time;
+        this.bitmap = bitmap;
         this.type = type;
     }
 

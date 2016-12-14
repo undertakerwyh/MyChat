@@ -68,15 +68,16 @@ public class ViewHolder {
         mView.setOnClickListener(listener);
         return this;
     }
-    public ViewHolder setOnClickListener(View.OnClickListener listener,int...ResId) {
-        for(int id:ResId){
+
+    public ViewHolder setOnClickListener(View.OnClickListener listener, int... ResId) {
+        for (int id : ResId) {
             View view = this.getView(id);
             view.setOnClickListener(listener);
         }
         return this;
     }
 
-    public ViewHolder setViewOnClickListener(int ViewId,View.OnClickListener listener){
+    public ViewHolder setViewOnClickListener(int ViewId, View.OnClickListener listener) {
         View view = this.getView(ViewId);
         view.setOnClickListener(listener);
         return this;
@@ -143,23 +144,42 @@ public class ViewHolder {
      */
 
 
-
-    public ViewHolder setChatVisible(int leftLayoutId, int rightLayoutId, int leftId, int rightId, int timeId, String content, int type) {
+    public ViewHolder setChatVisible(int leftLayoutId, int rightLayoutId, int leftId, int rightId, int picLeftId, int picRightId, Bitmap bitmap, int timeId, String content, int type) {
         LinearLayout left = this.getView(leftLayoutId);
         LinearLayout right = this.getView(rightLayoutId);
+        TextView leftText = this.getView(leftId);
+        ImageView leftPic = this.getView(picLeftId);
+        TextView rightText = this.getView(rightId);
+        ImageView rightPic = this.getView(picRightId);
         TextView time = this.getView(timeId);
         if (type == CommonUtil.TYPE_LEFT) {
             left.setVisibility(View.VISIBLE);
             right.setVisibility(View.GONE);
             time.setVisibility(View.GONE);
-            TextView leftText = this.getView(leftId);
+            leftPic.setVisibility(View.GONE);
+            leftText.setVisibility(View.VISIBLE);
             leftText.setText(content);
+        } else if (type == CommonUtil.TYPT_PICLEFT) {
+            left.setVisibility(View.VISIBLE);
+            right.setVisibility(View.GONE);
+            time.setVisibility(View.GONE);
+            leftPic.setVisibility(View.VISIBLE);
+            leftText.setVisibility(View.GONE);
+            leftPic.setImageBitmap(bitmap);
         } else if (type == CommonUtil.TYPE_RIGHT) {
             left.setVisibility(View.GONE);
             right.setVisibility(View.VISIBLE);
             time.setVisibility(View.GONE);
-            TextView rightText = this.getView(rightId);
+            rightText.setVisibility(View.VISIBLE);
+            rightPic.setVisibility(View.GONE);
             rightText.setText(content);
+        } else if (type  ==CommonUtil.TYPE_PICRIGHT) {
+            left.setVisibility(View.GONE);
+            right.setVisibility(View.VISIBLE);
+            time.setVisibility(View.GONE);
+            rightText.setVisibility(View.GONE);
+            rightPic.setVisibility(View.VISIBLE);
+            rightPic.setImageBitmap(bitmap);
         } else if (type == CommonUtil.TYPE_TIME) {
             left.setVisibility(View.GONE);
             right.setVisibility(View.GONE);
@@ -170,18 +190,17 @@ public class ViewHolder {
     }
 
 
-
-    public ViewHolder setSendErrorListener(int errorType){
+    public ViewHolder setSendErrorListener(int errorType) {
         ImageView imageView = this.getView(R.id.iv_chat_error);
         ProgressBar progressBar = this.getView(R.id.pb_chat_loading);
-        if(errorType==CommonUtil.SEND_ERROR){
+        if (errorType == CommonUtil.SEND_ERROR) {
             imageView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-        }else if(errorType==CommonUtil.SEND_LOAD){
+        } else if (errorType == CommonUtil.SEND_LOAD) {
             imageView.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
 
-        }else if(errorType==CommonUtil.SEND_SUCCESS){
+        } else if (errorType == CommonUtil.SEND_SUCCESS) {
             imageView.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
         }

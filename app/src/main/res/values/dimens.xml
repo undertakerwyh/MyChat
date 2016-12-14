@@ -114,6 +114,8 @@
 
     <dimen name="other_padding">4dp</dimen>
 
+    <dimen name="send_pic_size">100dp</dimen>
+
 
     <!--...................................ConfigFragment.................................-->
     <!--功能activity中每个项目的高-->
