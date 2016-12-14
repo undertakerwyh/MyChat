@@ -75,6 +75,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private PopBar newPop;
     private View view3;
     private View view1;
+    private MessageFragment messageFragment;
 
     public void setContactListener(ContactListener contactListener) {
         this.contactListener = contactListener;
@@ -263,12 +264,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
      */
     private void initViewPager() {
         fragmentAdapter = new FragmentAdapter(getSupportFragmentManager());
-        MessageFragment messageFragment = new MessageFragment();
+        messageFragment = new MessageFragment();
         fragmentAdapter.addToFragmentData(messageFragment);
         fragmentAdapter.addToFragmentData(new ContactsFragment());
         fragmentAdapter.addToFragmentData(new ConfigFragment());
         vpHome.setAdapter(fragmentAdapter);
         vpHome.setLongClickable(true);
+    }
+    public MessageFragment getMessageFragment(){
+        return messageFragment;
     }
 
     /**

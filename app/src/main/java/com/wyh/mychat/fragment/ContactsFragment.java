@@ -59,7 +59,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         try {
-            if(UserManager.getUserManager(getContext()).isFirstAdd()) {
+            if (UserManager.getUserManager(getContext()).isFirstAdd()) {
                 UserManager.getUserManager(getContext()).saveFriendList(EMContactManager.getInstance().getContactUserNames());
             }
             adapter.addDataAddAll(UserManager.getUserManager(getContext()).loadFriendList());
@@ -126,6 +126,9 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
             try {
                 EMContactManager.getInstance().deleteContact(deleName);
                 UserManager.getUserManager(getContext()).deleteFriendName(deleName);
+                MessageFragment messageFragment = ((HomeActivity) getActivity()).getMessageFragment();
+                messageFragment.setDeleName(name);
+                messageFragment.onComplete(getString(R.string.pop_contacts_dele_record));
                 updateList();
             } catch (EaseMobException e) {
                 e.printStackTrace();
@@ -154,8 +157,8 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
 
     @Override
     public void added(final List<String> usernameList) {
-        for(final String name:usernameList){
-            if(!UserManager.getUserManager(getContext()).isFriendExist(name)){
+        for (final String name : usernameList) {
+            if (!UserManager.getUserManager(getContext()).isFriendExist(name)) {
                 ((HomeActivity) getActivity()).getHandler().post(new Runnable() {
                     @Override
                     public void run() {

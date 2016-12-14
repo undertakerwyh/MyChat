@@ -55,7 +55,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     LinearLayout llOtherBar;
     @Bind(R.id.activity_talk)
     LinearLayout activityTalk;
-    private UniversalAdapter<Message> adapter;
+    private UniversalAdapter<Message> talkAdapter;
     private String name;
     private Handler handler = new Handler() {
         @Override
@@ -64,9 +64,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             switch (msg.what) {
                 case 1:
                     if (((List<Message>) msg.obj).size() > 0) {
-                        int startIndex = adapter.getDataList().size();
-                        adapter.addDataToAdapterHead((List<Message>) msg.obj);
-                        int endIndex = adapter.getDataList().size();
+                        int startIndex = talkAdapter.getDataList().size();
+                        talkAdapter.addDataToAdapterHead((List<Message>) msg.obj);
+                        int endIndex = talkAdapter.getDataList().size();
                         if (endIndex == startIndex) {
                             lvTalkMessage.setSelection(0);
                         } else {
@@ -76,7 +76,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                     lvTalkMessage.stopRefresh();
                     break;
                 case 2:
-                    adapter.notifyDataSetChanged();
+                    talkAdapter.notifyDataSetChanged();
             }
         }
     };
@@ -91,7 +91,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         /**初始化适配器*/
         initAdapter();
-        lvTalkMessage.setAdapter(adapter);
+        lvTalkMessage.setAdapter(talkAdapter);
         lvTalkMessage.setPullRefreshEnable(true);
 
         /**设置xListView*/
@@ -139,10 +139,10 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void initAdapter() {
-        adapter = new UniversalAdapter<Message>(getApplicationContext(), R.layout.layout_message_item) {
+        talkAdapter = new UniversalAdapter<Message>(getApplicationContext(), R.layout.layout_message_item) {
             @Override
             public void assignment(ViewHolder viewHolder, final int positon) {
-                Message message = adapter.getDataList().get(positon);
+                Message message = talkAdapter.getDataList().get(positon);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
                         R.id.tv_chat_right, R.id.tv_time_text, message.getContent(), message.getType())
                         .setSendErrorListener(message.getErrorType())
@@ -212,9 +212,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             if (time != null) {
                 Message timeMsg = new Message(null, 0, CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
                 DBManager.getDbManager(this).setTime(message.getTime());
-                adapter.addDataUpdate(timeMsg);
+                talkAdapter.addDataUpdate(timeMsg);
             }
-            adapter.addDataUpdate(message);
+            talkAdapter.addDataUpdate(message);
             lvTalkMessage.setSelection(lvTalkMessage.getCount() - 1);
             mySendUpdate.SendUpdate(message);
             if (type == CommonUtil.TYPE_RIGHT) {
@@ -222,21 +222,21 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                     @Override
                     public void onSuccess() {
                         Log.e("AAA", "onSuccess");
-                        adapter.getDataList().get(adapter.getCount() - 1).setErrorType(CommonUtil.SEND_SUCCESS);
+                        talkAdapter.getDataList().get(talkAdapter.getCount() - 1).setErrorType(CommonUtil.SEND_SUCCESS);
                         handler.sendEmptyMessage(2);
                     }
 
                     @Override
                     public void onError(int i, String s) {
                         Log.e("AAA", "onError");
-                        adapter.getDataList().get(adapter.getCount() - 1).setErrorType(CommonUtil.SEND_ERROR);
+                        talkAdapter.getDataList().get(talkAdapter.getCount() - 1).setErrorType(CommonUtil.SEND_ERROR);
                         handler.sendEmptyMessage(2);
                     }
 
                     @Override
                     public void onProgress(int i, String s) {
                         Log.e("AAA", "onProgress");
-                        adapter.getDataList().get(adapter.getCount() - 1).setErrorType(CommonUtil.SEND_LOAD);
+                        talkAdapter.getDataList().get(talkAdapter.getCount() - 1).setErrorType(CommonUtil.SEND_LOAD);
                         handler.sendEmptyMessage(2);
                     }
                 });

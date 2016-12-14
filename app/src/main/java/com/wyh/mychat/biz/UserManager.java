@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.easemob.EMCallBack;
 import com.easemob.EMError;
@@ -112,7 +111,6 @@ public class UserManager {
                 friendSet.add(name);
             } while (cursor.moveToNext());
         }
-        Log.e("AAA", "list.size()--loadFriendList:" + list.size());
         return list;
     }
 
@@ -123,6 +121,7 @@ public class UserManager {
 
     public void deleteFriendName(String name) {
         sqLiteDatabase.execSQL("delete from Friend where name = ?", new Object[]{name});
+
         friendSet.remove(name);
     }
 
