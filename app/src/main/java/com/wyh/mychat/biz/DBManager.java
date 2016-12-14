@@ -89,6 +89,11 @@ public class DBManager {
                 ,String.valueOf(message.getName()),UserManager.getUserManager(contexts).loadUserName()});
     }
 
+    public void deleNewMessage(String nameDB){
+        Log.e("AAA","delete:username:"+UserManager.getUserManager(contexts).loadUserName()+"-----nameDB:"+nameDB);
+        saveNewMessagedb.execSQL("delete from message where username = ? and name = ?",new Object[]{UserManager.getUserManager(contexts).loadUserName(),nameDB});
+    }
+
     public List<Message> loadNewMessage(String nameDB) {
         List<Message> list = new ArrayList<>();
         Cursor cursor = saveNewMessagedb.rawQuery("select * from message", null);
@@ -102,6 +107,7 @@ public class DBManager {
                 userName = cursor.getString(cursor.getColumnIndex("username"));
                 if(nameDB.equals(userName)) {
                     name = cursor.getString(cursor.getColumnIndex("name"));
+                    Log.e("AAA","username:"+userName+"-----name:"+name);
                     time = Long.parseLong(cursor.getString(cursor.getColumnIndex("time")));
                     content = cursor.getString(cursor.getColumnIndex("content"));
                     if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {

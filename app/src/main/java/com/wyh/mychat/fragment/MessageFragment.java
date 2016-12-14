@@ -49,6 +49,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
     private ListViewBar listViewBar;
     private int eventX;
     private int eventY;
+    private String deleName;
 
     @Override
     public void onAttach(final Context context) {
@@ -58,6 +59,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             @Override
             public void run() {
                 list = DBManager.getDbManager(context).loadNewMessage(UserManager.getUserManager(context).loadUserName());
+                Log.e("AAA", "list.size():" + list.size());
             }
         });
     }
@@ -70,10 +72,16 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         /**初始化适配器*/
         initAdapter();
         lvMessage.setAdapter(adapter);
-        Log.e("MessageFragment", "list.size():" + list.size());
         adapter.addDataAddAll(list);
         /**向适配器添加数据*/
+        savePosition();
         return view;
+    }
+
+    private void savePosition() {
+        for(int i=0;i<adapter.getDataList().size();i++){
+            messageHash.put(adapter.getDataList().get(i).getName(),i);
+        }
     }
 
     @Override
@@ -94,7 +102,6 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
                 final Message message = adapter.getDataList().get(positon);
-                messageHash.put(message.getName(),positon);
                 viewHolder.setTextViewContent(R.id.tv_chat_name,message.getName())
                         .setTextViewContent(R.id.tv_chat_lastContent,message.getContent())
                         .setTextViewContent(R.id.tv_chat_data,CommonUtil.getTimeSelect(message.getTime()))
@@ -113,6 +120,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                 }).setLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
+                        deleName = message.getName();
                         listViewBar.showAsDropDown(v, eventX, eventY - v.getMeasuredHeight());
                         return false;
                     }
@@ -158,7 +166,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         }else{
             Message message = new Message(userName,emMessage.getMsgTime(),content, CommonUtil.TYPE_LEFT);
             message.setNew(true);
-            messageHash.put(message.getName(),adapter.getCount()-1);
+            messageHash.put(message.getName(),adapter.getCount());
             DBManager.getDbManager(getContext()).saveNewMessage(message);
             adapter.addDataUpdate(message);
         }
@@ -179,7 +187,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                 }
            });
         }else{
-            messageHash.put(message.getName(),adapter.getCount()-1);
+            messageHash.put(message.getName(),adapter.getCount());
             DBManager.getDbManager(getContext()).saveNewMessage(message);
             adapter.addDataUpdate(message);
         }
@@ -188,8 +196,9 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
     @Override
     public void onComplete(String name) {
         if (name.equals(getString(R.string.pop_contacts_dele_record))) {
-            adapter.getDataList().remove(messageHash.get(name));
-            EMChatManager.getInstance().deleteConversation(name);
+            adapter.getDataList().remove(messageHash.get(deleName).intValue());
+            DBManager.getDbManager(getContext()).deleNewMessage(deleName);
+            EMChatManager.getInstance().deleteConversation(deleName);
             lvMessage.post(new Runnable() {
                 @Override
                 public void run() {

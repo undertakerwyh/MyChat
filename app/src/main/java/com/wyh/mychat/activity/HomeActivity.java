@@ -113,6 +113,28 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 ShowAddFriend();
             }
         });
+        initPagerListener();
+    }
+
+    private void initPagerListener() {
+        vpHome.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position==0){
+                    dismissPop();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void initBroadcastReceiver() {
@@ -176,12 +198,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void updatePop() {
-        getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                newPop.showAsDropDown(vpHome, (int) maxScreenWidth / 6, newPop.getHeight());
-            }
-        });
+        if(vpHome.getCurrentItem()!=0) {
+            getHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    newPop.showAsDropDown(vpHome, (int) maxScreenWidth / 6, newPop.getHeight());
+                }
+            });
+        }
     }
 
     public interface ContactListener {
