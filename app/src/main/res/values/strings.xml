@@ -45,4 +45,6 @@
     <string name="talk_other">待完善</string>
     
     <string name="pop_contacts_dele_record">删除记录</string>
+    <!--MessageFragment-->
+    <string name="message_unread">未读</string>
 </resources>

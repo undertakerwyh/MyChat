@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.HomeActivity;
@@ -122,6 +123,10 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                                 Intent intent = new Intent(getActivity(), TalkActivity.class);
                                 intent.putExtra("name", message.getName());
                                 getActivity().startActivity(intent);
+                                String content = message.getContent();
+                                String substring = content.substring(content.indexOf("]") + 1, content.length());
+                                cleanUnRead(message.getName());
+                                message.setContent(substring);
                             }
                         }).setLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -160,7 +165,8 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         if (messageHash.containsKey(userName)) {
             Message message = messageAdapter.getDataList().get(messageHash.get(userName));
             message.setNew(true);
-            message.setContent(content);
+            EMConversation conversation = EMChatManager.getInstance().getConversation(userName);
+            message.setContent("["+conversation.getUnreadMsgCount()+"条]"+content);
             message.setTime(emMessage.getMsgTime());
             DBManager.getDbManager(getContext()).changeNewMessage(message);
             lvMessage.post(new Runnable() {
@@ -176,6 +182,10 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             messageAdapter.addDataUpdate(message);
             messageHash.put(message.getName(), messageAdapter.getCount() - 1);
         }
+    }
+    public void cleanUnRead(String username){
+        EMConversation conversation = EMChatManager.getInstance().getConversation(username);
+        conversation.markAllMessagesAsRead();
     }
 
     @Override
