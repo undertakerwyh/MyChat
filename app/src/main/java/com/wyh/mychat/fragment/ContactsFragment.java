@@ -122,16 +122,18 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
 
     @Override
     public void onComplete(String name) {
-        if (name.equals(getString(R.string.pop_contacts_delete))) {
-            try {
-                EMContactManager.getInstance().deleteContact(deleName);
-                UserManager.getUserManager(getContext()).deleteFriendName(deleName);
-                MessageFragment messageFragment = ((HomeActivity) getActivity()).getMessageFragment();
-                messageFragment.setDeleName(name);
-                messageFragment.onComplete(getString(R.string.pop_contacts_dele_record));
-                updateList();
-            } catch (EaseMobException e) {
-                e.printStackTrace();
+        if(isAdded()) {
+            if (name.equals(getString(R.string.pop_contacts_delete))) {
+                try {
+                    EMContactManager.getInstance().deleteContact(deleName);
+                    UserManager.getUserManager(getContext()).deleteFriendName(deleName);
+                    MessageFragment messageFragment = ((HomeActivity) getActivity()).getMessageFragment();
+                    messageFragment.setDeleName(deleName);
+                    messageFragment.onComplete(getString(R.string.pop_contacts_dele_record));
+                    updateList();
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

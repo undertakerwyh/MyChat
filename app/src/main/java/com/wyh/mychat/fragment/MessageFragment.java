@@ -39,13 +39,13 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/10/20.
  */
 
-public class MessageFragment extends Fragment implements NewMessageBroadcastReceiver.NewMessageHome,TalkActivity.MySendUpdate, ListViewBar.ListViewBarListener {
+public class MessageFragment extends Fragment implements NewMessageBroadcastReceiver.NewMessageHome, TalkActivity.MySendUpdate, ListViewBar.ListViewBarListener {
     @Bind(R.id.lv_message)
     ListView lvMessage;
     private View view;
     private UniversalAdapter<Message> messageAdapter;
-    private HashMap<String,Integer>messageHash = new HashMap<>();
-    private List<Message>list = new ArrayList<>();
+    private HashMap<String, Integer> messageHash = new HashMap<>();
+    private List<Message> list = new ArrayList<>();
     private ListViewBar listViewBar;
     private int eventX;
     private int eventY;
@@ -82,11 +82,12 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         return view;
     }
 
-   private void savePosition() {
+    private void savePosition() {
         messageHash.clear();
-        for(int i = 0; i< messageAdapter.getDataList().size(); i++){
-            messageHash.put(messageAdapter.getDataList().get(i).getName(),i);
+        for (int i = 0; i < messageAdapter.getDataList().size(); i++) {
+            messageHash.put(messageAdapter.getDataList().get(i).getName(), i);
         }
+        Log.e("AAA",messageHash.toString());
     }
 
     @Override
@@ -103,26 +104,26 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
      * 初始化适配器
      */
     private void initAdapter() {
-        messageAdapter = new UniversalAdapter<Message>(getContext(),R.layout.chat_item_title) {
+        messageAdapter = new UniversalAdapter<Message>(getContext(), R.layout.chat_item_title) {
             @Override
             public void assignment(ViewHolder viewHolder, int positon) {
                 final Message message = messageAdapter.getDataList().get(positon);
-                viewHolder.setTextViewContent(R.id.tv_chat_name,message.getName())
-                        .setTextViewContent(R.id.tv_chat_lastContent,message.getContent())
-                        .setTextViewContent(R.id.tv_chat_data,CommonUtil.getTimeSelect(message.getTime()))
-                        .setImageViewContent(R.id.iv_chat_headPortrait,R.drawable.headportrait)
-                        .setLayoutVisivity(R.id.iv_new_icon,message.isNew())
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        message.setNew(false);
-                        messageAdapter.notifyDataSetChanged();
-                        ((HomeActivity)getActivity()).dismissPop();
-                        Intent intent = new Intent(getActivity(), TalkActivity.class);
-                        intent.putExtra("name",message.getName());
-                        getActivity().startActivity(intent);
-                    }
-                }).setLongClickListener(new View.OnLongClickListener() {
+                viewHolder.setTextViewContent(R.id.tv_chat_name, message.getName())
+                        .setTextViewContent(R.id.tv_chat_lastContent, message.getContent())
+                        .setTextViewContent(R.id.tv_chat_data, CommonUtil.getTimeSelect(message.getTime()))
+                        .setImageViewContent(R.id.iv_chat_headPortrait, R.drawable.headportrait)
+                        .setLayoutVisivity(R.id.iv_new_icon, message.isNew())
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                message.setNew(false);
+                                messageAdapter.notifyDataSetChanged();
+                                ((HomeActivity) getActivity()).dismissPop();
+                                Intent intent = new Intent(getActivity(), TalkActivity.class);
+                                intent.putExtra("name", message.getName());
+                                getActivity().startActivity(intent);
+                            }
+                        }).setLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
                         deleName = message.getName();
@@ -156,7 +157,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             content = msgType[1].substring(msgType[1].indexOf("\"") + 1, msgType[1].lastIndexOf("\""));
         }
         String userName = emMessage.getFrom();
-        if(messageHash.containsKey(userName)){
+        if (messageHash.containsKey(userName)) {
             Message message = messageAdapter.getDataList().get(messageHash.get(userName));
             message.setNew(true);
             message.setContent(content);
@@ -168,19 +169,19 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                     messageAdapter.notifyDataSetChanged();
                 }
             });
-        }else{
-            Message message = new Message(userName,emMessage.getMsgTime(),content, CommonUtil.TYPE_LEFT);
+        } else {
+            Message message = new Message(userName, emMessage.getMsgTime(), content, CommonUtil.TYPE_LEFT);
             message.setNew(true);
             DBManager.getDbManager(getContext()).saveNewMessage(message);
             messageAdapter.addDataUpdate(message);
-            messageHash.put(message.getName(), messageAdapter.getCount()-1);
+            messageHash.put(message.getName(), messageAdapter.getCount() - 1);
         }
     }
 
     @Override
     public void SendUpdate(Message message) {
         String userName = message.getName();
-        if(messageHash.containsKey(userName)){
+        if (messageHash.containsKey(userName)) {
             Message messageMain = messageAdapter.getDataList().get(messageHash.get(userName));
             messageMain.setContent(message.getContent());
             messageMain.setTime(message.getTime());
@@ -190,19 +191,19 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                 public void run() {
                     messageAdapter.notifyDataSetChanged();
                 }
-           });
-        }else{
+            });
+        } else {
             DBManager.getDbManager(getContext()).saveNewMessage(message);
-            Message messageMain = new Message(message.getName(),message.getTime(),message.getContent(),message.getType());
+            Message messageMain = new Message(message.getName(), message.getTime(), message.getContent(), message.getType());
             messageAdapter.addDataUpdate(messageMain);
-            messageHash.put(message.getName(), messageAdapter.getCount()-1);
+            messageHash.put(message.getName(), messageAdapter.getCount() - 1);
         }
     }
 
     @Override
     public void onComplete(String name) {
         if (name.equals(getString(R.string.pop_contacts_dele_record))) {
-            messageAdapter.getDataList().remove((int)messageHash.get(deleName));
+            messageAdapter.getDataList().remove((int) messageHash.get(deleName));
             DBManager.getDbManager(getContext()).deleNewMessage(deleName);
             EMChatManager.getInstance().deleteConversation(deleName);
             savePosition();
