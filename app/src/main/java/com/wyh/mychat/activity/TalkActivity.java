@@ -141,11 +141,17 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     private void initAdapter() {
         adapter = new UniversalAdapter<Message>(getApplicationContext(), R.layout.layout_message_item) {
             @Override
-            public void assignment(ViewHolder viewHolder, int positon) {
+            public void assignment(ViewHolder viewHolder, final int positon) {
                 Message message = adapter.getDataList().get(positon);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
                         R.id.tv_chat_right, R.id.tv_time_text, message.getContent(), message.getType())
-                        .setSendErrorListener(message.getErrorType());
+                        .setSendErrorListener(message.getErrorType())
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Log.e("AAA","positon==="+positon);
+                            }
+                        });
             }
         };
     }

@@ -78,7 +78,8 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         return view;
     }
 
-    private void savePosition() {
+   private void savePosition() {
+        messageHash.clear();
         for(int i=0;i<adapter.getDataList().size();i++){
             messageHash.put(adapter.getDataList().get(i).getName(),i);
         }
@@ -166,7 +167,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         }else{
             Message message = new Message(userName,emMessage.getMsgTime(),content, CommonUtil.TYPE_LEFT);
             message.setNew(true);
-            messageHash.put(message.getName(),adapter.getCount());
+            messageHash.put(message.getName(),adapter.getCount()-1);
             DBManager.getDbManager(getContext()).saveNewMessage(message);
             adapter.addDataUpdate(message);
         }
@@ -199,6 +200,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             adapter.getDataList().remove(messageHash.get(deleName).intValue());
             DBManager.getDbManager(getContext()).deleNewMessage(deleName);
             EMChatManager.getInstance().deleteConversation(deleName);
+            savePosition();
             lvMessage.post(new Runnable() {
                 @Override
                 public void run() {
