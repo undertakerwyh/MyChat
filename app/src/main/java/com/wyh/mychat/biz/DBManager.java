@@ -84,7 +84,7 @@ public class DBManager {
                         , message.getContent(),String.valueOf(message.getTime()) });
     }
     public void changeNewMessage(Message message){
-        saveNewMessagedb.execSQL("update message set content = ? , time = ? where name = ? & username = ?"
+        saveNewMessagedb.execSQL("update message set content = ? , time = ? where name = ? and username = ?"
                 ,new Object[]{message.getContent(),message.getTime()
                 ,String.valueOf(message.getName()),UserManager.getUserManager(contexts).loadUserName()});
     }
