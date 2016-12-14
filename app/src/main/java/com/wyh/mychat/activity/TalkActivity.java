@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.easemob.EMCallBack;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.UniversalAdapter;
@@ -27,8 +29,10 @@ import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.util.TimeNoteUtil;
 import com.wyh.mychat.view.ActionBar;
+import com.wyh.mychat.view.ListViewBar;
 import com.wyh.mychat.view.xlistview.XListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -57,6 +61,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     LinearLayout activityTalk;
     private UniversalAdapter<Message> talkAdapter;
     private String name;
+    private ListViewBar listViewBar;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -114,6 +119,20 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 setupUI(innerView);
             }
         }
+        initListViewBar();
+    }
+
+    private void initListViewBar() {
+        List<String> list = new ArrayList<>();
+        list.add(getString(R.string.pop_deleMsg));
+        listViewBar = new ListViewBar(this, list, new ListViewBar.ListViewBarListener() {
+            @Override
+            public void onComplete(String name) {
+                listViewBar.dismiss();
+                EMConversation conversation = EMChatManager.getInstance().getConversation(name);
+                conversation.removeMessage();
+            }
+        });
     }
 
     public void setupUI(View view) {
@@ -150,9 +169,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Log.e("AAA","positon==="+positon);
+
                             }
-                        });
+                        },R.id.ll_chat_left,R.id.tv_chat_left);
             }
         };
     }
