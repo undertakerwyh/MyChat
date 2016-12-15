@@ -4,7 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.LruCache;
+
+import com.wyh.mychat.util.CommonUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,10 +58,11 @@ public class BitmapManager {
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = httpURLConnection.getInputStream();
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
-                newMessageTalk.returnTalkPic(bitmap);
+                String bitmapPath = contexts.getCacheDir().getPath() + "/" + name;
+                newMessageTalk.returnTalkPic(bitmapPath);
                 saveCacheUrl(params[1], bitmap);
-                File file = new File(contexts.getCacheDir().getPath() + "/" + name);
-                DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], file, Long.parseLong(params[3]));
+                loadBitmapFromCache(bitmapPath,CommonUtil.TYPT_PICLEFT);
+                DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2],new File(bitmapPath), Long.parseLong(params[3]));
                 return null;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -69,12 +73,15 @@ public class BitmapManager {
         }
     }
 
-    public Bitmap loadBitmapFromCache(String path) {
-        Bitmap bitmap = lruCache.get(path);
-        if (bitmap != null) {
-            return bitmap;
+    public Bitmap loadBitmapFromCache(@NonNull String path,int type) {
+        Bitmap bitmap=null;
+        if(type== CommonUtil.TYPE_PICRIGHT||type==CommonUtil.TYPT_PICLEFT) {
+            bitmap = lruCache.get(path);
+            if (bitmap == null) {
+                bitmap = BitmapFactory.decodeFile(path);
+                lruCache.put(path, bitmap);
+            }
         }
-        bitmap = BitmapFactory.decodeFile(path);
         return bitmap;
     }
 
@@ -100,6 +107,6 @@ public class BitmapManager {
     private NewMessageTalk newMessageTalk;
 
     public interface NewMessageTalk {
-        void returnTalkPic(Bitmap bitmap);
+        void returnTalkPic(String bitmapPath);
     }
 }

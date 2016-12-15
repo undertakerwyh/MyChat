@@ -1,6 +1,5 @@
 package com.wyh.mychat.activity;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -26,7 +25,6 @@ import com.wyh.mychat.biz.SendManager;
 import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
-import com.wyh.mychat.util.BitmapUtil;
 import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.util.TimeNoteUtil;
@@ -153,7 +151,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void assignment(ViewHolder viewHolder, final int positon) {
                 Message message = talkAdapter.getDataList().get(positon);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
-                        R.id.tv_chat_right, R.id.iv_pic_left, R.id.iv_pic_right, message.getBitmap(), R.id.tv_time_text, message.getContent(), message.getType())
+                        R.id.tv_chat_right, R.id.iv_pic_left, R.id.iv_pic_right
+                        ,BitmapManager.getBitmapManager(getApplicationContext()).loadBitmapFromCache(message.getBitmapPath(),message.getType())
+                        , R.id.tv_time_text, message.getContent(), message.getType())
                         .setSendErrorListener(message.getErrorType());
             }
         };
@@ -280,10 +280,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void onProgress(int i, String s) {
             }
         });
-        Bitmap bitmap = BitmapUtil.getSmallBitmap(picFile.getAbsolutePath());
-        Message message = new Message(friendName, CommonUtil.getTimeLong(),bitmap, CommonUtil.TYPE_PICRIGHT);
-        mySendPic(message, CommonUtil.TYPE_PICRIGHT);
+        Message message = new Message(friendName, CommonUtil.getTimeLong(), CommonUtil.TYPE_PICRIGHT,picFile.getAbsolutePath());
         DBManager.getDbManager(this).createReceivedPicMsg(friendName,UserManager.getUserManager(this).loadUserName(),picFile,message.getTime());
+        mySendPic(message, CommonUtil.TYPE_PICRIGHT);
     }
 
     public interface MySendUpdate {
@@ -326,8 +325,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void returnTalkPic(Bitmap bitmap) {
-        final Message message = new Message(null, CommonUtil.getTimeLong(), bitmap, CommonUtil.TYPT_PICLEFT);
+    public void returnTalkPic(String bitmapPath) {
+        final Message message = new Message(null, CommonUtil.getTimeLong(), bitmapPath, CommonUtil.TYPT_PICLEFT);
         lvTalkMessage.post(new Runnable() {
             @Override
             public void run() {
