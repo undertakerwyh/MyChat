@@ -127,6 +127,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                                 String substring = content.substring(content.indexOf("]") + 1, content.length());
                                 cleanUnRead(message.getName());
                                 message.setContent(substring);
+                                DBManager.getDbManager(getContext()).changeNewMessage(message);
                             }
                         }).setLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -160,6 +161,8 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         String content = null;
         if (msgType[0].equals("txt")) {
             content = msgType[1].substring(msgType[1].indexOf("\"") + 1, msgType[1].lastIndexOf("\""));
+        }else if(msgType[0].equals("image")){
+            content = getString(R.string.talk_pic);
         }
         String userName = emMessage.getFrom();
         if (messageHash.containsKey(userName)) {
@@ -186,6 +189,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
     public void cleanUnRead(String username){
         EMConversation conversation = EMChatManager.getInstance().getConversation(username);
         conversation.markAllMessagesAsRead();
+
     }
 
     @Override

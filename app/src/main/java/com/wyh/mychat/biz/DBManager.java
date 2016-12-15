@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.easemob.chat.EMChatManager;
@@ -14,6 +13,7 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.wyh.mychat.entity.Message;
+import com.wyh.mychat.util.BitmapUtil;
 import com.wyh.mychat.util.CommonUtil;
 
 import java.io.File;
@@ -215,12 +215,11 @@ public class DBManager {
                         ImageMessageBody imageMessageBody= (ImageMessageBody) emMessage.getBody();
                         if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
                             type = CommonUtil.TYPE_PICRIGHT;
-                            bitmap = BitmapFactory.decodeFile(imageMessageBody.getLocalUrl());
+                            bitmap = BitmapUtil.getSmallBitmap(imageMessageBody.getLocalUrl());
                         }else{
                             type = CommonUtil.TYPT_PICLEFT;
-                            bitmap = BitmapFactory.decodeFile(contexts.getCacheDir()+"/"+imageMessageBody.getFileName());
+                            bitmap = BitmapUtil.getSmallBitmap(contexts.getCacheDir()+"/"+imageMessageBody.getFileName());
                         }
-
                         Message message = new Message(name,time,bitmap,type);
                         list.add(message);
                     }

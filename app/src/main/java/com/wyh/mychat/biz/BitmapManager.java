@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.LruCache;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,26 +23,30 @@ import static android.R.attr.name;
  */
 
 public class BitmapManager {
-    private static BitmapManager bitmapManager=null;
+    private static BitmapManager bitmapManager = null;
     private BitmapAsyncTask bitmapAsyncTask;
     private static Context contexts;
-    public static BitmapManager getBitmapManager(Context context){
-        if(bitmapManager ==null){
-            synchronized (context){
+    private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
+
+    public static BitmapManager getBitmapManager(Context context) {
+        if (bitmapManager == null) {
+            synchronized (context) {
                 bitmapManager = new BitmapManager();
             }
             contexts = context;
         }
         return bitmapManager;
     }
-    private BitmapManager(){
+
+    private BitmapManager() {
         bitmapAsyncTask = new BitmapAsyncTask();
     }
 
-    public void getBitmapUrl(String bitmapUrl,String name,String from,long time){
-        bitmapAsyncTask.execute(bitmapUrl,name,from, String.valueOf(time));
+    public void getBitmapUrl(String bitmapUrl, String name, String from, long time) {
+        bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time));
     }
-    class BitmapAsyncTask extends AsyncTask<String,Void,Bitmap>{
+
+    class BitmapAsyncTask extends AsyncTask<String, Void, Bitmap> {
 
         @Override
         protected Bitmap doInBackground(String... params) {
@@ -51,9 +56,9 @@ public class BitmapManager {
                 InputStream in = httpURLConnection.getInputStream();
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
                 newMessageTalk.returnTalkPic(bitmap);
-                saveCacheUrl(params[1],bitmap);
-                File file = new File(contexts.getCacheDir().getPath()+"/"+name);
-                DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(),params[2],file, Long.parseLong(params[3]));
+                saveCacheUrl(params[1], bitmap);
+                File file = new File(contexts.getCacheDir().getPath() + "/" + name);
+                DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], file, Long.parseLong(params[3]));
                 return null;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -63,15 +68,25 @@ public class BitmapManager {
             return null;
         }
     }
+
+    public Bitmap loadBitmapFromCache(String path) {
+        Bitmap bitmap = lruCache.get(path);
+        if (bitmap != null) {
+            return bitmap;
+        }
+        bitmap = BitmapFactory.decodeFile(path);
+        return bitmap;
+    }
+
     public void saveCacheUrl(String name, Bitmap bitmap) {
         File cacheFile = contexts.getCacheDir();
-        if(!cacheFile.exists()){
+        if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
         OutputStream out;
         try {
-            out = new FileOutputStream(new File(cacheFile,name));
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,out);
+            out = new FileOutputStream(new File(cacheFile, name));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -84,7 +99,7 @@ public class BitmapManager {
 
     private NewMessageTalk newMessageTalk;
 
-    public interface NewMessageTalk{
+    public interface NewMessageTalk {
         void returnTalkPic(Bitmap bitmap);
     }
 }

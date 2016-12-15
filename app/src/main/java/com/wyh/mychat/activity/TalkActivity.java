@@ -1,7 +1,6 @@
 package com.wyh.mychat.activity;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -27,6 +26,7 @@ import com.wyh.mychat.biz.SendManager;
 import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
+import com.wyh.mychat.util.BitmapUtil;
 import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.util.TimeNoteUtil;
@@ -280,8 +280,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void onProgress(int i, String s) {
             }
         });
-        Bitmap bitmap = BitmapFactory.decodeFile(picFile.getAbsolutePath());
-        Message message = new Message(friendName, CommonUtil.getTimeLong(), bitmap, CommonUtil.TYPE_PICRIGHT);
+        Bitmap bitmap = BitmapUtil.getSmallBitmap(picFile.getAbsolutePath());
+        Message message = new Message(friendName, CommonUtil.getTimeLong(),bitmap, CommonUtil.TYPE_PICRIGHT);
         mySendPic(message, CommonUtil.TYPE_PICRIGHT);
         DBManager.getDbManager(this).createReceivedPicMsg(friendName,UserManager.getUserManager(this).loadUserName(),picFile,message.getTime());
     }
