@@ -1,5 +1,6 @@
 package com.wyh.mychat.activity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
 import com.wyh.mychat.base.BaseActivity;
+import com.wyh.mychat.biz.BitmapManager;
 import com.wyh.mychat.biz.DBManager;
 import com.wyh.mychat.biz.SendManager;
 import com.wyh.mychat.biz.UserManager;
@@ -29,13 +31,15 @@ import com.wyh.mychat.util.TimeNoteUtil;
 import com.wyh.mychat.view.ActionBar;
 import com.wyh.mychat.view.xlistview.XListView;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TalkActivity extends BaseActivity implements View.OnClickListener, DBManager.UpdateListener, NewMessageBroadcastReceiver.NewMessageTalk {
+public class TalkActivity extends BaseActivity implements View.OnClickListener, DBManager.UpdateListener,
+        NewMessageBroadcastReceiver.NewMessageTalk, ShowPicActivity.PicSendListener,BitmapManager.NewMessageTalk{
 
     @Bind(R.id.action_bar)
     ActionBar actionBar;
@@ -56,7 +60,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     @Bind(R.id.activity_talk)
     LinearLayout activityTalk;
     private UniversalAdapter<Message> talkAdapter;
-    private String name;
+    private String userName;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -70,7 +74,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         if (endIndex == startIndex) {
                             lvTalkMessage.setSelection(0);
                         } else {
-                            Log.e("AAA","lvTalkMessage.isInTouchMode()"+lvTalkMessage.isInTouchMode());
+                            Log.e("AAA", "lvTalkMessage.isInTouchMode()" + lvTalkMessage.isInTouchMode());
                             lvTalkMessage.setSelection(endIndex - startIndex + 1);
                         }
                     }
@@ -87,8 +91,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_talk);
         /**初始化ActionBar*/
-        name = getIntent().getStringExtra("name");
-        initActionBar(name, R.drawable.back, -1, this);
+        userName = getIntent().getStringExtra("name");
+        initActionBar(userName, R.drawable.back, -1, this);
         ButterKnife.bind(this);
         /**初始化适配器*/
         initAdapter();
@@ -99,9 +103,11 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         setXListView();
         DBManager.getDbManager(getApplicationContext()).setUpdateListener(this);
         /**初始化数据*/
-        DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name, true);
+        DBManager.getDbManager(getApplicationContext()).loadMessageDESC(userName, true);
         NewMessageBroadcastReceiver.setNewMessageTalk(this);
         UserManager.getUserManager(this).setTalkSend(true);
+        ShowPicActivity.setPicSendListener(this);
+        BitmapManager.getBitmapManager(this).setNewMessageTalk(this);
         edInputMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -133,7 +139,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onRefresh() {
                 /**更新数据*/
-                DBManager.getDbManager(getApplicationContext()).loadMessageDESC(name, false);
+                DBManager.getDbManager(getApplicationContext()).loadMessageDESC(userName, false);
                 TimeNoteUtil.getTimeNoteUtil().setRefresh(false);
             }
         });
@@ -145,13 +151,13 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void assignment(ViewHolder viewHolder, final int positon) {
                 Message message = talkAdapter.getDataList().get(positon);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
-                        R.id.tv_chat_right,R.id.iv_pic_left,R.id.iv_pic_right,message.getBitmap(), R.id.tv_time_text, message.getContent(), message.getType())
+                        R.id.tv_chat_right, R.id.iv_pic_left, R.id.iv_pic_right, message.getBitmap(), R.id.tv_time_text, message.getContent(), message.getType())
                         .setSendErrorListener(message.getErrorType());
             }
         };
     }
 
-    @OnClick({R.id.btn_send, R.id.iv_actionbar_left, R.id.iv_other_bar_icon,R.id.ed_input_message,R.id.talk_pic_icon})
+    @OnClick({R.id.btn_send, R.id.iv_actionbar_left, R.id.iv_other_bar_icon, R.id.ed_input_message, R.id.talk_pic_icon})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_actionbar_left:
@@ -202,7 +208,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     private void mySendMessage(String content, int type) {
         if (!TextUtils.isEmpty(content)) {
-            Message message = new Message(name, CommonUtil.getTimeLong(), content, type);
+            Message message = new Message(userName, CommonUtil.getTimeLong(), content, type);
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
             String time = TimeNoteUtil.getTimeNoteUtil().sendStart(message.getTime());
             if (time != null) {
@@ -214,7 +220,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             lvTalkMessage.setSelection(lvTalkMessage.getCount() - 1);
             mySendUpdate.SendUpdate(message);
             if (type == CommonUtil.TYPE_RIGHT) {
-                SendManager.getSendMessage(this).sendTextMessage(name, content, new EMCallBack() {
+                SendManager.getSendMessage(this).sendTextMessage(userName, content, new EMCallBack() {
                     @Override
                     public void onSuccess() {
                         Log.e("AAA", "onSuccess");
@@ -236,13 +242,45 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         handler.sendEmptyMessage(2);
                     }
                 });
-                DBManager.getDbManager(getApplicationContext()).createSentTextMsg(name
+                DBManager.getDbManager(getApplicationContext()).createSentTextMsg(userName
                         , UserManager.getUserManager(getApplicationContext()).loadUserName()
                         , message.getContent(), message.getTime());
             }
 
         }
     }
+    private void mySendPic(Message message, int type) {
+            String time = TimeNoteUtil.getTimeNoteUtil().sendStart(message.getTime());
+            if (time != null) {
+                Message timeMsg = new Message(null, 0, CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
+                DBManager.getDbManager(this).setTime(message.getTime());
+                talkAdapter.addDataUpdate(timeMsg);
+            }
+            talkAdapter.addDataUpdate(message);
+            lvTalkMessage.setSelection(lvTalkMessage.getCount() - 1);
+            mySendUpdate.SendUpdate(message);
+    }
+
+    @Override
+    public void sendPic(File picFile, boolean isOriginal) {
+        Log.e("AAA","userName:"+userName);
+        SendManager.getSendMessage(this).sendPicMessage(userName, picFile, isOriginal, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(int i, String s) {
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+            }
+        });
+    }
+
+
 
     public interface MySendUpdate {
         void SendUpdate(Message message);
@@ -269,6 +307,27 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void run() {
                 mySendMessage(finalContent, CommonUtil.TYPE_LEFT);
+            }
+        });
+    }
+
+    @Override
+    public void updateTalkPic(EMMessage message) {
+        String allUrl = message.getBody().toString();
+        String bitmapUrl = allUrl.substring(allUrl.indexOf("thumbnial:")+10);
+        String from = message.getFrom();
+        String name = allUrl.substring(allUrl.indexOf("image:")+6,allUrl.indexOf(".jpg")+4);
+        Log.e("AAA",name);
+        long time = message.getMsgTime();
+        BitmapManager.getBitmapManager(this).getBitmapUrl(bitmapUrl,name,from,time);
+    }
+    @Override
+    public void returnTalkPic(Bitmap bitmap) {
+        final Message message = new Message(null,CommonUtil.getTimeLong(),bitmap,CommonUtil.TYPT_PICLEFT);
+        lvTalkMessage.post(new Runnable() {
+            @Override
+            public void run() {
+                mySendPic(message, CommonUtil.TYPT_PICLEFT);
             }
         });
     }

@@ -55,15 +55,12 @@ public class SendManager {
         EMChatManager.getInstance().sendMessage(message, emCallBack);
     }
 
-    public void sendPicMessage(String username, File picFile, EMCallBack emCallBack) {
+    public void sendPicMessage(String username, File picFile,boolean isOriginal, EMCallBack emCallBack) {
         EMConversation conversation = EMChatManager.getInstance().getConversation(username);
         EMMessage message = EMMessage.createSendMessage(EMMessage.Type.IMAGE);
-        //如果是群聊，设置chattype，默认是单聊
-        message.setChatType(EMMessage.ChatType.GroupChat);
-
         ImageMessageBody body = new ImageMessageBody(picFile);
         // 默认超过100k的图片会压缩后发给对方，可以设置成发送原图
-        // body.setSendOriginalImage(true);
+         body.setSendOriginalImage(isOriginal);
         message.addBody(body);
         message.setReceipt(username);
         conversation.addMessage(message);

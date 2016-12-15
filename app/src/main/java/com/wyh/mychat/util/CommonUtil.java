@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 
 public class CommonUtil {
-    public final static String MYSEND = "DF23J34J32FD0R234";
+    public final static String TYPE_PIC = "DF23J34J32FD0R234";
     public final static int TYPE_LEFT = 0;
     public final static int TYPE_RIGHT = 1;
     public final static int TYPE_TIME = 2;
@@ -36,10 +36,10 @@ public class CommonUtil {
     }
 
     public static String setDBSaveName(String name){
-        return name+MYSEND;
+        return name+ TYPE_PIC;
     }
     public static String getDBLoadName(String name){
-        String[] split = name.split(MYSEND);
+        String[] split = name.split(TYPE_PIC);
         return split[0];
     }
 

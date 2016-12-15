@@ -4,15 +4,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
+import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.util.CommonUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -110,7 +114,7 @@ public class DBManager {
                     Log.e("AAA","username:"+userName+"-----name:"+name);
                     time = Long.parseLong(cursor.getString(cursor.getColumnIndex("time")));
                     content = cursor.getString(cursor.getColumnIndex("content"));
-                    if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
+                    if (UserManager.getUserManager(contexts).loadUserName().equals(name)) {
                         type = CommonUtil.TYPE_RIGHT;
                     } else {
                         type = CommonUtil.TYPE_LEFT;
@@ -192,20 +196,32 @@ public class DBManager {
                     String msgBody = emMessage.getBody().toString();
                     String[] msgType = msgBody.split(":");
                     String content = null;
+                    Bitmap bitmap = null;
+                    int type =-1;
                     if (istrue) {
                         isFirst = false;
                         saveTime = time;
                     }
                     istrue = false;
                     if (msgType[0].equals("txt")) {
+                        type = CommonUtil.TYPE_LEFT;
                         content = msgType[1].substring(msgType[1].indexOf("\"") + 1, msgType[1].lastIndexOf("\""));
+                        if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
+                            type = CommonUtil.TYPE_RIGHT;
+                        }
+                        Message message = new Message(name, time, content, type);
+                        list.add(message);
+                    }else if(msgType[0].equals("image")){
+                        ImageMessageBody imageMessageBody= (ImageMessageBody) emMessage.getBody();
+                        Log.e("AAA","imageMessageBody.getFileName()"+imageMessageBody.getFileName());
+                        bitmap = BitmapFactory.decodeFile(contexts.getCacheDir()+"/"+imageMessageBody.getFileName());
+                        type = CommonUtil.TYPT_PICLEFT;
+                        if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
+                            type = CommonUtil.TYPE_PICRIGHT;
+                        }
+                        Message message = new Message(name,time,bitmap,type);
+                        list.add(message);
                     }
-                    int type = CommonUtil.TYPE_LEFT;
-                    if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
-                        type = CommonUtil.TYPE_RIGHT;
-                    }
-                    Message message = new Message(name, time, content, type);
-                    list.add(message);
                     if (isFirst) {
                         msgId = emMessage.getMsgId();
                         isFirst = false;
@@ -241,6 +257,16 @@ public class DBManager {
     public EMMessage createReceivedTextMsg(String to, String from, String content, long time) {
         EMMessage msg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
         TextMessageBody body = new TextMessageBody(content);
+        msg.addBody(body);
+        msg.setFrom(from);
+        msg.setTo(to);
+        msg.setMsgTime(time);
+        return msg;
+    }
+    //创建一条接收TextMsg
+    public EMMessage createReceivedPicMsg(String to, String from, File file, long time) {
+        EMMessage msg = EMMessage.createReceiveMessage(EMMessage.Type.IMAGE);
+        ImageMessageBody body = new ImageMessageBody(file);
         msg.addBody(body);
         msg.setFrom(from);
         msg.setTo(to);

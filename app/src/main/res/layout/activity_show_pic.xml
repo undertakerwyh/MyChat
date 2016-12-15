@@ -43,6 +43,7 @@
             android:layout_marginLeft="@dimen/chat_show_checkbox_marginLeft"
             android:scaleX="1.5"
             android:scaleY="1.5"
+            android:checked="false"
             android:text="原图" />
 
         <View

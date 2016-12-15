@@ -54,6 +54,7 @@
         <activity
             android:name=".activity.TalkActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ShowSrcActivity"
@@ -71,6 +72,8 @@
             android:value="1151161126115337#mychat" />
         <!-- 声明sdk所需的service SDK核心功能 -->
         <service android:name="com.easemob.chat.EMChatService" />
+
+        <receiver android:name=".receive.NewMessageBroadcastReceiver"></receiver>
 
     </application>
 

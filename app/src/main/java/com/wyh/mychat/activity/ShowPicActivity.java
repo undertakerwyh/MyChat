@@ -19,6 +19,7 @@ import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ShowPicActivity extends BaseActivity implements View.OnClickListener {
 
@@ -32,6 +33,13 @@ public class ShowPicActivity extends BaseActivity implements View.OnClickListene
     Button btnPicSend;
     @Bind(R.id.ll_show_pic)
     LinearLayout llShowPic;
+    private File picFile;
+
+    public static void setPicSendListener(PicSendListener picSendListener) {
+        ShowPicActivity.picSendListener = picSendListener;
+    }
+
+    private static PicSendListener picSendListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,25 +47,34 @@ public class ShowPicActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.activity_show_pic);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        File picFile = new File(intent.getStringExtra("PicFile"));
+        picFile = new File(intent.getStringExtra("PicFile"));
         String FromClass = intent.getStringExtra("FromClass");
         String name = intent.getStringExtra("PicName");
-        if(ConfigFragment.class.getSimpleName().equals(FromClass)){
+        if (ConfigFragment.class.getSimpleName().equals(FromClass)) {
             llShowPic.setVisibility(View.GONE);
-        }else{
+        } else {
             llShowPic.setVisibility(View.VISIBLE);
         }
-        initActionBar(name,R.drawable.back,-1,this);
-        cbShowPic.setText("原图("+ CommonUtil.getFileSize(picFile.length())+")");
+        initActionBar(name, R.drawable.back, -1, this);
+        cbShowPic.setText("原图(" + CommonUtil.getFileSize(picFile.length()) + ")");
         ivShowPictrue.setImageBitmap(BitmapUtil.getBigBitmap(picFile.getAbsolutePath()));
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
+    @OnClick({R.id.btn_pic_send})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_pic_send:
+                boolean isOriginal = cbShowPic.isChecked();
+                picSendListener.sendPic(picFile,isOriginal);
+                startActivity(TalkActivity.class);
+                break;
             case R.id.iv_actionbar_left:
                 finish();
                 break;
         }
+    }
+
+    public interface PicSendListener {
+        void sendPic(File picFile,boolean isOriginal);
     }
 }
