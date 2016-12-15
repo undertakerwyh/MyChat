@@ -1,6 +1,7 @@
 package com.wyh.mychat.activity;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMMessage;
+import com.easemob.chat.ImageMessageBody;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
@@ -39,7 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class TalkActivity extends BaseActivity implements View.OnClickListener, DBManager.UpdateListener,
-        NewMessageBroadcastReceiver.NewMessageTalk, ShowPicActivity.PicSendListener,BitmapManager.NewMessageTalk{
+        NewMessageBroadcastReceiver.NewMessageTalk, ShowPicActivity.PicSendListener, BitmapManager.NewMessageTalk {
 
     @Bind(R.id.action_bar)
     ActionBar actionBar;
@@ -60,7 +62,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     @Bind(R.id.activity_talk)
     LinearLayout activityTalk;
     private UniversalAdapter<Message> talkAdapter;
-    private String userName;
+    private String friendName;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -91,8 +93,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_talk);
         /**初始化ActionBar*/
-        userName = getIntent().getStringExtra("name");
-        initActionBar(userName, R.drawable.back, -1, this);
+        friendName = getIntent().getStringExtra("name");
+        initActionBar(friendName, R.drawable.back, -1, this);
         ButterKnife.bind(this);
         /**初始化适配器*/
         initAdapter();
@@ -103,7 +105,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         setXListView();
         DBManager.getDbManager(getApplicationContext()).setUpdateListener(this);
         /**初始化数据*/
-        DBManager.getDbManager(getApplicationContext()).loadMessageDESC(userName, true);
+        DBManager.getDbManager(getApplicationContext()).loadMessageDESC(friendName, true);
         NewMessageBroadcastReceiver.setNewMessageTalk(this);
         UserManager.getUserManager(this).setTalkSend(true);
         ShowPicActivity.setPicSendListener(this);
@@ -139,7 +141,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onRefresh() {
                 /**更新数据*/
-                DBManager.getDbManager(getApplicationContext()).loadMessageDESC(userName, false);
+                DBManager.getDbManager(getApplicationContext()).loadMessageDESC(friendName, false);
                 TimeNoteUtil.getTimeNoteUtil().setRefresh(false);
             }
         });
@@ -208,7 +210,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     private void mySendMessage(String content, int type) {
         if (!TextUtils.isEmpty(content)) {
-            Message message = new Message(userName, CommonUtil.getTimeLong(), content, type);
+            Message message = new Message(friendName, CommonUtil.getTimeLong(), content, type);
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
             String time = TimeNoteUtil.getTimeNoteUtil().sendStart(message.getTime());
             if (time != null) {
@@ -220,7 +222,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             lvTalkMessage.setSelection(lvTalkMessage.getCount() - 1);
             mySendUpdate.SendUpdate(message);
             if (type == CommonUtil.TYPE_RIGHT) {
-                SendManager.getSendMessage(this).sendTextMessage(userName, content, new EMCallBack() {
+                SendManager.getSendMessage(this).sendTextMessage(friendName, content, new EMCallBack() {
                     @Override
                     public void onSuccess() {
                         Log.e("AAA", "onSuccess");
@@ -242,29 +244,29 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         handler.sendEmptyMessage(2);
                     }
                 });
-                DBManager.getDbManager(getApplicationContext()).createSentTextMsg(userName
+                DBManager.getDbManager(getApplicationContext()).createSentTextMsg(friendName
                         , UserManager.getUserManager(getApplicationContext()).loadUserName()
                         , message.getContent(), message.getTime());
             }
 
         }
     }
+
     private void mySendPic(Message message, int type) {
-            String time = TimeNoteUtil.getTimeNoteUtil().sendStart(message.getTime());
-            if (time != null) {
-                Message timeMsg = new Message(null, 0, CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
-                DBManager.getDbManager(this).setTime(message.getTime());
-                talkAdapter.addDataUpdate(timeMsg);
-            }
-            talkAdapter.addDataUpdate(message);
-            lvTalkMessage.setSelection(lvTalkMessage.getCount() - 1);
-            mySendUpdate.SendUpdate(message);
+        String time = TimeNoteUtil.getTimeNoteUtil().sendStart(message.getTime());
+        if (time != null) {
+            Message timeMsg = new Message(null, 0, CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
+            DBManager.getDbManager(this).setTime(message.getTime());
+            talkAdapter.addDataUpdate(timeMsg);
+        }
+        talkAdapter.addDataUpdate(message);
+        lvTalkMessage.setSelection(lvTalkMessage.getCount() - 1);
+        mySendUpdate.SendUpdate(message);
     }
 
     @Override
     public void sendPic(File picFile, boolean isOriginal) {
-        Log.e("AAA","userName:"+userName);
-        SendManager.getSendMessage(this).sendPicMessage(userName, picFile, isOriginal, new EMCallBack() {
+        SendManager.getSendMessage(this).sendPicMessage(friendName, picFile, isOriginal, new EMCallBack() {
             @Override
             public void onSuccess() {
 
@@ -278,9 +280,11 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void onProgress(int i, String s) {
             }
         });
+        Bitmap bitmap = BitmapFactory.decodeFile(picFile.getAbsolutePath());
+        Message message = new Message(friendName, CommonUtil.getTimeLong(), bitmap, CommonUtil.TYPE_PICRIGHT);
+        mySendPic(message, CommonUtil.TYPE_PICRIGHT);
+        DBManager.getDbManager(this).createReceivedPicMsg(friendName,UserManager.getUserManager(this).loadUserName(),picFile,message.getTime());
     }
-
-
 
     public interface MySendUpdate {
         void SendUpdate(Message message);
@@ -313,17 +317,17 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void updateTalkPic(EMMessage message) {
-        String allUrl = message.getBody().toString();
-        String bitmapUrl = allUrl.substring(allUrl.indexOf("thumbnial:")+10);
+        ImageMessageBody imageMessageBody = (ImageMessageBody) message.getBody();
+        String bitmapUrl = imageMessageBody.getThumbnailUrl();
         String from = message.getFrom();
-        String name = allUrl.substring(allUrl.indexOf("image:")+6,allUrl.indexOf(".jpg")+4);
-        Log.e("AAA",name);
+        String name = imageMessageBody.getFileName();
         long time = message.getMsgTime();
-        BitmapManager.getBitmapManager(this).getBitmapUrl(bitmapUrl,name,from,time);
+        BitmapManager.getBitmapManager(this).getBitmapUrl(bitmapUrl, name, from, time);
     }
+
     @Override
     public void returnTalkPic(Bitmap bitmap) {
-        final Message message = new Message(null,CommonUtil.getTimeLong(),bitmap,CommonUtil.TYPT_PICLEFT);
+        final Message message = new Message(null, CommonUtil.getTimeLong(), bitmap, CommonUtil.TYPT_PICLEFT);
         lvTalkMessage.post(new Runnable() {
             @Override
             public void run() {

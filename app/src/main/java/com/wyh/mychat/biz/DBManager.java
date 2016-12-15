@@ -213,12 +213,14 @@ public class DBManager {
                         list.add(message);
                     }else if(msgType[0].equals("image")){
                         ImageMessageBody imageMessageBody= (ImageMessageBody) emMessage.getBody();
-                        Log.e("AAA","imageMessageBody.getFileName()"+imageMessageBody.getFileName());
-                        bitmap = BitmapFactory.decodeFile(contexts.getCacheDir()+"/"+imageMessageBody.getFileName());
-                        type = CommonUtil.TYPT_PICLEFT;
                         if (name.equals(UserManager.getUserManager(contexts).loadUserName())) {
                             type = CommonUtil.TYPE_PICRIGHT;
+                            bitmap = BitmapFactory.decodeFile(imageMessageBody.getLocalUrl());
+                        }else{
+                            type = CommonUtil.TYPT_PICLEFT;
+                            bitmap = BitmapFactory.decodeFile(contexts.getCacheDir()+"/"+imageMessageBody.getFileName());
                         }
+
                         Message message = new Message(name,time,bitmap,type);
                         list.add(message);
                     }
