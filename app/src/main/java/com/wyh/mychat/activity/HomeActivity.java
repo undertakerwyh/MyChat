@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -156,13 +155,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onContactAgreed(String username) {
                 //好友请求被同意
-                Log.d("AAA", "onContactAgreed:" + "username:" + username);
             }
 
             @Override
             public void onContactRefused(String username) {
                 //好友请求被拒绝
-                Log.d("AAA", "onContactRefused");
             }
 
             @Override
@@ -174,14 +171,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 } catch (EaseMobException e) {
                     e.printStackTrace();
                 }
-                Log.d("AAA", "onContactInvited" + "username:" + username + "reason:" + reason);
             }
 
             @Override
             public void onContactDeleted(List<String> usernameList) {
                 //被删除时回调此方法
                 contactListener.refresh();
-                Log.d("AAA", "onContactDeleted");
             }
 
             @Override
@@ -190,7 +185,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 if (usernameList.size() > 0) {
                     contactListener.added(usernameList);
                 }
-                Log.d("AAA", "onContactAdded:" + usernameList.size());
             }
         });
     }
@@ -405,7 +399,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         @Override
         public void onDisconnected(final int error) {
-            isNetError = true;
             executors.execute(new Runnable() {
                                   @Override
                                   public void run() {
@@ -425,8 +418,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                                                 } else if (!SystemUtils.getInstance(getApplicationContext()).isNetConn()) {
                                                                     //当前网络不可用，请检查网络设置
                                                                     Toast.makeText(getApplicationContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
+                                                                    isNetError = true;
                                                                 } else if (!NetUtils.hasNetwork(getApplicationContext())) {
                                                                     Toast.makeText(getApplicationContext(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
+                                                                    isNetError = true;
                                                                     //连接不到聊天服务器
                                                                 }
                                                             }

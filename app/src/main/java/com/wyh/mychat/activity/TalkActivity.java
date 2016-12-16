@@ -3,7 +3,6 @@ package com.wyh.mychat.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -113,12 +112,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         ShowPicActivity.setPicSendListener(this);
         BitmapManager.getBitmapManager(this).setNewMessageTalk(this);
         initPopBar();
-        edInputMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Log.e("AAA", "hasFocus:" + hasFocus);
-            }
-        });
         if (activityTalk instanceof ViewGroup) {
             for (int i = 0; i < activityTalk.getChildCount(); i++) {
                 View innerView = activityTalk.getChildAt(i);
@@ -250,21 +243,18 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 SendManager.getSendMessage(this).sendTextMessage(friendName, content, new EMCallBack() {
                     @Override
                     public void onSuccess() {
-                        Log.e("AAA", "onSuccess");
                         talkAdapter.getDataList().get(talkAdapter.getCount() - 1).setErrorType(CommonUtil.SEND_SUCCESS);
                         handler.sendEmptyMessage(2);
                     }
 
                     @Override
                     public void onError(int i, String s) {
-                        Log.e("AAA", "onError");
                         talkAdapter.getDataList().get(talkAdapter.getCount() - 1).setErrorType(CommonUtil.SEND_ERROR);
                         handler.sendEmptyMessage(2);
                     }
 
                     @Override
                     public void onProgress(int i, String s) {
-                        Log.e("AAA", "onProgress");
                         talkAdapter.getDataList().get(talkAdapter.getCount() - 1).setErrorType(CommonUtil.SEND_LOAD);
                         handler.sendEmptyMessage(2);
                     }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -88,7 +87,6 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         for (int i = 0; i < messageAdapter.getDataList().size(); i++) {
             messageHash.put(messageAdapter.getDataList().get(i).getName(), i);
         }
-        Log.e("AAA",messageHash.toString());
     }
 
     @Override
