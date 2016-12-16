@@ -97,7 +97,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
                     public boolean onLongClick(View v) {
                         initPopWindow(v);
                         deleName = friends;
-                        return false;
+                        return true;
                     }
                 }).setTouchListener(new View.OnTouchListener() {
                     @Override

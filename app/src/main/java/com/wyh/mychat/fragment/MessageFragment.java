@@ -132,7 +132,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                     public boolean onLongClick(View v) {
                         deleName = message.getName();
                         listViewBar.showAsDropDown(v, eventX, eventY - v.getMeasuredHeight());
-                        return false;
+                        return true;
                     }
                 }).setTouchListener(new View.OnTouchListener() {
                     @Override
