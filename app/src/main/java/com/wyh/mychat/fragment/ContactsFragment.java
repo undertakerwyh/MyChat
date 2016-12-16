@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -111,7 +112,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     }
 
     private void initPopWindow(View view) {
-        listViewBar.showAsDropDown(view, eventX, eventY - view.getMeasuredHeight());
+        listViewBar.showAsDropDown(view, eventX-listViewBar.getWidth()/2, eventY - view.getMeasuredHeight());
     }
 
     @Override
@@ -151,6 +152,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     @Override
     public void refresh() {
         updateList();
+        Log.e("AAA","refresh");
     }
 
     @Override
