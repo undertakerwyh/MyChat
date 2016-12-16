@@ -74,7 +74,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         if (endIndex == startIndex) {
                             lvTalkMessage.setSelection(0);
                         } else {
-                            Log.e("AAA", "lvTalkMessage.isInTouchMode()" + lvTalkMessage.isInTouchMode());
                             lvTalkMessage.setSelection(endIndex - startIndex + 1);
                         }
                     }

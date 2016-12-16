@@ -218,7 +218,7 @@ public class DBManager {
                             type = CommonUtil.TYPT_PICLEFT;
                             bitmapPath = contexts.getCacheDir()+"/"+imageMessageBody.getFileName();
                         }
-                        Message message = new Message(name,time,bitmapPath,type);
+                        Message message = new Message(name,time,type,bitmapPath);
                         list.add(message);
                     }
                     if (isFirst) {

@@ -59,8 +59,8 @@ public class BitmapManager {
                 String bitmapPath = contexts.getCacheDir().getPath() + "/" + params[1];
                 newMessageTalk.returnTalkPic(bitmapPath);
                 saveCacheUrl(params[1], bitmap);
-                loadBitmapFromCache(bitmapPath,CommonUtil.TYPT_PICLEFT);
-                DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2],new File(bitmapPath), Long.parseLong(params[3]));
+                loadBitmapFromCache(bitmapPath, CommonUtil.TYPT_PICLEFT);
+                DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
                 return null;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -71,9 +71,9 @@ public class BitmapManager {
         }
     }
 
-    public Bitmap loadBitmapFromCache(@NonNull String path,int type) {
-        Bitmap bitmap=null;
-        if(type== CommonUtil.TYPE_PICRIGHT||type==CommonUtil.TYPT_PICLEFT) {
+    public Bitmap loadBitmapFromCache(@NonNull String path, int type) {
+        Bitmap bitmap = null;
+        if (type == CommonUtil.TYPE_PICRIGHT || type == CommonUtil.TYPT_PICLEFT) {
             bitmap = lruCache.get(path);
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeFile(path);
