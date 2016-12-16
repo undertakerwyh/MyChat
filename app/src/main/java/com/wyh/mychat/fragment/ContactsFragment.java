@@ -174,11 +174,10 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     public void added(final List<String> usernameList) {
         for (final String name : usernameList) {
             if (!UserManager.getUserManager(getContext()).isFriendExist(name)) {
+                UserManager.getUserManager(getContext()).saveFriendExist(name);
                 lvContacts.post(new Runnable() {
                     @Override
                     public void run() {
-                        Log.e("AAA", "added:name=" + name);
-                        UserManager.getUserManager(getContext()).saveFriendExist(name);
                         adapter.addDataUpdate(name);
                     }
                 });
