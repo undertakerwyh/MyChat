@@ -125,7 +125,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
             @Override
             public void onPageSelected(int position) {
-                if(position==0){
+                if (position == 0) {
                     dismissPop();
                 }
             }
@@ -177,6 +177,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             public void onContactDeleted(List<String> usernameList) {
                 //被删除时回调此方法
                 contactListener.refresh();
+                for(String name:usernameList){
+                    UserManager.getUserManager(getApplicationContext()).deleteFriendName(name);
+                }
             }
 
             @Override
@@ -191,7 +194,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void updatePop() {
-        if(vpHome.getCurrentItem()!=0) {
+        if (vpHome.getCurrentItem() != 0) {
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {
@@ -263,7 +266,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         vpHome.setAdapter(fragmentAdapter);
         vpHome.setLongClickable(true);
     }
-    public MessageFragment getMessageFragment(){
+
+    public MessageFragment getMessageFragment() {
         return messageFragment;
     }
 

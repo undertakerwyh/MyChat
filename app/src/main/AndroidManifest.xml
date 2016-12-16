@@ -63,6 +63,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ShowPicActivity"
+            android:launchMode="singleTop"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 

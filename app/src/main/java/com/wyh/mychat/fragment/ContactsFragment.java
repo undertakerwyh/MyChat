@@ -122,7 +122,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
 
     @Override
     public void onComplete(String name) {
-        if(isAdded()) {
+        if (isAdded()) {
             if (name.equals(getString(R.string.pop_contacts_delete))) {
                 try {
                     EMContactManager.getInstance().deleteContact(deleName);
