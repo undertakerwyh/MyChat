@@ -2,6 +2,7 @@ package com.wyh.mychat.view;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,10 @@ import com.wyh.mychat.R;
 public class PopBar extends PopupWindow {
     private Context context;
     private View parentView;
+    private SparseArray views;
     public PopBar(Context context,int ResId){
         this.context = context;
+        views = new SparseArray();
         show(ResId);
     }
 
@@ -25,12 +28,23 @@ public class PopBar extends PopupWindow {
         parentView = LayoutInflater.from(context).inflate(resId,null);
         setContentView(parentView);
         //设置弹出窗体的高
-        this.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        this.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
         //设置弹出窗体可点击
         this.setFocusable(false);
         this.setOutsideTouchable(false);
         this.setBackgroundDrawable(ContextCompat.getDrawable(context, R.color.transparent));
         update();
+    }
+    public View getView(int resId){
+        View view = (View) views.get(resId);
+        if(view==null){
+            view = parentView.findViewById(resId);
+            views.put(resId,view);
+        }
+        return view;
+    }
+    public void setonClickListener(View.OnClickListener onClickListener){
+        parentView.setOnClickListener(onClickListener);
     }
 }

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +27,12 @@ import com.wyh.mychat.biz.SendManager;
 import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
+import com.wyh.mychat.util.BitmapUtil;
 import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.util.TimeNoteUtil;
 import com.wyh.mychat.view.ActionBar;
+import com.wyh.mychat.view.PopBar;
 import com.wyh.mychat.view.xlistview.XListView;
 
 import java.io.File;
@@ -59,6 +63,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     LinearLayout llOtherBar;
     @Bind(R.id.activity_talk)
     LinearLayout activityTalk;
+    private PopBar popBar;
     private UniversalAdapter<Message> talkAdapter;
     private String friendName;
     private Handler handler = new Handler() {
@@ -107,6 +112,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         UserManager.getUserManager(this).setTalkSend(true);
         ShowPicActivity.setPicSendListener(this);
         BitmapManager.getBitmapManager(this).setNewMessageTalk(this);
+        initPopBar();
         edInputMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -119,6 +125,18 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 setupUI(innerView);
             }
         }
+    }
+
+    private void initPopBar() {
+        popBar = new PopBar(this,R.layout.pop_show_pic);
+        popBar.setonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(popBar.isShowing()){
+                    popBar.dismiss();
+                }
+            }
+        });
     }
 
     public void setupUI(View view) {
@@ -148,12 +166,20 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         talkAdapter = new UniversalAdapter<Message>(getApplicationContext(), R.layout.layout_message_item) {
             @Override
             public void assignment(ViewHolder viewHolder, final int positon) {
-                Message message = talkAdapter.getDataList().get(positon);
+                final Message message = talkAdapter.getDataList().get(positon);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
                         R.id.tv_chat_right, R.id.iv_pic_left, R.id.iv_pic_right
-                        ,BitmapManager.getBitmapManager(getApplicationContext()).loadBitmapFromCache(message.getBitmapPath(),message.getType())
+                        , BitmapManager.getBitmapManager(getApplicationContext()).loadBitmapFromCache(message.getBitmapPath(), message.getType())
                         , R.id.tv_time_text, message.getContent(), message.getType())
-                        .setSendErrorListener(message.getErrorType());
+                        .setSendErrorListener(message.getErrorType())
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ImageView imageView= (ImageView) popBar.getView(R.id.iv_pic_show);
+                                imageView.setImageBitmap(BitmapUtil.getBigBitmap(message.getBitmapPath()));
+                                popBar.showAtLocation(v, Gravity.CENTER,0,0);
+                            }
+                        });
             }
         };
     }
@@ -279,8 +305,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void onProgress(int i, String s) {
             }
         });
-        Message message = new Message(friendName, CommonUtil.getTimeLong(), CommonUtil.TYPE_PICRIGHT,picFile.getAbsolutePath());
-        DBManager.getDbManager(this).createReceivedPicMsg(friendName,UserManager.getUserManager(this).loadUserName(),picFile,message.getTime());
+        Message message = new Message(friendName, CommonUtil.getTimeLong(), CommonUtil.TYPE_PICRIGHT, picFile.getAbsolutePath());
+        DBManager.getDbManager(this).createReceivedPicMsg(friendName, UserManager.getUserManager(this).loadUserName(), picFile, message.getTime());
         mySendPic(message, CommonUtil.TYPE_PICRIGHT);
     }
 
@@ -324,7 +350,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void returnTalkPic(String name,String bitmapPath) {
+    public void returnTalkPic(String name, String bitmapPath) {
         final Message message = new Message(name, CommonUtil.getTimeLong(), CommonUtil.TYPT_PICLEFT, bitmapPath);
         lvTalkMessage.post(new Runnable() {
             @Override
@@ -332,5 +358,14 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 mySendPic(message, CommonUtil.TYPT_PICLEFT);
             }
         });
+    }
+    /**重写返回键的监听*/
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK&&popBar.isShowing()){
+            popBar.dismiss();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

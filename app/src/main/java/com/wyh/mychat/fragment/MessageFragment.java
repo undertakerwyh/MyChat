@@ -219,7 +219,6 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             }
             messageAdapter.addDataUpdate(messageMain);
             DBManager.getDbManager(getContext()).saveNewMessage(messageMain);
-            Log.e("AAA","messageMain.getName():"+messageMain.getName());
             messageHash.put(messageMain.getName(), messageAdapter.getCount() - 1);
         }
     }

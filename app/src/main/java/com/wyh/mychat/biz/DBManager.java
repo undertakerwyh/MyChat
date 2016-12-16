@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
@@ -81,20 +80,17 @@ public class DBManager {
     }
 
     public void saveNewMessage(Message message) {
-        Log.e("AAA","saveNewMessage:"+message.toString());
         saveNewMessagedb.execSQL("insert into message(username,name,content,time) values (?,?,?,?)"
                 , new Object[]{UserManager.getUserManager(contexts).loadUserName(),message.getName()
                         , message.getContent(),String.valueOf(message.getTime()) });
     }
     public void changeNewMessage(Message message){
-        Log.e("AAA","changeNewMessage:"+message.toString());
         saveNewMessagedb.execSQL("update message set content = ? , time = ? where name = ? and username = ?"
                 ,new Object[]{message.getContent(),message.getTime()
                 ,String.valueOf(message.getName()),UserManager.getUserManager(contexts).loadUserName()});
     }
 
     public void deleNewMessage(String nameDB){
-        Log.e("AAA","delete:username:"+UserManager.getUserManager(contexts).loadUserName()+"-----nameDB:"+nameDB);
         saveNewMessagedb.execSQL("delete from message where username = ? and name = ?",new Object[]{UserManager.getUserManager(contexts).loadUserName(),nameDB});
     }
 
@@ -111,7 +107,6 @@ public class DBManager {
                 userName = cursor.getString(cursor.getColumnIndex("username"));
                 if(nameDB.equals(userName)) {
                     name = cursor.getString(cursor.getColumnIndex("name"));
-                    Log.e("AAA","username:"+userName+"-----name:"+name);
                     time = Long.parseLong(cursor.getString(cursor.getColumnIndex("time")));
                     content = cursor.getString(cursor.getColumnIndex("content"));
                     if (UserManager.getUserManager(contexts).loadUserName().equals(name)) {
@@ -169,7 +164,6 @@ public class DBManager {
         List<EMMessage> messages = null;
         if (isDBInit) {
             messages = conversation.getAllMessages();
-            Log.e("DBManager", "messages.size():" + messages.size());
             if (messages.size() < 20) {
                 isFirstLoad = true;
             } else {
