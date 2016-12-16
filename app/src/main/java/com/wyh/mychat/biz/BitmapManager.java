@@ -19,8 +19,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static android.R.attr.name;
-
 /**
  * Created by Administrator on 2016/12/15.
  */
@@ -58,7 +56,7 @@ public class BitmapManager {
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = httpURLConnection.getInputStream();
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
-                String bitmapPath = contexts.getCacheDir().getPath() + "/" + name;
+                String bitmapPath = contexts.getCacheDir().getPath() + "/" + params[1];
                 newMessageTalk.returnTalkPic(bitmapPath);
                 saveCacheUrl(params[1], bitmap);
                 loadBitmapFromCache(bitmapPath,CommonUtil.TYPT_PICLEFT);

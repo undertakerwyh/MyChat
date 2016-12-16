@@ -326,7 +326,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void returnTalkPic(String bitmapPath) {
-        final Message message = new Message(null, CommonUtil.getTimeLong(), bitmapPath, CommonUtil.TYPT_PICLEFT);
+        final Message message = new Message(null, CommonUtil.getTimeLong(), CommonUtil.TYPT_PICLEFT, bitmapPath);
         lvTalkMessage.post(new Runnable() {
             @Override
             public void run() {
