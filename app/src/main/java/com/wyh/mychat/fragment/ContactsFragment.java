@@ -142,12 +142,8 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
         ((HomeActivity) getActivity()).getHandler().post(new Runnable() {
             @Override
             public void run() {
-                try {
-                    List<String> contactUserNames = EMContactManager.getInstance().getContactUserNames();
-                    adapter.addDataAllNotify(contactUserNames);
-                } catch (EaseMobException e) {
-                    e.printStackTrace();
-                }
+                List<String> contactUserNames = UserManager.getUserManager(getContext()).loadFriendList();
+                adapter.addDataAllNotify(contactUserNames);
             }
         });
     }

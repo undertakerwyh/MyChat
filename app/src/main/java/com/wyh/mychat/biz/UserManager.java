@@ -86,6 +86,7 @@ public class UserManager {
     }
 
     public void sqliteAdd(String name) {
+        friendSet.add(name);
         sqLiteDatabase.execSQL("insert into Friend (name) values(?)", new Object[]{name});
     }
     private TreeSet<String>friendSet = new TreeSet<>();
