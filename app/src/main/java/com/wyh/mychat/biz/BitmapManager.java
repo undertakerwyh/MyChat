@@ -40,10 +40,11 @@ public class BitmapManager {
     }
 
     private BitmapManager() {
-        bitmapAsyncTask = new BitmapAsyncTask();
+
     }
 
     public void getBitmapUrl(String bitmapUrl, String name, String from, long time) {
+        bitmapAsyncTask = new BitmapAsyncTask();
         bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time));
     }
 
