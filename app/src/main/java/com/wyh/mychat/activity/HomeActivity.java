@@ -75,6 +75,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private View view3;
     private View view1;
     private MessageFragment messageFragment;
+    private NewMessageBroadcastReceiver msgReceiver;
 
     public void setContactListener(ContactListener contactListener) {
         this.contactListener = contactListener;
@@ -138,10 +139,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void initBroadcastReceiver() {
-        NewMessageBroadcastReceiver msgReceiver = new NewMessageBroadcastReceiver();
+        msgReceiver = new NewMessageBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter(EMChatManager.getInstance().getNewMessageBroadcastAction());
         intentFilter.setPriority(3);
         registerReceiver(msgReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(msgReceiver);
     }
 
     public Handler getHandler() {
@@ -160,6 +167,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onContactRefused(String username) {
                 //好友请求被拒绝
+                contactListener.delete(username);
             }
 
             @Override
@@ -176,9 +184,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onContactDeleted(List<String> usernameList) {
                 //被删除时回调此方法
-                contactListener.refresh();
                 for(String name:usernameList){
-                    UserManager.getUserManager(getApplicationContext()).deleteFriendName(name);
+                    contactListener.delete(name);
                 }
             }
 
@@ -206,7 +213,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     public interface ContactListener {
         void refresh();
-
+        void delete(String usernameList);
         void added(List<String> usernameList);
     }
 

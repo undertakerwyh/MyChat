@@ -62,8 +62,10 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
         try {
             if (UserManager.getUserManager(getContext()).isFirstAdd()) {
                 UserManager.getUserManager(getContext()).saveFriendList(EMContactManager.getInstance().getContactUserNames());
+                Log.e("AAA", "isFirstAdd");
             }
-            adapter.addDataAddAll(UserManager.getUserManager(getContext()).loadFriendList());
+            Log.e("AAA", "loadFriendList:" + UserManager.getUserManager(getContext()).loadFriendList().toString());
+            adapter.addDataAllClean(UserManager.getUserManager(getContext()).loadFriendList());
         } catch (EaseMobException e) {
             e.printStackTrace();
         }
@@ -112,7 +114,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     }
 
     private void initPopWindow(View view) {
-        listViewBar.showAsDropDown(view, eventX-listViewBar.getWidth()/2, eventY - view.getMeasuredHeight());
+        listViewBar.showAsDropDown(view, eventX - listViewBar.getWidth() / 2, eventY - view.getMeasuredHeight());
     }
 
     @Override
@@ -140,11 +142,11 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     }
 
     private void updateList() {
-        ((HomeActivity) getActivity()).getHandler().post(new Runnable() {
+        lvContacts.post(new Runnable() {
             @Override
             public void run() {
                 List<String> contactUserNames = UserManager.getUserManager(getContext()).loadFriendList();
-                adapter.addDataAllNotify(contactUserNames);
+                adapter.addDataAllClean(contactUserNames);
             }
         });
     }
@@ -152,16 +154,30 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
     @Override
     public void refresh() {
         updateList();
-        Log.e("AAA","refresh");
+    }
+
+    @Override
+    public void delete(String deleName) {
+        try {
+            EMContactManager.getInstance().deleteContact(deleName);
+            UserManager.getUserManager(getContext()).deleteFriendName(deleName);
+            MessageFragment messageFragment = ((HomeActivity) getActivity()).getMessageFragment();
+            messageFragment.setDeleName(deleName);
+            messageFragment.onComplete(getString(R.string.pop_contacts_dele_record));
+            updateList();
+        } catch (EaseMobException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void added(final List<String> usernameList) {
         for (final String name : usernameList) {
             if (!UserManager.getUserManager(getContext()).isFriendExist(name)) {
-                ((HomeActivity) getActivity()).getHandler().post(new Runnable() {
+                lvContacts.post(new Runnable() {
                     @Override
                     public void run() {
+                        Log.e("AAA", "added:name=" + name);
                         UserManager.getUserManager(getContext()).saveFriendExist(name);
                         adapter.addDataUpdate(name);
                     }
