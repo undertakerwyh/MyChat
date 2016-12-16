@@ -197,7 +197,11 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         String userName = message.getName();
         if (messageHash.containsKey(userName)) {
             Message messageMain = messageAdapter.getDataList().get(messageHash.get(userName));
-            messageMain.setContent(message.getContent());
+            if(message.getType()==CommonUtil.TYPE_PICRIGHT||message.getType()==CommonUtil.TYPT_PICLEFT){
+                messageMain.setContent(getString(R.string.talk_pic));
+            }else {
+                messageMain.setContent(message.getContent());
+            }
             messageMain.setTime(message.getTime());
             DBManager.getDbManager(getContext()).changeNewMessage(message);
             lvMessage.post(new Runnable() {
@@ -207,10 +211,16 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                 }
             });
         } else {
-            DBManager.getDbManager(getContext()).saveNewMessage(message);
-            Message messageMain = new Message(message.getName(), message.getTime(), message.getContent(), message.getType());
+            Message messageMain= null;
+            if(message.getType()==CommonUtil.TYPE_PICRIGHT||message.getType()==CommonUtil.TYPT_PICLEFT){
+                messageMain = new Message(message.getName(), message.getTime(), getString(R.string.talk_pic), message.getType());
+            }else {
+                messageMain = new Message(message.getName(), message.getTime(), message.getContent(), message.getType());
+            }
             messageAdapter.addDataUpdate(messageMain);
-            messageHash.put(message.getName(), messageAdapter.getCount() - 1);
+            DBManager.getDbManager(getContext()).saveNewMessage(messageMain);
+            Log.e("AAA","messageMain.getName():"+messageMain.getName());
+            messageHash.put(messageMain.getName(), messageAdapter.getCount() - 1);
         }
     }
 

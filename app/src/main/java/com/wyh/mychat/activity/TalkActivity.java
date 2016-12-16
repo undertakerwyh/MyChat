@@ -213,7 +213,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             DBManager.getDbManager(getApplicationContext()).saveMessage(message);
             String time = TimeNoteUtil.getTimeNoteUtil().sendStart(message.getTime());
             if (time != null) {
-                Message timeMsg = new Message(null, 0, CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
+                Message timeMsg = new Message(friendName, 0, CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
                 DBManager.getDbManager(this).setTime(message.getTime());
                 talkAdapter.addDataUpdate(timeMsg);
             }
@@ -254,7 +254,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     private void mySendPic(Message message, int type) {
         String time = TimeNoteUtil.getTimeNoteUtil().sendStart(message.getTime());
         if (time != null) {
-            Message timeMsg = new Message(null, 0, CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
+            Message timeMsg = new Message(friendName, 0, CommonUtil.getTimeSelect(message.getTime()), CommonUtil.TYPE_TIME);
             DBManager.getDbManager(this).setTime(message.getTime());
             talkAdapter.addDataUpdate(timeMsg);
         }
@@ -324,8 +324,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void returnTalkPic(String bitmapPath) {
-        final Message message = new Message(null, CommonUtil.getTimeLong(), CommonUtil.TYPT_PICLEFT, bitmapPath);
+    public void returnTalkPic(String name,String bitmapPath) {
+        final Message message = new Message(name, CommonUtil.getTimeLong(), CommonUtil.TYPT_PICLEFT, bitmapPath);
         lvTalkMessage.post(new Runnable() {
             @Override
             public void run() {

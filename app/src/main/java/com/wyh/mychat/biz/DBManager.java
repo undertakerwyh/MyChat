@@ -81,11 +81,13 @@ public class DBManager {
     }
 
     public void saveNewMessage(Message message) {
+        Log.e("AAA","saveNewMessage:"+message.toString());
         saveNewMessagedb.execSQL("insert into message(username,name,content,time) values (?,?,?,?)"
                 , new Object[]{UserManager.getUserManager(contexts).loadUserName(),message.getName()
                         , message.getContent(),String.valueOf(message.getTime()) });
     }
     public void changeNewMessage(Message message){
+        Log.e("AAA","changeNewMessage:"+message.toString());
         saveNewMessagedb.execSQL("update message set content = ? , time = ? where name = ? and username = ?"
                 ,new Object[]{message.getContent(),message.getTime()
                 ,String.valueOf(message.getName()),UserManager.getUserManager(contexts).loadUserName()});

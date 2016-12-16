@@ -57,7 +57,7 @@ public class BitmapManager {
                 InputStream in = httpURLConnection.getInputStream();
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
                 String bitmapPath = contexts.getCacheDir().getPath() + "/" + params[1];
-                newMessageTalk.returnTalkPic(bitmapPath);
+                newMessageTalk.returnTalkPic(params[2],bitmapPath);
                 saveCacheUrl(params[1], bitmap);
                 loadBitmapFromCache(bitmapPath, CommonUtil.TYPT_PICLEFT);
                 DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
@@ -77,7 +77,9 @@ public class BitmapManager {
             bitmap = lruCache.get(path);
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeFile(path);
-                lruCache.put(path, bitmap);
+                if(bitmap!=null) {
+                    lruCache.put(path, bitmap);
+                }
             }
         }
         return bitmap;
@@ -105,6 +107,6 @@ public class BitmapManager {
     private NewMessageTalk newMessageTalk;
 
     public interface NewMessageTalk {
-        void returnTalkPic(String bitmapPath);
+        void returnTalkPic(String name,String bitmapPath);
     }
 }
