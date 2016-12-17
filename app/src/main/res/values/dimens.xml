@@ -116,6 +116,8 @@
 
     <dimen name="send_pic_size">100dp</dimen>
 
+    <dimen name="send_pic_margin_bottom">6dp</dimen>
+
 
     <!--...................................ConfigFragment.................................-->
     <!--功能activity中每个项目的高-->

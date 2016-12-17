@@ -77,9 +77,11 @@ public class ViewHolder {
         return this;
     }
 
-    public ViewHolder setViewOnClickListener(int ViewId, View.OnClickListener listener) {
-        View view = this.getView(ViewId);
-        view.setOnClickListener(listener);
+    public ViewHolder setViewOnClickListener( View.OnClickListener listener,int... ViewId) {
+        for(int id:ViewId){
+            View view = this.getView(id);
+            view.setOnClickListener(listener);
+        }
         return this;
     }
 

@@ -171,14 +171,14 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         , BitmapManager.getBitmapManager(getApplicationContext()).loadBitmapFromCache(message.getBitmapPath(), message.getType())
                         , R.id.tv_time_text, message.getContent(), message.getType())
                         .setSendErrorListener(message.getErrorType())
-                        .setOnClickListener(new View.OnClickListener() {
+                        .setViewOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 ImageView imageView= (ImageView) popBar.getView(R.id.iv_pic_show);
                                 imageView.setImageBitmap(BitmapUtil.getBigBitmap(message.getBitmapPath()));
                                 popBar.showAtLocation(v, Gravity.CENTER,0,0);
                             }
-                        });
+                        },R.id.iv_pic_right,R.id.iv_pic_left);
             }
         };
     }
