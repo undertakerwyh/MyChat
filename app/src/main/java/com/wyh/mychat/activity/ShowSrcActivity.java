@@ -107,6 +107,7 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
         getResourceFragment().showResource(folderName);
     }
 
+
     /**
      * 显示加载动画
      */

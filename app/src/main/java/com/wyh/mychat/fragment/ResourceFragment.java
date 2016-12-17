@@ -1,5 +1,6 @@
 package com.wyh.mychat.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,6 +44,13 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
 
     private static UniversalAdapter<Picture> adapter;
 
+    private Context mContext;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,6 +72,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
                             pbLoad.setVisibility(View.VISIBLE);
                             break;
                         case 1:
+                            pbLoad.clearAnimation();
                             pbLoad.setVisibility(View.GONE);
                             break;
                     }
@@ -110,12 +119,12 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
      * @param picture 图片文件的实体类
      */
     public void refresh(final Picture picture) {
-            handler.post(new Runnable() {
+            getHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     adapter.addDataUpdate(picture);
-                    if (isAdded() && !isStopText) {
-                        ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
+                    if (!isStopText) {
+                        ((ShowSrcActivity) mContext).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
                     }
                 }
             });

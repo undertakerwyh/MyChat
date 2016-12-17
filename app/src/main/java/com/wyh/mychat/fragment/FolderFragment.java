@@ -1,5 +1,6 @@
 package com.wyh.mychat.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -42,6 +43,8 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
 
     private UniversalAdapter<String> adapter;
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,7 +54,6 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
         lvFolders.setAdapter(adapter);
         return view;
     }
-
 
     public Handler getHandler() {
         if (handler == null) {
@@ -64,6 +66,7 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
                             pbLoad.setVisibility(View.VISIBLE);
                             break;
                         case 1:
+                            pbLoad.clearAnimation();
                             pbLoad.setVisibility(View.GONE);
                             break;
                     }
@@ -151,6 +154,6 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
      */
     @Override
     public void fileEnd() {
-        handler.sendEmptyMessage(1);
+        getHandler().sendEmptyMessage(1);
     }
 }
