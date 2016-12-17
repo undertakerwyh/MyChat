@@ -104,7 +104,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         initBroadcastReceiver();
         UserManager.getUserManager(getApplicationContext()).setExitListener(this);
         NewMessageBroadcastReceiver.setNewMessagePop(this);
-        newPop = new PopBar(this, R.layout.view_new, ViewPager.LayoutParams.WRAP_CONTENT);
+        initNewPop();
         //注册一个监听连接状态的listener
         EMChatManager.getInstance().addConnectionListener(new MyConnectionListener());
         List<String> list = new ArrayList<>();
@@ -117,6 +117,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
         initPagerListener();
+    }
+
+    private void initNewPop() {
+        newPop = new PopBar(this, R.layout.view_new, ViewPager.LayoutParams.WRAP_CONTENT);
+        newPop.setonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vpHome.setCurrentItem(0);
+            }
+        });
     }
 
     private void initPagerListener() {
