@@ -2,6 +2,7 @@ package com.wyh.mychat.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -121,7 +122,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void initPopBar() {
-        popBar = new PopBar(this,R.layout.pop_show_pic);
+        popBar = new PopBar(this,R.layout.pop_show_pic, ViewPager.LayoutParams.MATCH_PARENT);
         popBar.setonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -314,19 +315,22 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void updateTalk(EMMessage mMMessage) {
-        String msgBody = mMMessage.getBody().toString();
-        String[] msgType = msgBody.split(":");
-        String content = null;
-        if (msgType[0].equals("txt")) {
-            content = msgType[1].substring(msgType[1].indexOf("\"") + 1, msgType[1].lastIndexOf("\""));
-        }
-        final String finalContent = content;
-        lvTalkMessage.post(new Runnable() {
-            @Override
-            public void run() {
-                mySendMessage(finalContent, CommonUtil.TYPE_LEFT);
+        String from = mMMessage.getFrom();
+        if(from.equals(friendName)) {
+            String msgBody = mMMessage.getBody().toString();
+            String[] msgType = msgBody.split(":");
+            String content = null;
+            if (msgType[0].equals("txt")) {
+                content = msgType[1].substring(msgType[1].indexOf("\"") + 1, msgType[1].lastIndexOf("\""));
             }
-        });
+            final String finalContent = content;
+            lvTalkMessage.post(new Runnable() {
+                @Override
+                public void run() {
+                    mySendMessage(finalContent, CommonUtil.TYPE_LEFT);
+                }
+            });
+        }
     }
 
     @Override

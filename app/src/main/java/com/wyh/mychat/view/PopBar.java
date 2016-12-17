@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import com.wyh.mychat.R;
@@ -18,18 +17,18 @@ public class PopBar extends PopupWindow {
     private Context context;
     private View parentView;
     private SparseArray views;
-    public PopBar(Context context,int ResId){
+    public PopBar(Context context,int ResId,int layoutParams){
         this.context = context;
         views = new SparseArray();
-        show(ResId);
+        show(ResId,layoutParams);
     }
 
-    public void show(int resId) {
+    public void show(int resId, int layoutParams) {
         parentView = LayoutInflater.from(context).inflate(resId,null);
         setContentView(parentView);
         //设置弹出窗体的高
-        this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        this.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        this.setWidth(layoutParams);
+        this.setHeight(layoutParams);
         //设置弹出窗体可点击
         this.setFocusable(false);
         this.setOutsideTouchable(false);
