@@ -200,8 +200,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void updatePop() {
-        if (vpHome.getCurrentItem() != 0) {
+    public void updatePop(String msgFrom) {
+        if (vpHome.getCurrentItem() != 0&&!msgFrom.equals(TalkActivity.getFriendName())) {
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {

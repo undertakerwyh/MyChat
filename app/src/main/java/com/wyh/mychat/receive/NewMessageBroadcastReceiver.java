@@ -54,7 +54,7 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
                 newMessageTalk.updateTalk(message);
             }
             newMessageHome.updateHome(message);
-            newMessagePop.updatePop();
+            newMessagePop.updatePop(msgFrom);
             DBManager.getDbManager(context).createReceivedTextMsg(UserManager.getUserManager(context).loadUserName()
                     , msgFrom
                     , message.getBody().toString()
@@ -65,7 +65,7 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
                 newMessageTalk.updateTalkPic(message);
             }
             newMessageHome.updateHome(message);
-            newMessagePop.updatePop();
+            newMessagePop.updatePop(msgFrom);
         }
     }
     public interface NewMessageTalk{
@@ -76,6 +76,6 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
         void updateHome(EMMessage emMessage);
     }
     public interface NewMessagePop{
-        void updatePop();
+        void updatePop(String msgFrom);
     }
 }

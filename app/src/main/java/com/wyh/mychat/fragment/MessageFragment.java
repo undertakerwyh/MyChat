@@ -165,7 +165,9 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         String userName = emMessage.getFrom();
         if (messageHash.containsKey(userName)) {
             Message message = messageAdapter.getDataList().get(messageHash.get(userName));
-            message.setNew(true);
+            if(!userName.equals(TalkActivity.getFriendName())){
+                message.setNew(true);
+            }
             EMConversation conversation = EMChatManager.getInstance().getConversation(userName);
             message.setContent("["+conversation.getUnreadMsgCount()+"条]"+content);
             message.setTime(emMessage.getMsgTime());
@@ -184,6 +186,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             messageHash.put(message.getName(), messageAdapter.getCount() - 1);
         }
     }
+
     public void cleanUnRead(String username){
         EMConversation conversation = EMChatManager.getInstance().getConversation(username);
         conversation.markAllMessagesAsRead();

@@ -65,7 +65,12 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     LinearLayout activityTalk;
     private PopBar popBar;
     private UniversalAdapter<Message> talkAdapter;
-    private String friendName;
+
+    public static String getFriendName() {
+        return friendName;
+    }
+
+    private static String friendName;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
