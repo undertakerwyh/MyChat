@@ -1,6 +1,5 @@
 package com.wyh.mychat.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,13 +42,6 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
     }
 
     private static UniversalAdapter<Picture> adapter;
-
-    private Context mContext;
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-    }
 
     @Nullable
     @Override
@@ -124,7 +116,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
                 public void run() {
                     adapter.addDataUpdate(picture);
                     if (!isStopText) {
-                        ((ShowSrcActivity) mContext).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
+                        ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
                     }
                 }
             });

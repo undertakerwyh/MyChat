@@ -39,6 +39,10 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            String FRAGMENTS_TAG = "Android:support:fragments";
+            savedInstanceState.remove(FRAGMENTS_TAG);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
         /**初始化标题栏*/
@@ -47,6 +51,11 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
         FromClass = getIntent().getStringExtra("FromClass");
         /**初始化Viewpager*/
         initViewpager();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -70,8 +79,10 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
      * 初始化Viewpager
      */
     private void initViewpager() {
+        if (folderFragment == null) folderFragment = new FolderFragment();
+        if (resourceFragment == null) resourceFragment = new ResourceFragment();
         fragmentStatePagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            Fragment[] fragment = {new FolderFragment(), new ResourceFragment()};
+            Fragment[] fragment = {folderFragment, resourceFragment};
 
             @Override
             public Fragment getItem(int position) {
@@ -102,7 +113,8 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
         });
         vpResource.setCurrentItem(0);
     }
-    public void showResource(String folderName){
+
+    public void showResource(String folderName) {
         vpResource.setCurrentItem(1);
         getResourceFragment().showResource(folderName);
     }
@@ -121,6 +133,7 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
         }
         return resourceFragment;
     }
+
     private FolderFragment getFolderFragment() {
         if (folderFragment == null) {
             folderFragment = (FolderFragment) fragmentStatePagerAdapter.getItem(0);
@@ -138,7 +151,7 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
             vpResource.setCurrentItem(0);
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
             resourceFragment.setStopText(true);
-            setActionText(getString(R.string.my_picture)+"("+getFolderFragment().getAdapter().getDataList().size()+")");
+            setActionText(getString(R.string.my_picture) + "(" + getFolderFragment().getAdapter().getDataList().size() + ")");
             return;
         }
         finish();
@@ -146,7 +159,7 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_actionbar_left:
                 finish();
                 break;

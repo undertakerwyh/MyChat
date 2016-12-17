@@ -1,6 +1,5 @@
 package com.wyh.mychat.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -42,8 +41,6 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
     }
 
     private UniversalAdapter<String> adapter;
-
-
 
     @Nullable
     @Override
@@ -90,6 +87,7 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
      * @param name 传入的值
      */
     public void refresh(final String name) {
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -97,6 +95,7 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
                 ((ShowSrcActivity) getActivity()).setActionText(getResources().getString(R.string.my_picture) + "(" + adapter.getDataList().size() + ")");
             }
         });
+
     }
 
     private void showFolder() {

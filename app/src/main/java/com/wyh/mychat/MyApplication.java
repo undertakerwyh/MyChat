@@ -31,7 +31,4 @@ public class MyApplication extends MultiDexApplication {
         MultiDex.install(this);
     }
     private static MyApplication myApplication;
-    public static MyApplication getMyApplication(){
-        return myApplication;
-    }
 }
