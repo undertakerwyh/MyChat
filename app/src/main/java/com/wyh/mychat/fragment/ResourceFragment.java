@@ -22,8 +22,6 @@ import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.util.CommonUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -102,35 +100,25 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
     }
 
     public static void initList() {
-        list.clear();
         adapter.getDataList().clear();
     }
 
-    private boolean enter = true;
-
-    private static List<Picture> list = new ArrayList<>();
 
     /**
      * 更新回调接口传来的值
      *
      * @param picture 图片文件的实体类
      */
-    public void refresh(Picture picture) {
-        list.add(picture);
-        if (enter) {
-            enter = false;
-            handler.postDelayed(new Runnable() {
+    public void refresh(final Picture picture) {
+            handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    enter = true;
-                    adapter.addDataAddAll(list);
-                    if (ResourceFragment.this.isAdded() && !isStopText) {
+                    adapter.addDataUpdate(picture);
+                    if (isAdded() && !isStopText) {
                         ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
                     }
-                    list.clear();
                 }
-            }, 500);
-        }
+            });
     }
 
     public void setStopText(boolean stopText) {

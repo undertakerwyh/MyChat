@@ -74,7 +74,6 @@ public class LoadManager {
         ServiceResource = Executors.newCachedThreadPool();
         scheduledResourceService = Executors.newScheduledThreadPool(1);
         final File[] files = file.listFiles();
-        ServiceResource = Executors.newCachedThreadPool();
         for (int i = 0; i < files.length && !isForStop; i++) {
             final int finalI = i;
             ServiceResource.execute(new Runnable() {
@@ -168,7 +167,6 @@ public class LoadManager {
         for (int i = 0; i < files.length; i++) {
             searchResource(files[i]);
         }
-
     }
 
     /**
