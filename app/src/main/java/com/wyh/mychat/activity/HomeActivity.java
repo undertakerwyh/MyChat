@@ -3,6 +3,7 @@ package com.wyh.mychat.activity;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -27,6 +28,7 @@ import com.easemob.util.NetUtils;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.FragmentAdapter;
 import com.wyh.mychat.base.BaseActivity;
+import com.wyh.mychat.biz.ConfigManager;
 import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.fragment.ConfigFragment;
 import com.wyh.mychat.fragment.ContactsFragment;
@@ -128,6 +130,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             public void onPageSelected(int position) {
                 if (position == 0) {
                     dismissPop();
+                    ConfigManager.getConfigManager(getApplicationContext()).saveNewPopConfig(false);
                 }
             }
 
@@ -184,7 +187,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onContactDeleted(List<String> usernameList) {
                 //被删除时回调此方法
-                for(String name:usernameList){
+                for (String name : usernameList) {
                     contactListener.delete(name);
                 }
             }
@@ -201,11 +204,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void updatePop(String msgFrom) {
-        if (vpHome.getCurrentItem() != 0&&!msgFrom.equals(TalkActivity.getFriendName())) {
+        if (vpHome.getCurrentItem() != 0 && !msgFrom.equals(TalkActivity.getFriendName())) {
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    newPop.showAsDropDown(vpHome, (int) maxScreenWidth/6 , newPop.getHeight());
+                    newPop.showAsDropDown(vpHome, (int) maxScreenWidth / 6, newPop.getHeight());
                 }
             });
         }
@@ -213,7 +216,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     public interface ContactListener {
         void refresh();
+
         void delete(String usernameList);
+
         void added(List<String> usernameList);
     }
 
@@ -274,6 +279,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         vpHome.setLongClickable(true);
     }
 
+    @Override
+    protected void myHandlerMessage(Message message) {
+        super.myHandlerMessage(message);
+        switch (message.what){
+            case 1:
+                newPop.showAsDropDown(vpHome, (int) maxScreenWidth / 6, newPop.getHeight());
+                break;
+            case 2:
+                vpHome.setCurrentItem(ConfigManager.getConfigManager(this).loadBottomBarNum());
+                break;
+        }
+    }
+
     public MessageFragment getMessageFragment() {
         return messageFragment;
     }
@@ -307,6 +325,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     protected void onStart() {
         super.onStart();
         PageChangeAnimUtil.getPageChangeAnimUtil(this).initPosition(vpHome.getCurrentItem());
+
     }
 
     private int height = 0;
@@ -453,5 +472,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void success() {
         startActivity(LoginActivity.class);
         finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (newPop.isShowing()) {
+            ConfigManager.getConfigManager(this).saveNewPopConfig(true);
+        }
+        ConfigManager.getConfigManager(this).saveBottomBarNum(vpHome.getCurrentItem());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler.sendEmptyMessageDelayed(2,50);
+        if(ConfigManager.getConfigManager(this).loadNewPopConfig()) {
+            handler.sendEmptyMessageDelayed(1, 1000);
+        }
     }
 }
