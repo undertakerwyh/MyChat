@@ -203,7 +203,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                 messageMain.setContent(message.getContent());
             }
             messageMain.setTime(message.getTime());
-            DBManager.getDbManager(getContext()).changeNewMessage(message);
+            DBManager.getDbManager(getContext()).changeNewMessage(messageMain);
             lvMessage.post(new Runnable() {
                 @Override
                 public void run() {
