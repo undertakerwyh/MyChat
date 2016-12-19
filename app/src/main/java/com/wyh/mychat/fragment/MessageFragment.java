@@ -190,7 +190,6 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
     public void cleanUnRead(String username){
         EMConversation conversation = EMChatManager.getInstance().getConversation(username);
         conversation.markAllMessagesAsRead();
-
     }
 
     @Override
