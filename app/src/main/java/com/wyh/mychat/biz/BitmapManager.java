@@ -2,12 +2,12 @@ package com.wyh.mychat.biz;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.LruCache;
 
+import com.wyh.mychat.util.BitmapUtil;
 import com.wyh.mychat.util.CommonUtil;
 
 import java.io.BufferedInputStream;
@@ -67,7 +67,6 @@ public class BitmapManager {
                 InputStream in = httpURLConnection.getInputStream();
                 String bitmapPath = getBitmapPath() + "/" + params[1];
                 saveCacheUrl(params[1], in);
-                loadBitmapFromCache(bitmapPath, CommonUtil.TYPT_PICLEFT);
                 newMessageTalk.returnTalkPic(params[2], bitmapPath);
                 DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
                 return null;
@@ -85,7 +84,7 @@ public class BitmapManager {
         if (type == CommonUtil.TYPE_PICRIGHT || type == CommonUtil.TYPT_PICLEFT) {
             bitmap = lruCache.get(path);
             if (bitmap == null) {
-                bitmap = BitmapFactory.decodeFile(path);
+                bitmap = BitmapUtil.getSmallBitmap(path);
                 if (bitmap != null) {
                     lruCache.put(path, bitmap);
                 }

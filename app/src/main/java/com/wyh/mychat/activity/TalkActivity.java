@@ -130,11 +130,11 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void initPopBar() {
-        popBar = new PopBar(this,R.layout.pop_show_pic, ViewPager.LayoutParams.MATCH_PARENT);
-        popBar.setonClickListener(R.id.iv_pic_show,new View.OnClickListener() {
+        popBar = new PopBar(this, R.layout.pop_show_pic, ViewPager.LayoutParams.MATCH_PARENT);
+        popBar.setonClickListener(R.id.iv_pic_show, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(popBar.isShowing()){
+                if (popBar.isShowing()) {
                     popBar.dismiss();
                 }
             }
@@ -142,7 +142,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         popBar.setonClickListener(R.id.tv_pic_save, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BitmapManager.getBitmapManager(getApplicationContext()).saveBitmapFromSD(bitmapPath,bitmapName);
+                BitmapManager.getBitmapManager(getApplicationContext()).saveBitmapFromSD(bitmapPath, bitmapName);
                 Toast.makeText(TalkActivity.this, "已保存", Toast.LENGTH_SHORT).show();
             }
         });
@@ -186,11 +186,11 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                             public void onClick(View v) {
                                 bitmapName = BitmapManager.getBitmapManager(getApplicationContext()).getBitmapName(message.getBitmapPath());
                                 bitmapPath = message.getBitmapPath();
-                                ImageView imageView= (ImageView) popBar.getView(R.id.iv_pic_show);
+                                ImageView imageView = (ImageView) popBar.getView(R.id.iv_pic_show);
                                 imageView.setImageBitmap(BitmapUtil.getBigBitmap(message.getBitmapPath()));
-                                popBar.showAtLocation(v, Gravity.CENTER,0,0);
+                                popBar.showAtLocation(v, Gravity.CENTER, 0, 0);
                             }
-                        },R.id.iv_pic_right,R.id.iv_pic_left);
+                        }, R.id.iv_pic_right, R.id.iv_pic_left);
             }
         };
     }
@@ -236,7 +236,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         DBManager.getDbManager(getApplicationContext()).setFirstLoad(false);
         UserManager.getUserManager(this).setTalkSend(false);
         TimeNoteUtil.getTimeNoteUtil().cleanTime();
-        friendName=null;
+        friendName = null;
     }
 
     public static void setMySendUpdate(MySendUpdate mySendUpdate) {
@@ -334,7 +334,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void updateTalk(EMMessage mMMessage) {
         String from = mMMessage.getFrom();
-        if(from.equals(friendName)) {
+        if (from.equals(friendName)) {
             String msgBody = mMMessage.getBody().toString();
             String[] msgType = msgBody.split(":");
             String content = null;
@@ -372,10 +372,12 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         });
     }
 
-    /**重写返回键的监听*/
+    /**
+     * 重写返回键的监听
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK&&popBar.isShowing()){
+        if (keyCode == KeyEvent.KEYCODE_BACK && popBar.isShowing()) {
             popBar.dismiss();
             return false;
         }
