@@ -8,6 +8,7 @@
  */
 package com.wyh.mychat.view.xlistview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.wyh.mychat.R;
+import com.wyh.mychat.util.SystemUtils;
 
 public class XListView extends ListView implements OnScrollListener {
 
@@ -63,6 +65,7 @@ public class XListView extends ListView implements OnScrollListener {
 														// load more.
 	private final static float OFFSET_RADIO = 1.8f; // support iOS like pull
 													// feature.
+	private Context context;
 
 	/*public void dddd(){
 		
@@ -82,6 +85,7 @@ public class XListView extends ListView implements OnScrollListener {
 	 */
 	public XListView(Context context) {
 		super(context);
+		this.context = context;
 		initWithContext(context);
 	}
 
@@ -259,7 +263,11 @@ public class XListView extends ListView implements OnScrollListener {
 ////		setSelection(mTotalItemCount - 1); // scroll to bottom
 //	}
 
-//	private void resetFooterHeight() {
+	public void setHideEvent(HideEvent hideEvent) {
+		this.hideEvent = hideEvent;
+	}
+
+	//	private void resetFooterHeight() {
 ////		int bottomMargin = mFooterView.getBottomMargin();
 //		if (bottomMargin > 0) {
 //			mScrollBack = SCROLLBACK_FOOTER;
@@ -276,16 +284,20 @@ public class XListView extends ListView implements OnScrollListener {
 //			mListViewListener.onLoadMore();
 //		}
 //	}
+	private HideEvent hideEvent;
+	public interface HideEvent{
+		void hide();
+	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		if (mLastY == -1) {
 			mLastY = ev.getRawY();
 		}
-
 		switch (ev.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			mLastY = ev.getRawY();
+			hideEvent.hide();
 			break;
 		case MotionEvent.ACTION_MOVE:
 			final float deltaY = ev.getRawY() - mLastY;
@@ -377,13 +389,13 @@ public class XListView extends ListView implements OnScrollListener {
 	 * onXScrolling when header/footer scroll back.
 	 */
 	public interface OnXScrollListener extends OnScrollListener {
-		public void onXScrolling(View view);
+		void onXScrolling(View view);
 	}
 
 	/**
 	 * implements this interface to get refresh/load more event.
 	 */
 	public interface IXListViewListener {
-		public void onRefresh();
+		void onRefresh();
 	}
 }

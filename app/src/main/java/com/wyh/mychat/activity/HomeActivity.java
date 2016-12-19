@@ -296,9 +296,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case 1:
                 newPop.showAsDropDown(vpHome, (int) maxScreenWidth / 6, newPop.getHeight());
                 break;
-            case 2:
-                vpHome.setCurrentItem(ConfigManager.getConfigManager(this).loadBottomBarNum());
-                break;
         }
     }
 
@@ -329,13 +326,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         if (newPop.isShowing()) {
             newPop.dismiss();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        PageChangeAnimUtil.getPageChangeAnimUtil(this).initPosition(vpHome.getCurrentItem());
-
     }
 
     private int height = 0;
@@ -482,23 +472,5 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void success() {
         startActivity(LoginActivity.class);
         finish();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (newPop.isShowing()) {
-            ConfigManager.getConfigManager(this).saveNewPopConfig(true);
-        }
-        ConfigManager.getConfigManager(this).saveBottomBarNum(vpHome.getCurrentItem());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        handler.sendEmptyMessageDelayed(2,50);
-        if(ConfigManager.getConfigManager(this).loadNewPopConfig()) {
-            handler.sendEmptyMessageDelayed(1, 1000);
-        }
     }
 }

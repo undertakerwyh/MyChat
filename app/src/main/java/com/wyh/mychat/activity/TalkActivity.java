@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class TalkActivity extends BaseActivity implements View.OnClickListener, DBManager.UpdateListener,
-        NewMessageBroadcastReceiver.NewMessageTalk, ShowPicActivity.PicSendListener, BitmapManager.NewMessageTalk {
+        NewMessageBroadcastReceiver.NewMessageTalk, ShowPicActivity.PicSendListener, BitmapManager.NewMessageTalk, XListView.HideEvent {
 
     @Bind(R.id.action_bar)
     ActionBar actionBar;
@@ -127,6 +127,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 setupUI(innerView);
             }
         }
+        lvTalkMessage.setHideEvent(this);
     }
 
     private void initPopBar() {
@@ -229,6 +230,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -317,6 +319,17 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         Message message = new Message(friendName, CommonUtil.getTimeLong(), CommonUtil.TYPE_PICRIGHT, picFile.getAbsolutePath());
         DBManager.getDbManager(this).createReceivedPicMsg(friendName, UserManager.getUserManager(this).loadUserName(), picFile, message.getTime());
         mySendPic(message, CommonUtil.TYPE_PICRIGHT);
+    }
+
+    @Override
+    public void hide() {
+        lvTalkMessage.post(new Runnable() {
+            @Override
+            public void run() {
+                llOtherBar.setVisibility(View.GONE);
+            }
+        });
+        SystemUtils.getInstance(this).hideSoftKeyboard(this);
     }
 
     public interface MySendUpdate {
