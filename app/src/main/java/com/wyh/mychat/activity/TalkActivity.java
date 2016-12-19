@@ -372,7 +372,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         String from = message.getFrom();
         String name = imageMessageBody.getFileName();
         long time = message.getMsgTime();
-        BitmapManager.getBitmapManager(this).getBitmapUrl(bitmapUrl, name, from, time);
+        BitmapManager.getBitmapManager(this).getBitmapUrl(bitmapUrl, name, from, time,true);
     }
 
     @Override

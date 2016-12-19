@@ -193,7 +193,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         String from = emMessage.getFrom();
         String name = imageMessageBody.getFileName();
         long time = emMessage.getMsgTime();
-        BitmapManager.getBitmapManager(getContext()).getBitmapUrl(bitmapUrl, name, from, time);
+        BitmapManager.getBitmapManager(getContext()).getBitmapUrl(bitmapUrl, name, from, time,false);
     }
 
     public void cleanUnRead(String username){

@@ -52,9 +52,9 @@ public class BitmapManager {
         return newPath[1];
     }
 
-    public void getBitmapUrl(String bitmapUrl, String name, String from, long time) {
+    public void getBitmapUrl(String bitmapUrl, String name, String from, long time,boolean isTalk) {
         bitmapAsyncTask = new BitmapAsyncTask();
-        bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time));
+        bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time),String.valueOf(isTalk));
     }
 
     class BitmapAsyncTask extends AsyncTask<String, Void, Bitmap> {
@@ -68,7 +68,7 @@ public class BitmapManager {
                 String bitmapPath = getBitmapPath() + "/" + params[1];
                 saveCacheUrl(params[1], in);
                 loadBitmapFromCache(bitmapPath,CommonUtil.TYPE_PICLEFT);
-                if(newMessageTalk!=null) {
+                if(newMessageTalk!=null&&Boolean.valueOf(params[4])) {
                     newMessageTalk.returnTalkPic(params[2], bitmapPath);
                 }
                 DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
