@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:transcriptMode="alwaysScroll"
         android:divider="@color/transparent"
         android:focusable="true"
         android:listSelector="@color/transparent"></com.wyh.mychat.view.xlistview.XListView>

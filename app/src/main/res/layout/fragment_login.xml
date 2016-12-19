@@ -25,7 +25,6 @@
             android:id="@+id/et_password_text"
             android:layout_width="@dimen/login_edit_width"
             android:layout_height="@dimen/login_edit_height"
-            android:text="123456"
             android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
             android:background="@drawable/input_bg"
