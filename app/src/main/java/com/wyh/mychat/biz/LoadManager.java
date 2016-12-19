@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.wyh.mychat.R;
@@ -108,6 +109,7 @@ public class LoadManager {
      * 获取sd卡中有图片的文件夹
      */
     public void getSrcList(final File sdFile) {
+        Log.e("AAA","isFirst="+isFirst);
         if (isFirst) {
             folderSet.clear();
             scheduledSrcService = Executors.newScheduledThreadPool(1);

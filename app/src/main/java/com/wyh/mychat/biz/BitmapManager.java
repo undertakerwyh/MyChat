@@ -101,6 +101,7 @@ public class BitmapManager {
         File picFile = new File(myTalkPath);
         if(!picFile.exists()){
             picFile.mkdirs();
+            LoadManager.getPicLoadManager(contexts).reSearch();
         }
         try {
             bis = new BufferedInputStream(new FileInputStream(new File(bitmapPath)));
@@ -133,7 +134,6 @@ public class BitmapManager {
         File cacheFile = contexts.getExternalFilesDir("image");
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
-            LoadManager.getPicLoadManager(contexts).reSearch();
         }
         OutputStream out = null;
         byte[] buff = new byte[6 * 1024 * 1024];
