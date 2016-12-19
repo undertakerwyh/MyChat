@@ -82,17 +82,17 @@ public class CommonUtil {
         long nowTime = getTimeLong();
         String timeStr=null;
         if(nowTime-time<dayLong){
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
             timeStr = simpleDateFormat.format(new Date(time));
         }else if(nowTime-time>dayLong&&nowTime-time<dayLong*2){
             timeStr = "昨天";
         }else if(nowTime-time>dayLong*2&&nowTime-time<dayLong*3){
             timeStr = "前天";
         }else if(nowTime-time>dayLong&&nowTime-time<dayLong*2){
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM月dd日hh:mm");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM月dd日HH:mm");
             timeStr = simpleDateFormat.format(new Date(time));
         }else if(nowTime-time>dayLong&&nowTime-time<dayLong*2){
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日hh:mm");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH:mm");
             timeStr = simpleDateFormat.format(new Date(time));
         }
         return timeStr;

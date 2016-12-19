@@ -27,8 +27,6 @@ public class LoadManager {
     private static LoadManager picLoadManager;
     private static Context contexts;
 
-
-
     private boolean isFirst = true;
 
     private FileUpdate fileUpdate;
