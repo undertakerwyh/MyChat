@@ -233,7 +233,7 @@ public class DBManager {
                             bitmapPath = imageMessageBody.getLocalUrl();
                         }else{
                             type = CommonUtil.TYPT_PICLEFT;
-                            bitmapPath = contexts.getCacheDir()+"/"+imageMessageBody.getFileName();
+                            bitmapPath = BitmapManager.getBitmapManager(contexts).getBitmapPath()+"/"+imageMessageBody.getFileName();
                         }
                         Message message = new Message(name,time,type,bitmapPath);
                         list.add(message);

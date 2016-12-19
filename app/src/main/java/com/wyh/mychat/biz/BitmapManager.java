@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.wyh.mychat.util.CommonUtil;
@@ -42,6 +43,9 @@ public class BitmapManager {
     private BitmapManager() {
 
     }
+    public String getBitmapPath(){
+        return contexts.getExternalFilesDir("image").getPath();
+    }
 
     public void getBitmapUrl(String bitmapUrl, String name, String from, long time) {
         bitmapAsyncTask = new BitmapAsyncTask();
@@ -56,10 +60,10 @@ public class BitmapManager {
                 URL url = new URL(params[0]);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = httpURLConnection.getInputStream();
-                Bitmap bitmap = BitmapFactory.decodeStream(in);
-                String bitmapPath = contexts.getCacheDir().getPath() + "/" + params[1];
+                String bitmapPath = getBitmapPath() + "/" + params[1];
                 newMessageTalk.returnTalkPic(params[2],bitmapPath);
-                saveCacheUrl(params[1], bitmap);
+                saveCacheUrl(params[1],in);
+                Log.e("AAA","bitmapPath:"+bitmapPath);
                 loadBitmapFromCache(bitmapPath, CommonUtil.TYPT_PICLEFT);
                 DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
                 return null;
@@ -73,6 +77,7 @@ public class BitmapManager {
     }
 
     public Bitmap loadBitmapFromCache(@NonNull String path, int type) {
+        Log.e("AAA","path:=="+path);
         Bitmap bitmap = null;
         if (type == CommonUtil.TYPE_PICRIGHT || type == CommonUtil.TYPT_PICLEFT) {
             bitmap = lruCache.get(path);
@@ -86,17 +91,31 @@ public class BitmapManager {
         return bitmap;
     }
 
-    public void saveCacheUrl(String name, Bitmap bitmap) {
-        File cacheFile = contexts.getCacheDir();
+    public void saveCacheUrl(String name, InputStream in) {
+        File cacheFile = contexts.getExternalFilesDir("image");
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
-        OutputStream out;
+        OutputStream out = null;
+        byte[]buff = new byte[6*1024*1024];
+        int len;
         try {
             out = new FileOutputStream(new File(cacheFile, name));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            while((len = in.read(buff))!=-1){
+                out.write(buff,0,len);
+            }
+            out.flush();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                out.close();
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
