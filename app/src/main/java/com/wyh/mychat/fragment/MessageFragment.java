@@ -163,6 +163,12 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             content = msgType[1].substring(msgType[1].indexOf("\"") + 1, msgType[1].lastIndexOf("\""));
         }else if(msgType[0].equals("image")){
             content = getString(R.string.talk_pic);
+            ImageMessageBody imageMessageBody = (ImageMessageBody) emMessage.getBody();
+            String bitmapUrl = imageMessageBody.getThumbnailUrl();
+            String from = emMessage.getFrom();
+            String name = imageMessageBody.getFileName();
+            long time = emMessage.getMsgTime();
+            BitmapManager.getBitmapManager(getContext()).getBitmapUrl(bitmapUrl, name, from, time,false);
         }
         String userName = emMessage.getFrom();
         if (messageHash.containsKey(userName)) {
@@ -187,13 +193,6 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             messageAdapter.addDataUpdate(message);
             messageHash.put(message.getName(), messageAdapter.getCount() - 1);
         }
-
-        ImageMessageBody imageMessageBody = (ImageMessageBody) emMessage.getBody();
-        String bitmapUrl = imageMessageBody.getThumbnailUrl();
-        String from = emMessage.getFrom();
-        String name = imageMessageBody.getFileName();
-        long time = emMessage.getMsgTime();
-        BitmapManager.getBitmapManager(getContext()).getBitmapUrl(bitmapUrl, name, from, time,false);
     }
 
     public void cleanUnRead(String username){
