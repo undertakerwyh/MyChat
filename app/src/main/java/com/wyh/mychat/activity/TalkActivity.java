@@ -359,6 +359,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
     }
+
     /**重写返回键的监听*/
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

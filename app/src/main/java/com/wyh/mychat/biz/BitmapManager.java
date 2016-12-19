@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.LruCache;
 
 import com.wyh.mychat.util.CommonUtil;
@@ -43,7 +42,8 @@ public class BitmapManager {
     private BitmapManager() {
 
     }
-    public String getBitmapPath(){
+
+    public String getBitmapPath() {
         return contexts.getExternalFilesDir("image").getPath();
     }
 
@@ -61,10 +61,9 @@ public class BitmapManager {
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = httpURLConnection.getInputStream();
                 String bitmapPath = getBitmapPath() + "/" + params[1];
-                newMessageTalk.returnTalkPic(params[2],bitmapPath);
-                saveCacheUrl(params[1],in);
-                Log.e("AAA","bitmapPath:"+bitmapPath);
+                saveCacheUrl(params[1], in);
                 loadBitmapFromCache(bitmapPath, CommonUtil.TYPT_PICLEFT);
+                newMessageTalk.returnTalkPic(params[2], bitmapPath);
                 DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
                 return null;
             } catch (MalformedURLException e) {
@@ -77,13 +76,12 @@ public class BitmapManager {
     }
 
     public Bitmap loadBitmapFromCache(@NonNull String path, int type) {
-        Log.e("AAA","path:=="+path);
         Bitmap bitmap = null;
         if (type == CommonUtil.TYPE_PICRIGHT || type == CommonUtil.TYPT_PICLEFT) {
             bitmap = lruCache.get(path);
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeFile(path);
-                if(bitmap!=null) {
+                if (bitmap != null) {
                     lruCache.put(path, bitmap);
                 }
             }
@@ -97,19 +95,19 @@ public class BitmapManager {
             cacheFile.mkdirs();
         }
         OutputStream out = null;
-        byte[]buff = new byte[6*1024*1024];
+        byte[] buff = new byte[6 * 1024 * 1024];
         int len;
         try {
             out = new FileOutputStream(new File(cacheFile, name));
-            while((len = in.read(buff))!=-1){
-                out.write(buff,0,len);
+            while ((len = in.read(buff)) != -1) {
+                out.write(buff, 0, len);
             }
             out.flush();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 out.close();
                 in.close();
@@ -127,6 +125,6 @@ public class BitmapManager {
     private NewMessageTalk newMessageTalk;
 
     public interface NewMessageTalk {
-        void returnTalkPic(String name,String bitmapPath);
+        void returnTalkPic(String name, String bitmapPath);
     }
 }
