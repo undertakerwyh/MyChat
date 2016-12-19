@@ -161,7 +161,7 @@ public class ViewHolder {
             leftPic.setVisibility(View.GONE);
             leftText.setVisibility(View.VISIBLE);
             leftText.setText(content);
-        } else if (type == CommonUtil.TYPT_PICLEFT) {
+        } else if (type == CommonUtil.TYPE_PICLEFT) {
             left.setVisibility(View.VISIBLE);
             right.setVisibility(View.GONE);
             time.setVisibility(View.GONE);

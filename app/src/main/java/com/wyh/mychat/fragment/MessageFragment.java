@@ -14,11 +14,13 @@ import android.widget.ListView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
+import com.easemob.chat.ImageMessageBody;
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.HomeActivity;
 import com.wyh.mychat.activity.TalkActivity;
 import com.wyh.mychat.adapter.UniversalAdapter;
 import com.wyh.mychat.adapter.ViewHolder;
+import com.wyh.mychat.biz.BitmapManager;
 import com.wyh.mychat.biz.DBManager;
 import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.entity.Message;
@@ -185,6 +187,13 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             messageAdapter.addDataUpdate(message);
             messageHash.put(message.getName(), messageAdapter.getCount() - 1);
         }
+
+        ImageMessageBody imageMessageBody = (ImageMessageBody) emMessage.getBody();
+        String bitmapUrl = imageMessageBody.getThumbnailUrl();
+        String from = emMessage.getFrom();
+        String name = imageMessageBody.getFileName();
+        long time = emMessage.getMsgTime();
+        BitmapManager.getBitmapManager(getContext()).getBitmapUrl(bitmapUrl, name, from, time);
     }
 
     public void cleanUnRead(String username){
@@ -197,7 +206,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         String userName = message.getName();
         if (messageHash.containsKey(userName)) {
             Message messageMain = messageAdapter.getDataList().get(messageHash.get(userName));
-            if(message.getType()==CommonUtil.TYPE_PICRIGHT||message.getType()==CommonUtil.TYPT_PICLEFT){
+            if(message.getType()==CommonUtil.TYPE_PICRIGHT||message.getType()==CommonUtil.TYPE_PICLEFT){
                 messageMain.setContent(getString(R.string.talk_pic));
             }else {
                 messageMain.setContent(message.getContent());
@@ -212,7 +221,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             });
         } else {
             Message messageMain= null;
-            if(message.getType()==CommonUtil.TYPE_PICRIGHT||message.getType()==CommonUtil.TYPT_PICLEFT){
+            if(message.getType()==CommonUtil.TYPE_PICRIGHT||message.getType()==CommonUtil.TYPE_PICLEFT){
                 messageMain = new Message(message.getName(), message.getTime(), getString(R.string.talk_pic), message.getType());
             }else {
                 messageMain = new Message(message.getName(), message.getTime(), message.getContent(), message.getType());
