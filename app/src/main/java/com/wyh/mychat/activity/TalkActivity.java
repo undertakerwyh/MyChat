@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMMessage;
@@ -65,6 +66,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     LinearLayout activityTalk;
     private PopBar popBar;
     private UniversalAdapter<Message> talkAdapter;
+    private String bitmapName;
+    private String bitmapPath;
 
     public static String getFriendName() {
         return friendName;
@@ -128,12 +131,19 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     private void initPopBar() {
         popBar = new PopBar(this,R.layout.pop_show_pic, ViewPager.LayoutParams.MATCH_PARENT);
-        popBar.setonClickListener(new View.OnClickListener() {
+        popBar.setonClickListener(R.id.iv_pic_show,new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(popBar.isShowing()){
                     popBar.dismiss();
                 }
+            }
+        });
+        popBar.setonClickListener(R.id.tv_pic_save, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BitmapManager.getBitmapManager(getApplicationContext()).saveBitmapFromSD(bitmapPath,bitmapName);
+                Toast.makeText(TalkActivity.this, "已保存", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -174,6 +184,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         .setViewOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                bitmapName = BitmapManager.getBitmapManager(getApplicationContext()).getBitmapName(message.getBitmapPath());
+                                bitmapPath = message.getBitmapPath();
                                 ImageView imageView= (ImageView) popBar.getView(R.id.iv_pic_show);
                                 imageView.setImageBitmap(BitmapUtil.getBigBitmap(message.getBitmapPath()));
                                 popBar.showAtLocation(v, Gravity.CENTER,0,0);

@@ -43,7 +43,8 @@ public class PopBar extends PopupWindow {
         }
         return view;
     }
-    public void setonClickListener(View.OnClickListener onClickListener){
-        parentView.setOnClickListener(onClickListener);
+    public void setonClickListener(int resId,View.OnClickListener onClickListener){
+        View view = getView(resId);
+        view.setOnClickListener(onClickListener);
     }
 }

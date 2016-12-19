@@ -121,7 +121,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void initNewPop() {
         newPop = new PopBar(this, R.layout.view_new, ViewPager.LayoutParams.WRAP_CONTENT);
-        newPop.setonClickListener(new View.OnClickListener() {
+        newPop.setonClickListener(R.id.ll_new_pop,new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vpHome.setCurrentItem(0);

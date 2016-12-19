@@ -26,6 +26,9 @@ import java.util.concurrent.TimeUnit;
 public class LoadManager {
     private static LoadManager picLoadManager;
     private static Context contexts;
+
+
+
     private boolean isFirst = true;
 
     private FileUpdate fileUpdate;
@@ -97,6 +100,10 @@ public class LoadManager {
                 }
             }
         }, 1, 1, TimeUnit.SECONDS);
+    }
+
+    public void reSearch() {
+        isFirst = true;
     }
 
     /**

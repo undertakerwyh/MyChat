@@ -12,5 +12,15 @@
         android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/tv_pic_save"
+        android:layout_width="wrap_content"
+        android:text="@string/pop_savePic"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/save_pic_margin_bottom"
+        android:padding="@dimen/save_pic_padding"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

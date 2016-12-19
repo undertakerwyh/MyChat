@@ -4,12 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.LruCache;
 
 import com.wyh.mychat.util.CommonUtil;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,6 +32,7 @@ public class BitmapManager {
     private BitmapAsyncTask bitmapAsyncTask;
     private static Context contexts;
     private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
+    private final static String myTalkPath = Environment.getExternalStorageDirectory().getPath()+"/MyTalk";
 
     public static BitmapManager getBitmapManager(Context context) {
         if (bitmapManager == null) {
@@ -39,12 +44,12 @@ public class BitmapManager {
         return bitmapManager;
     }
 
-    private BitmapManager() {
-
-    }
-
     public String getBitmapPath() {
         return contexts.getExternalFilesDir("image").getPath();
+    }
+    public String getBitmapName(String path){
+        String[] newPath = path.split(getBitmapPath()+"/");
+        return newPath[1];
     }
 
     public void getBitmapUrl(String bitmapUrl, String name, String from, long time) {
@@ -88,11 +93,45 @@ public class BitmapManager {
         }
         return bitmap;
     }
+    public void saveBitmapFromSD(String bitmapPath,String name){
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        File picFile = new File(myTalkPath);
+        if(!picFile.exists()){
+            picFile.mkdirs();
+        }
+        try {
+            bis = new BufferedInputStream(new FileInputStream(new File(bitmapPath)));
+            bos = new BufferedOutputStream(new FileOutputStream(picFile+"/"+name));
+            int len = 0;
+            byte[]buff = new byte[6*1024*1024];
+            while ((len = bis.read(buff))!=-1){
+                bos.write(buff,0,len);
+            }
+            bos.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if(bis !=null) {
+                    bis.close();
+                }
+                if(bos!=null) {
+                    bos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void saveCacheUrl(String name, InputStream in) {
         File cacheFile = contexts.getExternalFilesDir("image");
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
+            LoadManager.getPicLoadManager(contexts).reSearch();
         }
         OutputStream out = null;
         byte[] buff = new byte[6 * 1024 * 1024];
