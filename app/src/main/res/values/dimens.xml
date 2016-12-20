@@ -122,6 +122,8 @@
 
     <dimen name="save_pic_padding">10dp</dimen>
 
+    <dimen name="load_pic_size">25dp</dimen>
+
 
     <!--...................................ConfigFragment.................................-->
     <!--功能activity中每个项目的高-->

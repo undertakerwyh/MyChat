@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wyh.mychat.R;
@@ -146,7 +147,7 @@ public class ViewHolder {
      */
 
 
-    public ViewHolder setChatVisible(int leftLayoutId, int rightLayoutId, int leftId, int rightId, int picLeftId, int picRightId, Bitmap bitmap, int timeId, String content, int type) {
+    public ViewHolder setChatVisible(int leftLayoutId, int rightLayoutId, int leftId, int rightId, int picLeftId, int picRightId,int pbLeftId,int pbRightId, Bitmap bitmap, int timeId, String content, int type) {
         LinearLayout left = this.getView(leftLayoutId);
         LinearLayout right = this.getView(rightLayoutId);
         TextView leftText = this.getView(leftId);
@@ -154,25 +155,35 @@ public class ViewHolder {
         TextView rightText = this.getView(rightId);
         ImageView rightPic = this.getView(picRightId);
         TextView time = this.getView(timeId);
+        RelativeLayout rlLeft = this.getView(pbLeftId);
+        RelativeLayout rlRight = this.getView(pbRightId);
         if (type == CommonUtil.TYPE_LEFT) {
             left.setVisibility(View.VISIBLE);
             right.setVisibility(View.GONE);
             time.setVisibility(View.GONE);
             leftPic.setVisibility(View.GONE);
+            rlLeft.setVisibility(View.GONE);
             leftText.setVisibility(View.VISIBLE);
             leftText.setText(content);
         } else if (type == CommonUtil.TYPE_PICLEFT) {
             left.setVisibility(View.VISIBLE);
             right.setVisibility(View.GONE);
             time.setVisibility(View.GONE);
-            leftPic.setVisibility(View.VISIBLE);
             leftText.setVisibility(View.GONE);
-            leftPic.setImageBitmap(bitmap);
+            if(bitmap==null){
+                rlLeft.setVisibility(View.VISIBLE);
+                leftPic.setVisibility(View.GONE);
+            }else{
+                leftPic.setVisibility(View.VISIBLE);
+                rlLeft.setVisibility(View.GONE);
+                leftPic.setImageBitmap(bitmap);
+            }
         } else if (type == CommonUtil.TYPE_RIGHT) {
             left.setVisibility(View.GONE);
             right.setVisibility(View.VISIBLE);
             time.setVisibility(View.GONE);
             rightText.setVisibility(View.VISIBLE);
+            rlRight.setVisibility(View.GONE);
             rightPic.setVisibility(View.GONE);
             rightText.setText(content);
         } else if (type  ==CommonUtil.TYPE_PICRIGHT) {
@@ -180,8 +191,14 @@ public class ViewHolder {
             right.setVisibility(View.VISIBLE);
             time.setVisibility(View.GONE);
             rightText.setVisibility(View.GONE);
-            rightPic.setVisibility(View.VISIBLE);
-            rightPic.setImageBitmap(bitmap);
+            if(bitmap==null){
+                rlRight.setVisibility(View.VISIBLE);
+                rightPic.setVisibility(View.GONE);
+            }else{
+                rlRight.setVisibility(View.GONE);
+                rightPic.setVisibility(View.VISIBLE);
+                rightPic.setImageBitmap(bitmap);
+            }
         } else if (type == CommonUtil.TYPE_TIME) {
             left.setVisibility(View.GONE);
             right.setVisibility(View.GONE);

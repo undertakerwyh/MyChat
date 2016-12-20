@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingBottom="5dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:paddingBottom="5dp"
     android:paddingTop="5dp">
 
     <TextView
@@ -37,11 +37,27 @@
 
         <ImageView
             android:id="@+id/iv_pic_left"
-            android:visibility="gone"
+            android:layout_width="@dimen/send_pic_size"
+            android:layout_height="@dimen/send_pic_size"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/send_pic_margin_bottom"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/rl_loading_left"
+            android:visibility="gone"
+            android:layout_marginBottom="5dp"
             android:layout_width="@dimen/send_pic_size"
-            android:layout_height="@dimen/send_pic_size" />
+            android:layout_height="@dimen/send_pic_size">
+            <ProgressBar
+                android:layout_width="@dimen/load_pic_size"
+                android:layout_height="@dimen/load_pic_size"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:indeterminateBehavior="repeat"
+                android:indeterminateDrawable="@drawable/progressbar"
+                android:indeterminateOnly="true" />
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -51,28 +67,31 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:orientation="horizontal">
+
         <RelativeLayout
+            android:layout_width="@dimen/send_message_icon_size"
+            android:layout_height="@dimen/send_message_icon_size"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_width="@dimen/send_message_icon_size"
-            android:layout_height="@dimen/send_message_icon_size">
+            android:layout_marginRight="5dp">
+
             <ProgressBar
                 android:id="@+id/pb_chat_loading"
-                android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
-                android:indeterminateDrawable="@drawable/waitbar"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:indeterminateBehavior="repeat"
+                android:indeterminateDrawable="@drawable/waitbar"
                 android:indeterminateOnly="true"
-                android:visibility="gone"
-                android:layout_height="wrap_content" />
+                android:visibility="gone" />
+
             <ImageView
                 android:id="@+id/iv_chat_error"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:src="@drawable/send_error"
-                android:layout_height="wrap_content" />
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout
@@ -90,13 +109,30 @@
                 android:text="1313124123"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/send_textsize" />
+
             <ImageView
                 android:id="@+id/iv_pic_right"
-                android:visibility="gone"
+                android:layout_width="@dimen/send_pic_size"
+                android:layout_height="@dimen/send_pic_size"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/send_pic_margin_bottom"
+                android:visibility="gone" />
+            <RelativeLayout
+                android:id="@+id/rl_loading_right"
+                android:visibility="gone"
+                android:layout_marginBottom="5dp"
                 android:layout_width="@dimen/send_pic_size"
-                android:layout_height="@dimen/send_pic_size" />
+                android:layout_height="@dimen/send_pic_size">
+                <ProgressBar
+                    android:layout_width="@dimen/load_pic_size"
+                    android:layout_height="@dimen/load_pic_size"
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:indeterminateBehavior="repeat"
+                    android:indeterminateDrawable="@drawable/progressbar"
+                    android:indeterminateOnly="true" />
+            </RelativeLayout>
+
         </LinearLayout>
 
     </LinearLayout>
