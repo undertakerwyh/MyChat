@@ -1,5 +1,6 @@
 package com.wyh.mychat.activity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -188,8 +189,19 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                                 bitmapName = BitmapManager.getBitmapManager(getApplicationContext()).getBitmapName(message.getBitmapPath());
                                 bitmapPath = message.getBitmapPath();
                                 ImageView imageView = (ImageView) popBar.getView(R.id.iv_pic_show);
-                                imageView.setImageBitmap(BitmapUtil.getBigBitmap(message.getBitmapPath()));
-                                popBar.showAtLocation(v, Gravity.CENTER, 0, 0);
+                                while (true) {
+                                    Bitmap bitmap = BitmapUtil.getBigBitmap(message.getBitmapPath());
+                                    if(bitmap!=null) {
+                                        imageView.setImageBitmap(bitmap);
+                                        popBar.showAtLocation(v, Gravity.CENTER, 0, 0);
+                                        return;
+                                    }
+                                    try {
+                                        Thread.sleep(300);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         }, R.id.iv_pic_right, R.id.iv_pic_left);
             }
@@ -384,6 +396,11 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 mySendPic(message, CommonUtil.TYPE_PICLEFT);
             }
         });
+    }
+
+    @Override
+    public void update() {
+        handler.sendEmptyMessageDelayed(2,500);
     }
 
     /**

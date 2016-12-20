@@ -32,7 +32,7 @@ public class BitmapManager {
     private BitmapAsyncTask bitmapAsyncTask;
     private static Context contexts;
     private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
-    private final static String myTalkPath = Environment.getExternalStorageDirectory().getPath()+"/MyTalk";
+    private final static String myTalkPath = Environment.getExternalStorageDirectory().getPath() + "/MyTalk";
 
     public static BitmapManager getBitmapManager(Context context) {
         if (bitmapManager == null) {
@@ -47,14 +47,15 @@ public class BitmapManager {
     public String getBitmapPath() {
         return contexts.getExternalFilesDir("image").getPath();
     }
-    public String getBitmapName(String path){
-        String[] newPath = path.split(getBitmapPath()+"/");
+
+    public String getBitmapName(String path) {
+        String[] newPath = path.split(getBitmapPath() + "/");
         return newPath[1];
     }
 
-    public void getBitmapUrl(String bitmapUrl, String name, String from, long time,boolean isTalk) {
+    public void getBitmapUrl(String bitmapUrl, String name, String from, long time, boolean isTalk) {
         bitmapAsyncTask = new BitmapAsyncTask();
-        bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time),String.valueOf(isTalk));
+        bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time), String.valueOf(isTalk));
     }
 
     class BitmapAsyncTask extends AsyncTask<String, Void, Bitmap> {
@@ -66,11 +67,11 @@ public class BitmapManager {
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = httpURLConnection.getInputStream();
                 String bitmapPath = getBitmapPath() + "/" + params[1];
-                saveCacheUrl(params[1], in);
-                loadBitmapFromCache(bitmapPath,CommonUtil.TYPE_PICLEFT);
-                if(newMessageTalk!=null&&Boolean.valueOf(params[4])) {
+                if (newMessageTalk != null && Boolean.valueOf(params[4])) {
                     newMessageTalk.returnTalkPic(params[2], bitmapPath);
                 }
+                saveCacheUrl(params[1], in);
+                loadBitmapFromCache(bitmapPath, CommonUtil.TYPE_PICLEFT);
                 DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
                 return null;
             } catch (MalformedURLException e) {
@@ -79,6 +80,12 @@ public class BitmapManager {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            newMessageTalk.update();
         }
     }
 
@@ -95,33 +102,34 @@ public class BitmapManager {
         }
         return bitmap;
     }
-    public void saveBitmapFromSD(String bitmapPath,String name){
+
+    public void saveBitmapFromSD(String bitmapPath, String name) {
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         File picFile = new File(myTalkPath);
-        if(!picFile.exists()){
+        if (!picFile.exists()) {
             picFile.mkdirs();
             LoadManager.getPicLoadManager(contexts).reSearch();
         }
         try {
             bis = new BufferedInputStream(new FileInputStream(new File(bitmapPath)));
-            bos = new BufferedOutputStream(new FileOutputStream(picFile+"/"+name));
+            bos = new BufferedOutputStream(new FileOutputStream(picFile + "/" + name));
             int len = 0;
-            byte[]buff = new byte[6*1024*1024];
-            while ((len = bis.read(buff))!=-1){
-                bos.write(buff,0,len);
+            byte[] buff = new byte[6 * 1024 * 1024];
+            while ((len = bis.read(buff)) != -1) {
+                bos.write(buff, 0, len);
             }
             bos.flush();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
-                if(bis !=null) {
+                if (bis != null) {
                     bis.close();
                 }
-                if(bos!=null) {
+                if (bos != null) {
                     bos.close();
                 }
             } catch (IOException e) {
@@ -167,5 +175,6 @@ public class BitmapManager {
 
     public interface NewMessageTalk {
         void returnTalkPic(String name, String bitmapPath);
+        void update();
     }
 }
