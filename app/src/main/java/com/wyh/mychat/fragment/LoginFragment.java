@@ -81,8 +81,13 @@ public class LoginFragment extends Fragment implements UserManager.LoginListener
     }
 
     @Override
-    public void Error(String content) {
-        showToast(content);
+    public void Error(final String content) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                showToast(content);
+            }
+        });
     }
 
     @Override
