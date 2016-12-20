@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         android:text="@string/pop_savePic"
         android:textStyle="bold"
+        android:visibility="gone"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/save_pic_margin_bottom"

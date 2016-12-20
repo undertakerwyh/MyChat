@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easemob.EMCallBack;
@@ -181,19 +182,23 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             public void assignment(ViewHolder viewHolder, final int positon) {
                 final Message message = talkAdapter.getDataList().get(positon);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
-                        R.id.tv_chat_right, R.id.iv_pic_left, R.id.iv_pic_right,R.id.rl_loading_left,R.id.rl_loading_right
+                        R.id.tv_chat_right, R.id.iv_pic_left, R.id.iv_pic_right, R.id.rl_loading_left, R.id.rl_loading_right
                         , BitmapManager.getBitmapManager(getApplicationContext()).loadBitmapFromCache(message.getBitmapPath(), message.getType())
                         , R.id.tv_time_text, message.getContent(), message.getType())
                         .setSendErrorListener(message.getErrorType())
                         .setViewOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                bitmapName = BitmapManager.getBitmapManager(getApplicationContext()).getBitmapName(message.getBitmapPath());
+                                if(message.getType()==CommonUtil.TYPE_PICLEFT) {
+                                    bitmapName = BitmapManager.getBitmapManager(getApplicationContext()).getBitmapName(message.getBitmapPath());
+                                    TextView textView = (TextView) popBar.getView(R.id.tv_pic_save);
+                                    textView.setVisibility(View.VISIBLE);
+                                }
                                 bitmapPath = message.getBitmapPath();
                                 ImageView imageView = (ImageView) popBar.getView(R.id.iv_pic_show);
                                 while (true) {
                                     Bitmap bitmap = BitmapUtil.getBigBitmap(message.getBitmapPath());
-                                    if(bitmap!=null) {
+                                    if (bitmap != null) {
                                         imageView.setImageBitmap(bitmap);
                                         popBar.showAtLocation(v, Gravity.CENTER, 0, 0);
                                         return;
@@ -387,10 +392,11 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         String from = message.getFrom();
         String name = imageMessageBody.getFileName();
         long time = message.getMsgTime();
-        BitmapManager.getBitmapManager(this).getBitmapUrl(bitmapUrl, name, from, time,true);
+        BitmapManager.getBitmapManager(this).getBitmapUrl(bitmapUrl, name, from, time, true);
         cleanUnRead(from);
     }
-    public void cleanUnRead(String username){
+
+    public void cleanUnRead(String username) {
         EMConversation conversation = EMChatManager.getInstance().getConversation(username);
         conversation.markAllMessagesAsRead();
     }
@@ -408,7 +414,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void update() {
-        handler.sendEmptyMessageDelayed(2,500);
+        handler.sendEmptyMessageDelayed(2, 500);
     }
 
     /**
