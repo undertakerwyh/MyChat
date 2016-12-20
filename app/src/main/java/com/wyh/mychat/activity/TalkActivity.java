@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.easemob.EMCallBack;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.ImageMessageBody;
 import com.wyh.mychat.R;
@@ -375,6 +377,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 }
             });
         }
+        cleanUnRead(from);
     }
 
     @Override
@@ -385,6 +388,11 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         String name = imageMessageBody.getFileName();
         long time = message.getMsgTime();
         BitmapManager.getBitmapManager(this).getBitmapUrl(bitmapUrl, name, from, time,true);
+        cleanUnRead(from);
+    }
+    public void cleanUnRead(String username){
+        EMConversation conversation = EMChatManager.getInstance().getConversation(username);
+        conversation.markAllMessagesAsRead();
     }
 
     @Override
