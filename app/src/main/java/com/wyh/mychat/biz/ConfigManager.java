@@ -35,6 +35,12 @@ public class ConfigManager {
         Log.e("AAA","num="+num);
         sharedPreferences.edit().putInt("BottomBarNum",num).commit();
     }
+    public void savePicFile(boolean isCreate){
+        sharedPreferences.edit().putBoolean("PicFile",isCreate).commit();
+    }
+    public boolean loadPicFile(){
+        return sharedPreferences.getBoolean("PicFile",true);
+    }
     public int loadBottomBarNum(){
         return sharedPreferences.getInt("BottomBarNum",0);
     }

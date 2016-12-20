@@ -9,10 +9,14 @@ import android.view.View;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.base.BaseActivity;
+import com.wyh.mychat.biz.BitmapManager;
+import com.wyh.mychat.biz.ConfigManager;
 import com.wyh.mychat.biz.LoadManager;
 import com.wyh.mychat.fragment.FolderFragment;
 import com.wyh.mychat.fragment.ResourceFragment;
 import com.wyh.mychat.view.NoTouchViewPager;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -51,6 +55,14 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
         FromClass = getIntent().getStringExtra("FromClass");
         /**初始化Viewpager*/
         initViewpager();
+        isCreatePicFile();
+    }
+
+    private void isCreatePicFile() {
+        File file = new File(BitmapManager.myTalkPath);
+        if(file.exists()&&file.length()<=0){
+            ConfigManager.getConfigManager(getApplicationContext()).savePicFile(true);
+        }
     }
 
     @Override

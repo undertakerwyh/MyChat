@@ -32,7 +32,7 @@ public class BitmapManager {
     private BitmapAsyncTask bitmapAsyncTask;
     private static Context contexts;
     private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
-    private final static String myTalkPath = Environment.getExternalStorageDirectory().getPath() + "/MyTalk";
+    public final static String myTalkPath = Environment.getExternalStorageDirectory().getPath() + "/MyTalk";
 
     public static BitmapManager getBitmapManager(Context context) {
         if (bitmapManager == null) {
@@ -102,7 +102,12 @@ public class BitmapManager {
         Bitmap bitmap = null;
         if (type == CommonUtil.TYPE_PICRIGHT || type == CommonUtil.TYPE_PICLEFT) {
             bitmap = lruCache.get(path);
-            if (bitmap == null&&!bitmapAsyncTask.isLoading()) {
+            if (bitmapAsyncTask == null && bitmap == null) {
+                bitmap = BitmapUtil.getSmallBitmap(path);
+                if (bitmap != null) {
+                    lruCache.put(path, bitmap);
+                }
+            } else if (bitmap == null && !bitmapAsyncTask.isLoading()) {
                 bitmap = BitmapUtil.getSmallBitmap(path);
                 if (bitmap != null) {
                     lruCache.put(path, bitmap);
@@ -112,14 +117,17 @@ public class BitmapManager {
         return bitmap;
     }
 
+    private boolean isCreate = false;
+
     public void saveBitmapFromSD(String bitmapPath, String name) {
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         File picFile = new File(myTalkPath);
         if (!picFile.exists()) {
             picFile.mkdirs();
-            LoadManager.getPicLoadManager(contexts).reSearch();
         }
+
+
         try {
             bis = new BufferedInputStream(new FileInputStream(new File(bitmapPath)));
             bos = new BufferedOutputStream(new FileOutputStream(picFile + "/" + name));
@@ -145,6 +153,11 @@ public class BitmapManager {
                 e.printStackTrace();
             }
         }
+        if (picFile.length() > 0 && ConfigManager.getConfigManager(contexts).loadPicFile()) {
+            LoadManager.getPicLoadManager(contexts).reSearch();
+            ConfigManager.getConfigManager(contexts).savePicFile(false);
+        }
+
     }
 
     public void saveCacheUrl(String name, InputStream in) {
