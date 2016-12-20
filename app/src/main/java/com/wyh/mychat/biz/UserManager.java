@@ -213,7 +213,12 @@ public class UserManager {
 
             @Override
             public void onError(int code, String message) {
-                loginListener.Error("登录聊天服务器失败！");
+                if(code ==EMCallBack.ERROR_EXCEPTION_INVALID_PASSWORD_USERNAME){
+                    loginListener.Error("用户名或密码错误");
+                }else{
+                    loginListener.Error("登录聊天服务器失败！");
+                }
+                loginListener.stopWaitBar();
             }
         });
     }
