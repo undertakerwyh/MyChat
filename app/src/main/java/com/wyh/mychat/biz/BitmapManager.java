@@ -59,10 +59,16 @@ public class BitmapManager {
     }
 
     class BitmapAsyncTask extends AsyncTask<String, Void, Bitmap> {
+        public boolean isLoading() {
+            return isLoading;
+        }
+
+        private boolean isLoading = false;
 
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
+                isLoading = true;
                 URL url = new URL(params[0]);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = httpURLConnection.getInputStream();
@@ -71,7 +77,7 @@ public class BitmapManager {
                     newMessageTalk.returnTalkPic(params[2], bitmapPath);
                 }
                 saveCacheUrl(params[1], in);
-                loadBitmapFromCache(bitmapPath, CommonUtil.TYPE_PICLEFT, true);
+                loadBitmapFromCache(bitmapPath, CommonUtil.TYPE_PICLEFT);
                 DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
                 return null;
             } catch (MalformedURLException e) {
@@ -88,14 +94,15 @@ public class BitmapManager {
             if (newMessageTalk != null) {
                 newMessageTalk.update();
             }
+            isLoading = false;
         }
     }
 
-    public Bitmap loadBitmapFromCache(@NonNull String path, int type, boolean isRunning) {
+    public Bitmap loadBitmapFromCache(@NonNull String path, int type) {
         Bitmap bitmap = null;
         if (type == CommonUtil.TYPE_PICRIGHT || type == CommonUtil.TYPE_PICLEFT) {
             bitmap = lruCache.get(path);
-            if (bitmap == null && isRunning) {
+            if (bitmap == null&&!bitmapAsyncTask.isLoading()) {
                 bitmap = BitmapUtil.getSmallBitmap(path);
                 if (bitmap != null) {
                     lruCache.put(path, bitmap);
