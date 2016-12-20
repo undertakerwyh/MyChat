@@ -189,10 +189,12 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         .setViewOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                TextView textView = (TextView) popBar.getView(R.id.tv_pic_save);
                                 if(message.getType()==CommonUtil.TYPE_PICLEFT) {
                                     bitmapName = BitmapManager.getBitmapManager(getApplicationContext()).getBitmapName(message.getBitmapPath());
-                                    TextView textView = (TextView) popBar.getView(R.id.tv_pic_save);
                                     textView.setVisibility(View.VISIBLE);
+                                }else{
+                                    textView.setVisibility(View.GONE);
                                 }
                                 bitmapPath = message.getBitmapPath();
                                 ImageView imageView = (ImageView) popBar.getView(R.id.iv_pic_show);

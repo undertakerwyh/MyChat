@@ -85,7 +85,9 @@ public class BitmapManager {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-            newMessageTalk.update();
+            if(newMessageTalk!=null) {
+                newMessageTalk.update();
+            }
         }
     }
 
