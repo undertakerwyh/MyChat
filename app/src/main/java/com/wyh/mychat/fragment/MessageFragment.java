@@ -153,6 +153,20 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+    public void cancelNew(String name){
+        Message message = messageAdapter.getDataList().get(messageHash.get(name));
+        message.setNew(false);
+        String content = message.getContent();
+        String substring = content.substring(content.indexOf("]") + 1, content.length());
+        message.setContent(substring);
+        DBManager.getDbManager(getContext()).changeNewMessage(message);
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                messageAdapter.notifyDataSetChanged();
+            }
+        });
+    }
 
     @Override
     public void updateHome(EMMessage emMessage) {

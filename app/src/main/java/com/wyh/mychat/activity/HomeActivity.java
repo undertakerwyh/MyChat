@@ -467,6 +467,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void Error(String content) {
         Toast.makeText(getApplicationContext(), content, Toast.LENGTH_SHORT).show();
     }
+    public void unReadClean(String name){
+        dismissPop();
+        getMessageFragment().cleanUnRead(name);
+        getMessageFragment().cancelNew(name);
+    }
 
     @Override
     public void success() {

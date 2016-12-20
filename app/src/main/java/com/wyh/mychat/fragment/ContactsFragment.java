@@ -90,6 +90,7 @@ public class ContactsFragment extends Fragment implements ListViewBar.ListViewBa
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                ((HomeActivity)getActivity()).unReadClean(friends);
                                 Intent intent = new Intent(getActivity(), TalkActivity.class);
                                 intent.putExtra("name", friends);
                                 getActivity().startActivity(intent);
