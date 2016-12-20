@@ -71,7 +71,7 @@ public class BitmapManager {
                     newMessageTalk.returnTalkPic(params[2], bitmapPath);
                 }
                 saveCacheUrl(params[1], in);
-                loadBitmapFromCache(bitmapPath, CommonUtil.TYPE_PICLEFT);
+                loadBitmapFromCache(bitmapPath, CommonUtil.TYPE_PICLEFT, true);
                 DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
                 return null;
             } catch (MalformedURLException e) {
@@ -85,17 +85,17 @@ public class BitmapManager {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-            if(newMessageTalk!=null) {
+            if (newMessageTalk != null) {
                 newMessageTalk.update();
             }
         }
     }
 
-    public Bitmap loadBitmapFromCache(@NonNull String path, int type) {
+    public Bitmap loadBitmapFromCache(@NonNull String path, int type, boolean isRunning) {
         Bitmap bitmap = null;
         if (type == CommonUtil.TYPE_PICRIGHT || type == CommonUtil.TYPE_PICLEFT) {
             bitmap = lruCache.get(path);
-            if (bitmap == null) {
+            if (bitmap == null && isRunning) {
                 bitmap = BitmapUtil.getSmallBitmap(path);
                 if (bitmap != null) {
                     lruCache.put(path, bitmap);
@@ -177,6 +177,7 @@ public class BitmapManager {
 
     public interface NewMessageTalk {
         void returnTalkPic(String name, String bitmapPath);
+
         void update();
     }
 }

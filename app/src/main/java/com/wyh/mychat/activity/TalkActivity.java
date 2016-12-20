@@ -183,7 +183,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 final Message message = talkAdapter.getDataList().get(positon);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
                         R.id.tv_chat_right, R.id.iv_pic_left, R.id.iv_pic_right, R.id.rl_loading_left, R.id.rl_loading_right
-                        , BitmapManager.getBitmapManager(getApplicationContext()).loadBitmapFromCache(message.getBitmapPath(), message.getType())
+                        , BitmapManager.getBitmapManager(getApplicationContext()).loadBitmapFromCache(message.getBitmapPath(), message.getType(),false)
                         , R.id.tv_time_text, message.getContent(), message.getType())
                         .setSendErrorListener(message.getErrorType())
                         .setViewOnClickListener(new View.OnClickListener() {
