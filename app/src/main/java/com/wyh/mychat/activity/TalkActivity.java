@@ -190,26 +190,19 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                             @Override
                             public void onClick(View v) {
                                 TextView textView = (TextView) popBar.getView(R.id.tv_pic_save);
-                                if(message.getType()==CommonUtil.TYPE_PICLEFT) {
+                                if (message.getType() == CommonUtil.TYPE_PICLEFT) {
                                     bitmapName = BitmapManager.getBitmapManager(getApplicationContext()).getBitmapName(message.getBitmapPath());
                                     textView.setVisibility(View.VISIBLE);
-                                }else{
+                                } else {
                                     textView.setVisibility(View.GONE);
                                 }
                                 bitmapPath = message.getBitmapPath();
                                 ImageView imageView = (ImageView) popBar.getView(R.id.iv_pic_show);
-                                while (true) {
-                                    Bitmap bitmap = BitmapUtil.getBigBitmap(message.getBitmapPath());
-                                    if (bitmap != null) {
-                                        imageView.setImageBitmap(bitmap);
-                                        popBar.showAtLocation(v, Gravity.CENTER, 0, 0);
-                                        return;
-                                    }
-                                    try {
-                                        Thread.sleep(300);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
+                                Bitmap bitmap = BitmapUtil.getBigBitmap(message.getBitmapPath());
+                                if (bitmap != null) {
+                                    imageView.setImageBitmap(bitmap);
+                                    popBar.showAtLocation(v, Gravity.CENTER, 0, 0);
+                                    return;
                                 }
                             }
                         }, R.id.iv_pic_right, R.id.iv_pic_left);
