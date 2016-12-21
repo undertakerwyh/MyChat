@@ -122,6 +122,7 @@ public class LoadManager {
                     }
                 });
             }
+            srcService.shutdown();
             scheduledSrcService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
@@ -200,7 +201,6 @@ public class LoadManager {
                 if (!folderSet.contains(folder)) {
                     folderSet.add(folder);
                     fileUpdate.update(folder);
-                    srcService.shutdown();
                 }
                 return;
             }
