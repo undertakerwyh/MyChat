@@ -79,6 +79,10 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     private static String friendName;
 
+    public static void setIsFirstEnter(boolean isFirstEnter) {
+        TalkActivity.isFirstEnter = isFirstEnter;
+    }
+
     private static boolean isFirstEnter = true;
 
     private Handler handler = new Handler() {

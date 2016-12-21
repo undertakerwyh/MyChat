@@ -12,6 +12,7 @@ import com.easemob.EMCallBack;
 import com.easemob.EMError;
 import com.easemob.chat.EMChatManager;
 import com.easemob.exceptions.EaseMobException;
+import com.wyh.mychat.activity.TalkActivity;
 import com.wyh.mychat.util.CommonUtil;
 
 import java.util.ArrayList;
@@ -262,6 +263,7 @@ public class UserManager {
         });
         saveFirstAdd(true);
         deleteFriendList();
+        TalkActivity.setIsFirstEnter(true);
     }
 
     public interface ExitListener {
