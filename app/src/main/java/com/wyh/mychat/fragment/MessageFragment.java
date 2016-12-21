@@ -153,8 +153,9 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-    public void cancelNew(String name){
-        if(messageHash.get(name)!=null) {
+
+    public void cancelNew(String name) {
+        if (messageHash.get(name) != null) {
             Message message = messageAdapter.getDataList().get(messageHash.get(name));
             message.setNew(false);
             String content = message.getContent();
@@ -177,7 +178,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         String content = null;
         if (msgType[0].equals("txt")) {
             content = msgType[1].substring(msgType[1].indexOf("\"") + 1, msgType[1].lastIndexOf("\""));
-        }else if(msgType[0].equals("image")){
+        } else if (msgType[0].equals("image")) {
             content = getString(R.string.talk_pic);
             ImageMessageBody imageMessageBody = (ImageMessageBody) emMessage.getBody();
             String bitmapUrl = imageMessageBody.getThumbnailUrl();
@@ -185,16 +186,16 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             String name = imageMessageBody.getFileName();
             long time = emMessage.getMsgTime();
             BitmapManager.getBitmapManager(getContext()).saveBitmapDownload(bitmapUrl, name, from, time);
-            BitmapManager.getBitmapManager(getContext()).getBitmapUrl(bitmapUrl, name, from, time,false);
+            BitmapManager.getBitmapManager(getContext()).getBitmapUrl(bitmapUrl, name, from, time, false);
         }
         String userName = emMessage.getFrom();
+        EMConversation conversation = EMChatManager.getInstance().getConversation(userName);
         if (messageHash.containsKey(userName)) {
             Message message = messageAdapter.getDataList().get(messageHash.get(userName));
-            if(!userName.equals(TalkActivity.getFriendName())){
+            if (!userName.equals(TalkActivity.getFriendName())) {
                 message.setNew(true);
             }
-            EMConversation conversation = EMChatManager.getInstance().getConversation(userName);
-            message.setContent("["+conversation.getUnreadMsgCount()+"条]"+content);
+            message.setContent("[" + conversation.getUnreadMsgCount() + "条]" + content);
             message.setTime(emMessage.getMsgTime());
             DBManager.getDbManager(getContext()).changeNewMessage(message);
             lvMessage.post(new Runnable() {
@@ -205,6 +206,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
             });
         } else {
             Message message = new Message(userName, emMessage.getMsgTime(), content, CommonUtil.TYPE_LEFT);
+            message.setContent("[" + conversation.getUnreadMsgCount() + "条]" + content);
             message.setNew(true);
             DBManager.getDbManager(getContext()).saveNewMessage(message);
             messageAdapter.addDataUpdate(message);
@@ -212,7 +214,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         }
     }
 
-    public void cleanUnRead(String username){
+    public void cleanUnRead(String username) {
         EMConversation conversation = EMChatManager.getInstance().getConversation(username);
         conversation.markAllMessagesAsRead();
     }
@@ -222,9 +224,9 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
         String userName = message.getName();
         if (messageHash.containsKey(userName)) {
             Message messageMain = messageAdapter.getDataList().get(messageHash.get(userName));
-            if(message.getType()==CommonUtil.TYPE_PICRIGHT||message.getType()==CommonUtil.TYPE_PICLEFT){
+            if (message.getType() == CommonUtil.TYPE_PICRIGHT || message.getType() == CommonUtil.TYPE_PICLEFT) {
                 messageMain.setContent(getString(R.string.talk_pic));
-            }else {
+            } else {
                 messageMain.setContent(message.getContent());
             }
             messageMain.setTime(message.getTime());
@@ -236,10 +238,10 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
                 }
             });
         } else {
-            Message messageMain= null;
-            if(message.getType()==CommonUtil.TYPE_PICRIGHT||message.getType()==CommonUtil.TYPE_PICLEFT){
+            Message messageMain = null;
+            if (message.getType() == CommonUtil.TYPE_PICRIGHT || message.getType() == CommonUtil.TYPE_PICLEFT) {
                 messageMain = new Message(message.getName(), message.getTime(), getString(R.string.talk_pic), message.getType());
-            }else {
+            } else {
                 messageMain = new Message(message.getName(), message.getTime(), message.getContent(), message.getType());
             }
             messageAdapter.addDataUpdate(messageMain);

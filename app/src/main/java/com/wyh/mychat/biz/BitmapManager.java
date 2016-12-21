@@ -107,8 +107,6 @@ public class BitmapManager {
         }
     }
 
-    private static long saveTime;
-
     class BitmapAsyncTask extends AsyncTask<String, Void, Bitmap> {
         public boolean isLoading() {
             return isLoading;
@@ -123,14 +121,13 @@ public class BitmapManager {
             try {
                 isLoading = true;
                 URL url = new URL(params[0]);
-                bitmapUrl = params[0];
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = httpURLConnection.getInputStream();
                 String bitmapPath = getBitmapPath() + "/" + params[1];
                 if (newMessageTalk != null && Boolean.valueOf(params[4])) {
                     newMessageTalk.returnTalkPic(params[2], bitmapPath);
                 }
-                saveTime = Long.parseLong(params[3]);
+                bitmapUrl = params[0];
                 saveCacheUrl(params[1], in);
                 if (params.length >= 5) {
                     loadBitmapFromCache(bitmapPath, CommonUtil.TYPE_PICLEFT);

@@ -33,7 +33,6 @@ public class NewMessageBroadcastReceiver extends BroadcastReceiver {
     public static void setNewMessagePop(NewMessagePop newMessagePop) {
         NewMessageBroadcastReceiver.newMessagePop = newMessagePop;
     }
-
     private static NewMessagePop newMessagePop;
     @Override
     public void onReceive(Context context, Intent intent) {

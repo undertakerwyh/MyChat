@@ -79,6 +79,8 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     private static String friendName;
 
+    private static boolean isFirstEnter = true;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -254,7 +256,18 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         UserManager.getUserManager(this).setTalkSend(false);
         TimeNoteUtil.getTimeNoteUtil().cleanTime();
         TimeNoteUtil.getTimeNoteUtil().setRefresh(true);
+        homeNewListener.unRead(friendName);
         friendName = null;
+    }
+
+    public static void setHomeNewListener(HomeNewListener homeNewListener) {
+        TalkActivity.homeNewListener = homeNewListener;
+    }
+
+    private static HomeNewListener homeNewListener;
+
+    public interface HomeNewListener{
+        void unRead(String name);
     }
 
     public static void setMySendUpdate(MySendUpdate mySendUpdate) {
@@ -400,13 +413,18 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void returnTalkPic(String name, String bitmapPath) {
-        final Message message = new Message(name, CommonUtil.getTimeLong(), CommonUtil.TYPE_PICLEFT, bitmapPath);
-        lvTalkMessage.post(new Runnable() {
-            @Override
-            public void run() {
-                mySendPic(message, CommonUtil.TYPE_PICLEFT);
+        if(friendName.equals(name)) {
+            if (!isFirstEnter) {
+                final Message message = new Message(name, CommonUtil.getTimeLong(), CommonUtil.TYPE_PICLEFT, bitmapPath);
+                lvTalkMessage.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mySendPic(message, CommonUtil.TYPE_PICLEFT);
+                    }
+                });
             }
-        });
+            isFirstEnter = false;
+        }
     }
 
     @Override

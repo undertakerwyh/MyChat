@@ -55,7 +55,8 @@ import butterknife.ButterKnife;
 /**
  * 主界面HomeActivity
  */
-public class HomeActivity extends BaseActivity implements View.OnClickListener, UserManager.ExitListener, NewMessageBroadcastReceiver.NewMessagePop {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, UserManager.ExitListener,
+        NewMessageBroadcastReceiver.NewMessagePop,TalkActivity.HomeNewListener {
 
 
     @Bind(R.id.action_bar)
@@ -119,6 +120,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         });
         initPagerListener();
         BitmapManager.getBitmapManager(this).loadBitmapDownload();
+        TalkActivity.setHomeNewListener(this);
     }
 
     private void initNewPop() {
@@ -224,6 +226,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
             });
         }
+    }
+
+    @Override
+    public void unRead(String name) {
+        unReadClean(name);
     }
 
     public interface ContactListener {
