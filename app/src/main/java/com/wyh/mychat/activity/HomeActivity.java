@@ -28,6 +28,7 @@ import com.easemob.util.NetUtils;
 import com.wyh.mychat.R;
 import com.wyh.mychat.adapter.FragmentAdapter;
 import com.wyh.mychat.base.BaseActivity;
+import com.wyh.mychat.biz.BitmapManager;
 import com.wyh.mychat.biz.ConfigManager;
 import com.wyh.mychat.biz.UserManager;
 import com.wyh.mychat.fragment.ConfigFragment;
@@ -117,6 +118,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
         initPagerListener();
+        BitmapManager.getBitmapManager(this).loadBitmapDownload();
     }
 
     private void initNewPop() {

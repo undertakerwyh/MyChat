@@ -1,6 +1,9 @@
 package com.wyh.mychat.biz;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -33,6 +36,11 @@ public class BitmapManager {
     private static Context contexts;
     private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
     public final static String myTalkPath = Environment.getExternalStorageDirectory().getPath() + "/MyTalk";
+    private static BitmapSQLite bitmapSQLite;
+    private static SQLiteDatabase bitmapDatebase;
+
+    private static final String BITMAPDOWNLOAD = "bitmapDownload.db";
+    private static final int VERSION = 1;
 
     public static BitmapManager getBitmapManager(Context context) {
         if (bitmapManager == null) {
@@ -40,8 +48,15 @@ public class BitmapManager {
                 bitmapManager = new BitmapManager();
             }
             contexts = context;
+            bitmapSQLite = new BitmapSQLite(contexts, BITMAPDOWNLOAD, null, VERSION);
+            bitmapDatebase = bitmapSQLite.getWritableDatabase();
         }
+
         return bitmapManager;
+    }
+
+    private BitmapManager() {
+
     }
 
     public String getBitmapPath() {
@@ -57,6 +72,39 @@ public class BitmapManager {
         bitmapAsyncTask = new BitmapAsyncTask();
         bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time), String.valueOf(isTalk));
     }
+    private void getBitmapDownload(String bitmapUrl, String name, String from, long time, boolean isTalk) {
+        bitmapAsyncTask = new BitmapAsyncTask();
+        bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time), String.valueOf(isTalk),"down");
+    }
+
+    public void saveBitmapDownload(String bitmapUrl, String name, String from, long time) {
+        bitmapDatebase.execSQL("insert into bitmap(url,name,from_name,time) values (?,?,?,?)", new Object[]{bitmapUrl, name, from, time});
+    }
+
+    public void deleBitmapDownload(String bitmapUrl) {
+        bitmapDatebase.execSQL("delete from bitmap where url = ?", new Object[]{bitmapUrl});
+    }
+
+    public void loadBitmapDownload() {
+        Cursor cursor = bitmapDatebase.rawQuery("select * from bitmap", null);
+        String bitmapUrl = null;
+        String name = null;
+        String from = null;
+        long time = 0;
+        if (cursor.moveToFirst()) {
+            do {
+                bitmapUrl = cursor.getString(cursor.getColumnIndex("url"));
+                name = cursor.getString(cursor.getColumnIndex("name"));
+                from = cursor.getString(cursor.getColumnIndex("from_name"));
+                time = Long.parseLong(cursor.getString(cursor.getColumnIndex("time")));
+                File file = new File(contexts.getExternalFilesDir("image"),name);
+                if(file.exists()&&file.length()>0&&file!=null){
+                    file.delete();
+                }
+                getBitmapDownload(bitmapUrl,name,from,time,false);
+            } while (cursor.moveToNext());
+        }
+    }
 
     class BitmapAsyncTask extends AsyncTask<String, Void, Bitmap> {
         public boolean isLoading() {
@@ -65,11 +113,14 @@ public class BitmapManager {
 
         private boolean isLoading = false;
 
+        private String bitmapUrl = null;
+
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
                 isLoading = true;
                 URL url = new URL(params[0]);
+                bitmapUrl = params[0];
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = httpURLConnection.getInputStream();
                 String bitmapPath = getBitmapPath() + "/" + params[1];
@@ -77,8 +128,10 @@ public class BitmapManager {
                     newMessageTalk.returnTalkPic(params[2], bitmapPath);
                 }
                 saveCacheUrl(params[1], in);
-                loadBitmapFromCache(bitmapPath, CommonUtil.TYPE_PICLEFT);
-                DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
+                if(params.length>=5) {
+                    loadBitmapFromCache(bitmapPath, CommonUtil.TYPE_PICLEFT);
+                    DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
+                }
                 return null;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -94,6 +147,7 @@ public class BitmapManager {
             if (newMessageTalk != null) {
                 newMessageTalk.update();
             }
+            deleBitmapDownload(bitmapUrl);
             isLoading = false;
         }
     }
@@ -199,5 +253,23 @@ public class BitmapManager {
         void returnTalkPic(String name, String bitmapPath);
 
         void update();
+    }
+
+    private static class BitmapSQLite extends SQLiteOpenHelper {
+        private final String BITMAPUTRL = "create table bitmap(id integer primary key autoincrement,url text,name text,from_name text,time text)";
+
+        public BitmapSQLite(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+            super(context, name, factory, version);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL(BITMAPUTRL);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        }
     }
 }
