@@ -395,7 +395,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 }
             });
         }
-        cleanUnRead(from);
+        cleanUnRead(friendName);
     }
 
     @Override
@@ -407,7 +407,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         long time = message.getMsgTime();
         BitmapManager.getBitmapManager(this).saveBitmapDownload(bitmapUrl, name, from, time);
         BitmapManager.getBitmapManager(this).getBitmapUrl(bitmapUrl, name, from, time, true);
-        cleanUnRead(from);
+        cleanUnRead(friendName);
     }
 
     public void cleanUnRead(String username) {
