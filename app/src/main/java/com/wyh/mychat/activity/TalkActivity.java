@@ -78,6 +78,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private static String friendName;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -332,7 +333,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
         Message message = new Message(friendName, CommonUtil.getTimeLong(), CommonUtil.TYPE_PICRIGHT, picFile.getAbsolutePath());
-        DBManager.getDbManager(this).createReceivedPicMsg(friendName, UserManager.getUserManager(this).loadUserName(), picFile, message.getTime());
+        DBManager.getDbManager(this).createSendPicMsg(friendName, UserManager.getUserManager(this).loadUserName(), picFile, message.getTime());
         mySendPic(message, CommonUtil.TYPE_PICRIGHT);
     }
 

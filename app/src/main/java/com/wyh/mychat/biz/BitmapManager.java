@@ -72,9 +72,10 @@ public class BitmapManager {
         bitmapAsyncTask = new BitmapAsyncTask();
         bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time), String.valueOf(isTalk));
     }
+
     private void getBitmapDownload(String bitmapUrl, String name, String from, long time, boolean isTalk) {
         bitmapAsyncTask = new BitmapAsyncTask();
-        bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time), String.valueOf(isTalk),"down");
+        bitmapAsyncTask.execute(bitmapUrl, name, from, String.valueOf(time), String.valueOf(isTalk), "down");
     }
 
     public void saveBitmapDownload(String bitmapUrl, String name, String from, long time) {
@@ -97,14 +98,16 @@ public class BitmapManager {
                 name = cursor.getString(cursor.getColumnIndex("name"));
                 from = cursor.getString(cursor.getColumnIndex("from_name"));
                 time = Long.parseLong(cursor.getString(cursor.getColumnIndex("time")));
-                File file = new File(contexts.getExternalFilesDir("image"),name);
-                if(file.exists()&&file.length()>0&&file!=null){
+                File file = new File(contexts.getExternalFilesDir("image"), name);
+                if (file.exists() && file.length() > 0 && file != null) {
                     file.delete();
                 }
-                getBitmapDownload(bitmapUrl,name,from,time,false);
+                getBitmapDownload(bitmapUrl, name, from, time, false);
             } while (cursor.moveToNext());
         }
     }
+
+    private static long saveTime;
 
     class BitmapAsyncTask extends AsyncTask<String, Void, Bitmap> {
         public boolean isLoading() {
@@ -127,8 +130,9 @@ public class BitmapManager {
                 if (newMessageTalk != null && Boolean.valueOf(params[4])) {
                     newMessageTalk.returnTalkPic(params[2], bitmapPath);
                 }
+                saveTime = Long.parseLong(params[3]);
                 saveCacheUrl(params[1], in);
-                if(params.length>=5) {
+                if (params.length >= 5) {
                     loadBitmapFromCache(bitmapPath, CommonUtil.TYPE_PICLEFT);
                     DBManager.getDbManager(contexts).createReceivedPicMsg(UserManager.getUserManager(contexts).loadUserName(), params[2], new File(bitmapPath), Long.parseLong(params[3]));
                 }
@@ -149,6 +153,7 @@ public class BitmapManager {
             }
             deleBitmapDownload(bitmapUrl);
             isLoading = false;
+
         }
     }
 

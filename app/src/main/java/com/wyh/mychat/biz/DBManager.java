@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
@@ -199,7 +198,6 @@ public class DBManager {
             }
             messages = conversation.loadMoreMsgFromDB(msgId, loadNum);
         }
-
         ExecutorService executorService = Executors.newCachedThreadPool();
         final List<EMMessage> finalMessages = messages;
         executorService.execute(new Runnable() {
@@ -290,6 +288,16 @@ public class DBManager {
         msg.setMsgTime(time);
         return msg;
     }
+    public EMMessage createSendPicMsg(String to, String from, File file, long time) {
+        EMMessage msg = EMMessage.createSendMessage(EMMessage.Type.IMAGE);
+        ImageMessageBody body = new ImageMessageBody(file);
+        msg.addBody(body);
+        msg.setFrom(from);
+        msg.setTo(to);
+        msg.setMsgTime(time);
+        return msg;
+    }
+
 
     static class SaveNewMessage extends SQLiteOpenHelper {
 
