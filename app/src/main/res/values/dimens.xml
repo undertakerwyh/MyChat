@@ -139,4 +139,6 @@
     <!--checkbox距离左边的距离-->
     <dimen name="chat_show_checkbox_marginLeft">30dp</dimen>
 
+    <dimen name="progressbar_margin">15dp</dimen>
+
 </resources>

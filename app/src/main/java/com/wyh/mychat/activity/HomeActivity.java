@@ -4,17 +4,12 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -117,13 +112,6 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
         EMChatManager.getInstance().addConnectionListener(new MyConnectionListener());
         List<String> list = new ArrayList<>();
         list.add(getString(R.string.setting_friend));
-        listViewBar = new ListViewBar(this, list, new ListViewBar.ListViewBarListener() {
-            @Override
-            public void onComplete(String name) {
-                listViewBar.dismiss();
-                ShowAddFriend();
-            }
-        });
         initPagerListener();
         BitmapManager.getBitmapManager(this).loadBitmapDownload();
         TalkActivity.setHomeNewListener(this);
@@ -137,7 +125,7 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_add:
-                        ShowAddFriend();
+                        showAddFriend(HomeActivity.this);
                         break;
                 }
                 return false;
@@ -337,11 +325,6 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
     public void setVpHomeBlack(int id){
         switch (id){
             case 1:
@@ -414,59 +397,46 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
     private int height = 0;
 
     /**
-     * 显示菜单popwindows
-     */
-    private void ShowPopwindow() {
-        listViewBar.showAsDropDown(toolbar, (int) (maxScreenWidth - height - 4), 0);
-    }
-
-    /**
      * 添加好友的pop显示
      */
-    private void ShowAddFriend() {
-        View view = getLayoutInflater().inflate(R.layout.pop_search_friend, null);
-        friendPop = new PopupWindow(view, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        FriendOnClickEvent(view);
-        friendPop.setFocusable(true);
-        friendPop.setOutsideTouchable(true);
-        friendPop.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.color.transparent));
-        friendPop.showAtLocation(toolbar, Gravity.CENTER, 0, 0);
-    }
+//    private void ShowAddFriend() {
+//        View view = getLayoutInflater().inflate(R.layout.pop_search_friend, null);
+//        friendPop = new PopupWindow(view, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//        FriendOnClickEvent(view);
+//        friendPop.setFocusable(true);
+//        friendPop.setOutsideTouchable(true);
+//        friendPop.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.color.transparent));
+//        friendPop.showAtLocation(toolbar, Gravity.CENTER, 0, 0);
+//    }
 
-    /**
-     * 添加好友界面的点击事件
-     *
-     * @param view
-     */
-    private void FriendOnClickEvent(View view) {
-        ImageView imageView = (ImageView) view.findViewById(R.id.iv_send_request);
-        final EditText userName = (EditText) view.findViewById(R.id.et_friend_name);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = userName.getText().toString();
-                if (!TextUtils.isEmpty(name)) {
-                    if (!UserManager.getUserManager(getApplicationContext()).isUserName(name)) {
-                        if (!UserManager.getUserManager(getApplicationContext()).isFriendExist(name)) {
-                            try {
-                                EMContactManager.getInstance().addContact(name, null);//需异步处理
-                                Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
-                            } catch (EaseMobException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            Toast.makeText(HomeActivity.this, "已是好友", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(HomeActivity.this, "不能对自己帐号发送请求", Toast.LENGTH_SHORT).show();
-                    }
-                    friendPop.dismiss();
-                } else {
-                    Toast.makeText(HomeActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
+//    private void FriendOnClickEvent(View view) {
+//        final EditText userName = (EditText) view.findViewById(R.id.et_friend_name);
+//        imageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String name = userName.getText().toString();
+//                if (!TextUtils.isEmpty(name)) {
+//                    if (!UserManager.getUserManager(getApplicationContext()).isUserName(name)) {
+//                        if (!UserManager.getUserManager(getApplicationContext()).isFriendExist(name)) {
+//                            try {
+//                                EMContactManager.getInstance().addContact(name, null);//需异步处理
+//                                Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
+//                            } catch (EaseMobException e) {
+//                                e.printStackTrace();
+//                            }
+//                        } else {
+//                            Toast.makeText(HomeActivity.this, "已是好友", Toast.LENGTH_SHORT).show();
+//                        }
+//                    } else {
+//                        Toast.makeText(HomeActivity.this, "不能对自己帐号发送请求", Toast.LENGTH_SHORT).show();
+//                    }
+//                    friendPop.dismiss();
+//                } else {
+//                    Toast.makeText(HomeActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//    }
 
     //实现ConnectionListener接口
     private class MyConnectionListener implements EMConnectionListener {

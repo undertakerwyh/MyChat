@@ -27,6 +27,8 @@
     <string name="setting_search">搜索</string>
     <string name="setting_friend">添加好友</string>
     <string name="setting_setting">设置</string>
+    <string name="setting_ok">确定</string>
+    <string name="setting_cancel">取消</string>
 
     <!--搜索好友popwindow-->
     <string name="pop_friend_title">添加好友</string>
