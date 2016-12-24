@@ -394,50 +394,6 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
         }
     }
 
-    private int height = 0;
-
-    /**
-     * 添加好友的pop显示
-     */
-//    private void ShowAddFriend() {
-//        View view = getLayoutInflater().inflate(R.layout.pop_search_friend, null);
-//        friendPop = new PopupWindow(view, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        FriendOnClickEvent(view);
-//        friendPop.setFocusable(true);
-//        friendPop.setOutsideTouchable(true);
-//        friendPop.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.color.transparent));
-//        friendPop.showAtLocation(toolbar, Gravity.CENTER, 0, 0);
-//    }
-
-//    private void FriendOnClickEvent(View view) {
-//        final EditText userName = (EditText) view.findViewById(R.id.et_friend_name);
-//        imageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String name = userName.getText().toString();
-//                if (!TextUtils.isEmpty(name)) {
-//                    if (!UserManager.getUserManager(getApplicationContext()).isUserName(name)) {
-//                        if (!UserManager.getUserManager(getApplicationContext()).isFriendExist(name)) {
-//                            try {
-//                                EMContactManager.getInstance().addContact(name, null);//需异步处理
-//                                Toast.makeText(HomeActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
-//                            } catch (EaseMobException e) {
-//                                e.printStackTrace();
-//                            }
-//                        } else {
-//                            Toast.makeText(HomeActivity.this, "已是好友", Toast.LENGTH_SHORT).show();
-//                        }
-//                    } else {
-//                        Toast.makeText(HomeActivity.this, "不能对自己帐号发送请求", Toast.LENGTH_SHORT).show();
-//                    }
-//                    friendPop.dismiss();
-//                } else {
-//                    Toast.makeText(HomeActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//    }
-
     //实现ConnectionListener接口
     private class MyConnectionListener implements EMConnectionListener {
         private ExecutorService executors;
