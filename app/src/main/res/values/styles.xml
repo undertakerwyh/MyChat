@@ -46,7 +46,7 @@
         <item name="android:colorBackground">@color/colorWhite</item>
     </style>
 
-    <style name="ActionMenuTextStyle" parent="ThemeOverlay.AppCompat.ActionBar">
+    <style name="ActionMenuTextStyle" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:actionMenuTextColor">@color/colorWhite</item>
     </style>
 
