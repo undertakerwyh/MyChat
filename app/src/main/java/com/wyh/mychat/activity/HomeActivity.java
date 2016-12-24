@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabWidget;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easemob.EMConnectionListener;
@@ -37,7 +39,6 @@ import com.wyh.mychat.fragment.MessageFragment;
 import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
 import com.wyh.mychat.util.PageChangeAnimUtil;
 import com.wyh.mychat.util.SystemUtils;
-import com.wyh.mychat.view.ActionBar;
 import com.wyh.mychat.view.ListViewBar;
 import com.wyh.mychat.view.PopBar;
 import com.wyh.mychat.view.TouchViewPager;
@@ -56,17 +57,19 @@ import butterknife.ButterKnife;
  * 主界面HomeActivity
  */
 public class HomeActivity extends BaseActivity implements View.OnClickListener, UserManager.ExitListener,
-        NewMessageBroadcastReceiver.NewMessagePop,TalkActivity.HomeNewListener {
+        NewMessageBroadcastReceiver.NewMessagePop, TalkActivity.HomeNewListener {
 
 
-    @Bind(R.id.action_bar)
-    ActionBar actionBar;
     @Bind(R.id.vp_Home)
     TouchViewPager vpHome;
     @Bind(R.id.ll_bottom_bar_bg)
     LinearLayout llBottomBarBg;
     @Bind(R.id.tabWidget)
     TabWidget tabWidget;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.toolbar_title)
+    TextView toolbarTitle;
     private FragmentAdapter fragmentAdapter;
     /**
      * 保存屏幕按下移动的位置信息
@@ -94,7 +97,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         /**初始化actionbar*/
         String title = UserManager.getUserManager(this).loadUserName();
-        initActionBar(title, -1, R.drawable.function, this);
+        toolbar.inflateMenu(R.menu.menu_home);
+        toolbarTitle.setText(title);
         /**初始化viewpager*/
         initViewPager();
         /**初始化底部菜单*/
@@ -125,7 +129,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void initNewPop() {
         newPop = new PopBar(this, R.layout.view_new, ViewPager.LayoutParams.WRAP_CONTENT);
-        newPop.setonClickListener(R.id.ll_new_pop,new View.OnClickListener() {
+        newPop.setonClickListener(R.id.ll_new_pop, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vpHome.setCurrentItem(0);
@@ -301,7 +305,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void myHandlerMessage(Message message) {
         super.myHandlerMessage(message);
-        switch (message.what){
+        switch (message.what) {
             case 1:
                 newPop.showAsDropDown(vpHome, (int) maxScreenWidth / 6, newPop.getHeight());
                 break;
@@ -343,7 +347,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
      * 显示菜单popwindows
      */
     private void ShowPopwindow() {
-        listViewBar.showAsDropDown(actionBar, (int) (maxScreenWidth - height - 4), 0);
+        listViewBar.showAsDropDown(toolbar, (int) (maxScreenWidth - height - 4), 0);
     }
 
     /**
@@ -356,7 +360,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         friendPop.setFocusable(true);
         friendPop.setOutsideTouchable(true);
         friendPop.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.color.transparent));
-        friendPop.showAtLocation(actionBar, Gravity.CENTER, 0, 0);
+        friendPop.showAtLocation(toolbar, Gravity.CENTER, 0, 0);
     }
 
     /**
@@ -397,9 +401,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_actionbar_right:
-                ShowPopwindow();
-                break;
             case R.id.iv_message:
                 vpHome.setCurrentItem(0);
                 break;
@@ -476,7 +477,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void Error(String content) {
         Toast.makeText(getApplicationContext(), content, Toast.LENGTH_SHORT).show();
     }
-    public void unReadClean(String name){
+
+    public void unReadClean(String name) {
         dismissPop();
         getMessageFragment().cleanUnRead(name);
         getMessageFragment().cancelNew(name);

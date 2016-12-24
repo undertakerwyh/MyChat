@@ -8,5 +8,6 @@
     <color name="transparent">#00000000</color>
     <color name="colorGray">#afafaf</color>
     <color name="colorMessageGray">#757575</color>
+    <color name="colorBlue">#00bfff</color>
 
 </resources>

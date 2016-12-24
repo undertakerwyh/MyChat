@@ -17,6 +17,7 @@
     <dimen name="action_setting_textsize">20sp</dimen>
 
     <dimen name="action_text_width">200dp</dimen>
+    <dimen name="toolbar_text_size">20sp</dimen>
 
     <!--.................................HomeActivity...................................-->
     <!--popwindow菜单的宽-->
