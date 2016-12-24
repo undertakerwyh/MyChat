@@ -5,6 +5,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -65,6 +66,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                handler.sendEmptyMessage(ACTION_LOGIN);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void showLogin() {
