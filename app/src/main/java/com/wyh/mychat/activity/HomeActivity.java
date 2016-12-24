@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,7 +38,6 @@ import com.wyh.mychat.fragment.ConfigFragment;
 import com.wyh.mychat.fragment.ContactsFragment;
 import com.wyh.mychat.fragment.MessageFragment;
 import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
-import com.wyh.mychat.util.PageChangeAnimUtil;
 import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.view.ListViewBar;
 import com.wyh.mychat.view.PopBar;
@@ -56,20 +56,18 @@ import butterknife.ButterKnife;
 /**
  * 主界面HomeActivity
  */
-public class HomeActivity extends BaseActivity implements View.OnClickListener, UserManager.ExitListener,
+public class HomeActivity extends BaseActivity implements UserManager.ExitListener,
         NewMessageBroadcastReceiver.NewMessagePop, TalkActivity.HomeNewListener {
 
 
-    @Bind(R.id.vp_Home)
-    TouchViewPager vpHome;
-    @Bind(R.id.ll_bottom_bar_bg)
-    LinearLayout llBottomBarBg;
-    @Bind(R.id.tabWidget)
-    TabWidget tabWidget;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
     @Bind(R.id.toolbar_title)
     TextView toolbarTitle;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.vp_Home)
+    TouchViewPager vpHome;
+    @Bind(R.id.tabWidget)
+    TabWidget tabWidget;
     private FragmentAdapter fragmentAdapter;
     /**
      * 保存屏幕按下移动的位置信息
@@ -83,6 +81,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private View view1;
     private MessageFragment messageFragment;
     private NewMessageBroadcastReceiver msgReceiver;
+    private View view2;
+    private ImageView imageView1;
+    private ImageView imageView2;
+    private ImageView imageView3;
 
     public void setContactListener(ContactListener contactListener) {
         this.contactListener = contactListener;
@@ -97,8 +99,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         /**初始化actionbar*/
         String title = UserManager.getUserManager(this).loadUserName();
-        toolbar.inflateMenu(R.menu.menu_home);
-        toolbarTitle.setText(title);
+        initToolbar(title);
+
         /**初始化viewpager*/
         initViewPager();
         /**初始化底部菜单*/
@@ -127,6 +129,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         TalkActivity.setHomeNewListener(this);
     }
 
+    private void initToolbar(String title) {
+        toolbar.inflateMenu(R.menu.menu_home);
+        toolbarTitle.setText(title);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_add:
+                        ShowAddFriend();
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
     private void initNewPop() {
         newPop = new PopBar(this, R.layout.view_new, ViewPager.LayoutParams.WRAP_CONTENT);
         newPop.setonClickListener(R.id.ll_new_pop, new View.OnClickListener() {
@@ -146,9 +164,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 0) {
-                    dismissPop();
-                    ConfigManager.getConfigManager(getApplicationContext()).saveNewPopConfig(false);
+                switch (position){
+                    case 0:
+                        dismissPop();
+                        ConfigManager.getConfigManager(getApplicationContext()).saveNewPopConfig(false);
+                        setVpHomeRed(1);
+                        break;
+                    case 1:
+                        setVpHomeRed(2);
+                        break;
+                    case 2:
+                        setVpHomeRed(3);
+                        break;
                 }
             }
 
@@ -253,7 +280,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         DisplayMetrics metrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         maxScreenWidth = metrics.widthPixels;
-        PageChangeAnimUtil.getPageChangeAnimUtil(getApplicationContext()).pageChangeAnim(vpHome, llBottomBarBg, maxScreenWidth);
     }
 
     /**
@@ -262,31 +288,75 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private void initTabHost() {
         view1 = getLayoutInflater().inflate(R.layout.layout_bottom_menu1, null);
         tabWidget.addView(view1);
+        imageView1 = (ImageView) findViewById(R.id.iv_message);
         view1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 vpHome.setCurrentItem(0);
+                setVpHomeRed(1);
             }
         });
-        View view2 = getLayoutInflater().inflate(R.layout.layout_bottom_menu2, null);
-
+        setVpHomeRed(1);
+        view2 = getLayoutInflater().inflate(R.layout.layout_bottom_menu2, null);
         tabWidget.addView(view2);
+        imageView2 = (ImageView) findViewById(R.id.iv_contacts);
         view2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 vpHome.setCurrentItem(1);
+                setVpHomeRed(2);
             }
         });
         view3 = getLayoutInflater().inflate(R.layout.layout_bottom_menu3, null);
-
         tabWidget.addView(view3);
+        imageView3 = (ImageView) findViewById(R.id.iv_config);
         view3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 vpHome.setCurrentItem(2);
+                setVpHomeRed(3);
             }
         });
         tabWidget.setCurrentTab(0);
+    }
+
+    public void setVpHomeRed(int id){
+        for(int i=1;i<4;i++){
+            setVpHomeBlack(i);
+        }
+        switch (id){
+            case 1:
+                imageView1.setImageResource(R.drawable.message_red);
+                break;
+            case 2:
+                imageView2.setImageResource(R.drawable.contacts_red);
+                break;
+            case 3:
+                imageView3.setImageResource(R.drawable.config_red);
+                break;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setVpHomeBlack(int id){
+        switch (id){
+            case 1:
+                if(imageView1!=null)
+                    imageView1.setImageResource(R.drawable.message);
+                break;
+            case 2:
+                if(imageView2!=null)
+                imageView2.setImageResource(R.drawable.contacts);
+                break;
+            case 3:
+                if(imageView3!=null)
+                imageView3.setImageResource(R.drawable.config);
+                break;
+        }
     }
 
     /**
@@ -396,23 +466,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_message:
-                vpHome.setCurrentItem(0);
-                break;
-            case R.id.iv_contacts:
-                vpHome.setCurrentItem(1);
-                break;
-            case R.id.iv_config:
-                vpHome.setCurrentItem(2);
-                break;
-            default:
-                break;
-        }
     }
 
     //实现ConnectionListener接口

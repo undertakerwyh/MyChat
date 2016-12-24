@@ -32,20 +32,12 @@
         android:layout_weight="1"
         android:clickable="true"></com.wyh.mychat.view.TouchViewPager>
 
-    <View style="@style/line_h_black_1"></View>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottombar_height">
-
-        <include layout="@layout/layout_bottombar_bg"></include>
+    <View style="@style/line_h_gray_1"></View>
 
         <TabWidget
             android:id="@+id/tabWidget"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottombar_height"></TabWidget>
-
-    </FrameLayout>
 
 
 </LinearLayout>
