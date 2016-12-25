@@ -90,7 +90,6 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(getActivity(), ShowPicActivity.class);
-                                LoadManager.getPicLoadManager(getContext()).stopSearch();
                                 intent.putExtra("PicFile",picture.getFile().getAbsolutePath());
                                 intent.putExtra("FromClass",((ShowSrcActivity)getActivity()).getFromClass());
                                 intent.putExtra("PicName",picture.getName());
@@ -134,6 +133,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
      * 显示指定文件夹下的图片的fragment
      */
     public void showResource(String name) {
+        adapter.getDataList().clear();
         isStopText = false;
         getHandler().sendEmptyMessage(0);
         LoadManager.getPicLoadManager(getContext()).isStop(false);
