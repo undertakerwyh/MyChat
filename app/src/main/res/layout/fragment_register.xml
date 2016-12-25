@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/colorWhite"
     android:layout_height="match_parent">
-
-
-    <ImageView
-        android:id="@+id/iv_actionbar_head"
-        android:layout_width="@dimen/register_headportrait_size"
-        android:layout_height="@dimen/register_headportrait_size"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/register_headportrait_margintop"
-        android:src="@drawable/headportrait" />
 
     <RelativeLayout
         android:id="@+id/layout_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/register_user_margintop"
-        android:layout_below="@+id/iv_actionbar_head"
         android:layout_alignParentStart="true">
 
         <EditText
@@ -27,7 +16,8 @@
             android:layout_height="@dimen/register_edit_height"
             android:layout_marginLeft="5dp"
             android:hint="@string/register_user"
-            android:background="@drawable/input_bg"
+            android:background="@drawable/edit_bg_long"
+            android:drawableLeft="@drawable/selector_ic_person"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
@@ -46,7 +36,8 @@
             android:hint="@string/register_password"
             android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
-            android:background="@drawable/input_bg" />
+            android:drawableLeft="@drawable/selector_ic_lock"
+            android:background="@drawable/edit_bg_long" />
 
     </RelativeLayout>
     <RelativeLayout
@@ -63,7 +54,8 @@
             android:hint="@string/register_repassword"
             android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
-            android:background="@drawable/input_bg" />
+            android:drawableLeft="@drawable/selector_ic_lock"
+            android:background="@drawable/edit_bg_long" />
 
     </RelativeLayout>
     <Button
@@ -73,7 +65,7 @@
         android:layout_below="@id/layout_password_re"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/register_btn_margintop"
-        android:background="@drawable/btn"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:text="@string/title_register"
         android:textColor="@color/colorWhite" />
 </RelativeLayout>

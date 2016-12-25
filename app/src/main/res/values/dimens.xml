@@ -41,7 +41,7 @@
     <!--账户密码之间的高-->
     <dimen name="login_password_margintop">10dp</dimen>
     <!--头像和账户之间的距离-->
-    <dimen name="login_headportrait_margintop">28dp</dimen>
+    <dimen name="login_headportrait_margintop">150dp</dimen>
     <!--注册和登陆之间的距离-->
     <dimen name="login_register_margintop">30dp</dimen>
     <!--账户密码的icon大小-->
@@ -52,7 +52,7 @@
     <dimen name="login_edit_width">250dp</dimen>
     <!--登陆按钮宽高-->
     <dimen name="login_btn_width">200dp</dimen>
-    <dimen name="login_btn_height">40dp</dimen>
+    <dimen name="login_btn_height">60dp</dimen>
     <dimen name="login_toolbar_textsize">20sp</dimen>
 
     <!--.................................RegisterFragment.................................-->
@@ -61,12 +61,12 @@
     <!--注册头像与屏幕中心的距离-->
     <dimen name="register_headportrait_margintop">100dp</dimen>
     <!--账号和头像的之间的高-->
-    <dimen name="register_user_margintop">30dp</dimen>
+    <dimen name="register_user_margintop">130dp</dimen>
     <!--账户和密码的宽高-->
     <dimen name="register_user_size">30dp</dimen>
     <!--注册按钮宽高-->
     <dimen name="register_btn_width">200dp</dimen>
-    <dimen name="register_btn_height">40dp</dimen>
+    <dimen name="register_btn_height">60dp</dimen>
     <!--注册按钮和确认密码之间的高-->
     <dimen name="register_btn_margintop">10dp</dimen>
     <dimen name="register_btn_textsize">15sp</dimen>

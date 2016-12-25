@@ -53,6 +53,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 vpLogin.setCurrentItem(0);
                 String title = getResources().getString(R.string.title_login);
                 toolbarTitle.setText(title);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 isLogin = true;
                 break;
             /**注册界面actionbar的变化*/
