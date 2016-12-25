@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +38,6 @@ import com.wyh.mychat.util.BitmapUtil;
 import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.util.SystemUtils;
 import com.wyh.mychat.util.TimeNoteUtil;
-import com.wyh.mychat.view.ActionBar;
 import com.wyh.mychat.view.PopBar;
 import com.wyh.mychat.view.xlistview.XListView;
 
@@ -50,8 +51,6 @@ import butterknife.OnClick;
 public class TalkActivity extends BaseActivity implements View.OnClickListener, DBManager.UpdateListener,
         NewMessageBroadcastReceiver.NewMessageTalk, ShowPicActivity.PicSendListener, BitmapManager.NewMessageTalk, XListView.HideEvent {
 
-    @Bind(R.id.action_bar)
-    ActionBar actionBar;
     @Bind(R.id.lv_talk_message)
     XListView lvTalkMessage;
     @Bind(R.id.iv_other_bar_icon)
@@ -68,6 +67,10 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     LinearLayout llOtherBar;
     @Bind(R.id.activity_talk)
     LinearLayout activityTalk;
+    @Bind(R.id.toolbar_tile_talk)
+    TextView toolbarTileTalk;
+    @Bind(R.id.toolbar_talk)
+    Toolbar toolbarTalk;
     private PopBar popBar;
     private UniversalAdapter<Message> talkAdapter;
     private String bitmapName;
@@ -113,10 +116,13 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_talk);
+        ButterKnife.bind(this);
         /**初始化ActionBar*/
         friendName = getIntent().getStringExtra("name");
-        initActionBar(friendName, R.drawable.back, -1, this);
-        ButterKnife.bind(this);
+        setSupportActionBar(toolbarTalk);
+        toolbarTileTalk.setText(friendName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         /**初始化适配器*/
         initAdapter();
         lvTalkMessage.setAdapter(talkAdapter);
@@ -217,13 +223,9 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         };
     }
 
-    @OnClick({R.id.btn_send, R.id.iv_actionbar_left, R.id.iv_other_bar_icon, R.id.ed_input_message, R.id.talk_pic_icon})
+    @OnClick({R.id.btn_send, R.id.iv_other_bar_icon, R.id.ed_input_message, R.id.talk_pic_icon})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_actionbar_left:
-                startActivity(HomeActivity.class);
-                finish();
-                break;
             case R.id.btn_send:
                 final String content = edInputMessage.getText().toString();
                 lvTalkMessage.post(new Runnable() {
@@ -251,6 +253,17 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(HomeActivity.class);
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -270,7 +283,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     private static HomeNewListener homeNewListener;
 
-    public interface HomeNewListener{
+    public interface HomeNewListener {
         void unRead(String name);
     }
 
@@ -417,7 +430,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void returnTalkPic(String name, String bitmapPath) {
-        if(friendName.equals(name)) {
+        if (friendName.equals(name)) {
             if (!isFirstEnter) {
                 final Message message = new Message(name, CommonUtil.getTimeLong(), CommonUtil.TYPE_PICLEFT, bitmapPath);
                 lvTalkMessage.post(new Runnable() {
