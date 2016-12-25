@@ -17,7 +17,7 @@
     <dimen name="action_setting_textsize">20sp</dimen>
 
     <dimen name="action_text_width">200dp</dimen>
-    <dimen name="toolbar_text_size">30sp</dimen>
+    <dimen name="toolbar_text_size">25sp</dimen>
 
     <!--.................................HomeActivity...................................-->
     <!--popwindow菜单的宽-->
@@ -114,7 +114,7 @@
     <!--发送状态提示图标的大小-->
     <dimen name="send_message_icon_size">25dp</dimen>
 
-    <dimen name="other_padding">4dp</dimen>
+    <dimen name="other_padding">6dp</dimen>
 
     <dimen name="send_pic_size">100dp</dimen>
 

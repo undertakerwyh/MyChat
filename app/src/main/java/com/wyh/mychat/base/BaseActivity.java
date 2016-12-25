@@ -20,7 +20,6 @@ import com.easemob.chat.EMContactManager;
 import com.easemob.exceptions.EaseMobException;
 import com.wyh.mychat.R;
 import com.wyh.mychat.biz.UserManager;
-import com.wyh.mychat.view.ActionBar;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,7 +31,6 @@ import java.util.List;
 
 public class BaseActivity extends AppCompatActivity {
     private static List<AppCompatActivity> activities = new ArrayList<>();
-    private ActionBar actionBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,22 +110,6 @@ public class BaseActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-    /**
-     * 初始化ActionBar
-     *
-     * @param title           标题栏
-     * @param leftRes         左边视图
-     * @param rightRes        右边视图
-     * @param onClickListener 监听事件
-     */
-    protected void initActionBar(String title, int leftRes, int rightRes, View.OnClickListener onClickListener) {
-        actionBar = (ActionBar) findViewById(R.id.action_bar);
-        actionBar.initActionBar(title, leftRes, rightRes, onClickListener);
-    }
-
-    protected void setActionBar(String title) {
-        actionBar.setText(title);
-    }
 
     /**
      * Handler

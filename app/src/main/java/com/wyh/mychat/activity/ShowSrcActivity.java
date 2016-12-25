@@ -5,7 +5,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.View;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.base.BaseActivity;
@@ -25,10 +27,14 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/11/18.
  */
 
-public class ShowSrcActivity extends BaseActivity implements View.OnClickListener {
+public class ShowSrcActivity extends BaseActivity {
 
     @Bind(R.id.vp_resource)
     NoTouchViewPager vpResource;
+    @Bind(R.id.toolbar_title)
+    TextView toolbarTitle;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
     private FragmentStatePagerAdapter fragmentStatePagerAdapter;
 
     private static FolderFragment folderFragment;
@@ -50,9 +56,12 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
         /**初始化标题栏*/
-        initActionBar(getString(R.string.my_picture), R.drawable.back, -1, this);
         ButterKnife.bind(this);
         FromClass = getIntent().getStringExtra("FromClass");
+        toolbarTitle.setText(FromClass);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         /**初始化Viewpager*/
         initViewpager();
         isCreatePicFile();
@@ -60,7 +69,7 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
 
     private void isCreatePicFile() {
         File file = new File(BitmapManager.myTalkPath);
-        if(file.exists()&&file.length()<=0){
+        if (file.exists() && file.length() <= 0) {
             ConfigManager.getConfigManager(getApplicationContext()).savePicFile(true);
         }
     }
@@ -74,7 +83,7 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
      * 设置标题栏的文字
      */
     public void setActionText(String content) {
-        setActionBar(content);
+        toolbarTitle.setText(content);
     }
 
     public static String getFolderName() {
@@ -170,11 +179,12 @@ public class ShowSrcActivity extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_actionbar_left:
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
                 finish();
                 break;
         }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -10,7 +10,6 @@ import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +33,6 @@ import com.wyh.mychat.fragment.ContactsFragment;
 import com.wyh.mychat.fragment.MessageFragment;
 import com.wyh.mychat.receive.NewMessageBroadcastReceiver;
 import com.wyh.mychat.util.SystemUtils;
-import com.wyh.mychat.view.ListViewBar;
 import com.wyh.mychat.view.PopBar;
 import com.wyh.mychat.view.TouchViewPager;
 import com.wyh.mychat.view.ViewPagerScroller;
@@ -68,9 +66,6 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
      * 保存屏幕按下移动的位置信息
      */
     private float maxScreenWidth;
-    private PopupWindow pop;
-    private ListViewBar listViewBar;
-    private PopupWindow friendPop;
     private PopBar newPop;
     private View view3;
     private View view1;

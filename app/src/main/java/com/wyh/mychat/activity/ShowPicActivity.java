@@ -2,18 +2,20 @@ package com.wyh.mychat.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.base.BaseActivity;
 import com.wyh.mychat.fragment.ConfigFragment;
 import com.wyh.mychat.util.BitmapUtil;
 import com.wyh.mychat.util.CommonUtil;
-import com.wyh.mychat.view.ActionBar;
 
 import java.io.File;
 
@@ -25,14 +27,16 @@ public class ShowPicActivity extends BaseActivity implements View.OnClickListene
 
     @Bind(R.id.iv_show_pictrue)
     ImageView ivShowPictrue;
-    @Bind(R.id.action_bar)
-    ActionBar actionBar;
     @Bind(R.id.cb_show_pic)
     CheckBox cbShowPic;
     @Bind(R.id.btn_pic_send)
     Button btnPicSend;
     @Bind(R.id.ll_show_pic)
     LinearLayout llShowPic;
+    @Bind(R.id.toolbar_title)
+    TextView toolbarTitle;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
     private File picFile;
 
     public static void setPicSendListener(PicSendListener picSendListener) {
@@ -55,7 +59,10 @@ public class ShowPicActivity extends BaseActivity implements View.OnClickListene
         } else {
             llShowPic.setVisibility(View.VISIBLE);
         }
-        initActionBar(name, R.drawable.back, -1, this);
+        setSupportActionBar(toolbar);
+        toolbarTitle.setText(name);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cbShowPic.setText("原图(" + CommonUtil.getFileSize(picFile.length()) + ")");
         ivShowPictrue.setImageBitmap(BitmapUtil.getBigBitmap(picFile.getAbsolutePath()));
     }
@@ -65,16 +72,23 @@ public class ShowPicActivity extends BaseActivity implements View.OnClickListene
         switch (view.getId()) {
             case R.id.btn_pic_send:
                 boolean isOriginal = cbShowPic.isChecked();
-                picSendListener.sendPic(picFile,isOriginal);
+                picSendListener.sendPic(picFile, isOriginal);
                 startActivity(TalkActivity.class);
-                break;
-            case R.id.iv_actionbar_left:
-                finish();
                 break;
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public interface PicSendListener {
-        void sendPic(File picFile,boolean isOriginal);
+        void sendPic(File picFile, boolean isOriginal);
     }
 }

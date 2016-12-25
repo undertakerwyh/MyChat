@@ -10,6 +10,7 @@
         android:clickable="false"
         android:focusable="false"
         android:src ="@drawable/folder"
+        android:padding="5dp"
         android:layout_height="@dimen/chat_config_item_height" />
     <TextView
         android:id="@+id/tv_folder_text"

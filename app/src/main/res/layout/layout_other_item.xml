@@ -3,16 +3,18 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:padding="5dp"
         android:layout_height="wrap_content">
 
+
         <ImageView
             android:id="@+id/talk_pic_icon"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:src="@drawable/pic_icon"
-            android:layout_height="50dp" />
+            android:layout_height="45dp" />
 
         <TextView
             android:layout_below="@id/talk_pic_icon"
@@ -31,9 +33,9 @@
 
         <ImageView
             android:id="@+id/talk_other"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:src="@drawable/unfinish"
-            android:layout_height="50dp" />
+            android:layout_height="45dp" />
 
         <TextView
             android:layout_below="@id/talk_other"
