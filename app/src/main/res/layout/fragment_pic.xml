@@ -10,9 +10,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:background="@color/transparent"
-        android:indeterminateBehavior="repeat"
-        android:indeterminateDrawable="@drawable/progressbar"
-        android:indeterminateOnly="true" />
+        />
 
     <ListView
         android:id="@+id/lv_folder"

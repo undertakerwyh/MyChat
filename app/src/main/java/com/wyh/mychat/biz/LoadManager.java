@@ -245,7 +245,7 @@ public class LoadManager {
         if (ServiceResource != null) {
             ServiceResource.shutdown();
         }
-
+        resourceUpdate.ResourceEnd();
     }
 
     /**

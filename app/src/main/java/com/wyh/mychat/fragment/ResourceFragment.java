@@ -90,6 +90,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(getActivity(), ShowPicActivity.class);
+                                LoadManager.getPicLoadManager(getContext()).stopSearch();
                                 intent.putExtra("PicFile",picture.getFile().getAbsolutePath());
                                 intent.putExtra("FromClass",((ShowSrcActivity)getActivity()).getFromClass());
                                 intent.putExtra("PicName",picture.getName());
