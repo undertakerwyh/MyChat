@@ -167,6 +167,9 @@ public class ShowSrcActivity extends BaseActivity {
      */
     @Override
     public void onBackPressed() {
+        backEvent();
+    }
+    private void backEvent(){
         if (vpResource.getCurrentItem() == 1) {
             LoadManager.getPicLoadManager(this).stopSearch();
             vpResource.setCurrentItem(0);
@@ -182,7 +185,7 @@ public class ShowSrcActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                finish();
+                backEvent();
                 break;
         }
         return super.onOptionsItemSelected(item);

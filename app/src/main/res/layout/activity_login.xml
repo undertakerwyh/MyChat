@@ -16,6 +16,7 @@
         <TextView
             android:id="@+id/toolbar_title"
             android:layout_width="@dimen/action_text_width"
+            android:gravity="center"
             android:ellipsize="end"
             android:layout_height="wrap_content"
             android:textColor="@color/colorWhite"
