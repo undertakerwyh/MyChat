@@ -1,6 +1,7 @@
 package com.wyh.mychat.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -37,6 +38,8 @@ public class ShowPicActivity extends BaseActivity implements View.OnClickListene
     TextView toolbarTitle;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.tv_pic_error)
+    TextView tvPicError;
     private File picFile;
 
     public static void setPicSendListener(PicSendListener picSendListener) {
@@ -64,7 +67,13 @@ public class ShowPicActivity extends BaseActivity implements View.OnClickListene
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cbShowPic.setText("原图(" + CommonUtil.getFileSize(picFile.length()) + ")");
-        ivShowPictrue.setImageBitmap(BitmapUtil.getBigBitmap(picFile.getAbsolutePath()));
+        Bitmap bitmap = BitmapUtil.getBigBitmap(picFile.getAbsolutePath());
+        if (bitmap == null) {
+            tvPicError.setVisibility(View.VISIBLE);
+        }else{
+            tvPicError.setVisibility(View.GONE);
+        }
+        ivShowPictrue.setImageBitmap(bitmap);
     }
 
     @OnClick({R.id.btn_pic_send})
@@ -80,7 +89,7 @@ public class ShowPicActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
