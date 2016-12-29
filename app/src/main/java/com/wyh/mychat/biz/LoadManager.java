@@ -65,13 +65,16 @@ public class LoadManager {
         isStop = false;
         ResourceFragment.initList();
         ServiceResource = Executors.newCachedThreadPool();
-        ServiceResource.execute(new Runnable() {
-            @Override
-            public void run() {
-                searchResource(file);
-            }
-        });
-        ServiceResource.shutdown();
+        final File[]files = file.listFiles();
+        for(int i=0;i<files.length;i++){
+            final int finalI = i;
+            ServiceResource.execute(new Runnable() {
+                @Override
+                public void run() {
+                    searchResource(files[finalI]);
+                }
+            });
+        }
     }
 
     public void reSearch() {
@@ -95,7 +98,6 @@ public class LoadManager {
                     }
                 });
             }
-            srcService.shutdown();
         } else {
             Iterator<String> iterator = folderSet.descendingIterator();
             while (iterator.hasNext()) {

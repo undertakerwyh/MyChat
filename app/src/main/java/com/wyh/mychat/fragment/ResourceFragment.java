@@ -79,7 +79,11 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
         adapter.getDataList().clear();
     }
 
-    private boolean isEnter=true;
+    public void setEnter(boolean enter) {
+        isEnter = enter;
+    }
+
+    private boolean isEnter;
     /**
      * 更新回调接口传来的值
      *
@@ -108,10 +112,15 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
      * 显示指定文件夹下的图片的fragment
      */
     public void showResource(String name) {
-        adapter.getDataList().clear();
+        cleanAdapter();
         LoadManager.getPicLoadManager(getContext()).isStop(false);
         LoadManager.getPicLoadManager(getContext()).setResourceUpdate(this);
         LoadManager.getPicLoadManager(getContext()).getResource(new File(name));
+    }
+    public void cleanAdapter(){
+        isEnter = true;
+        adapter.getDataList().clear();
+        adapter.notifyDataSetChanged();
     }
 
     @Override

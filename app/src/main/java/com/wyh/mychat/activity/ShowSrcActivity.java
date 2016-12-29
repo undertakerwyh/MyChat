@@ -174,6 +174,7 @@ public class ShowSrcActivity extends BaseActivity {
             LoadManager.getPicLoadManager(this).stopSearch();
             vpResource.setCurrentItem(0);
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
+            resourceFragment.cleanAdapter();
             setActionText(getString(R.string.my_picture));
             return;
         }
