@@ -31,8 +31,6 @@ import com.wyh.mychat.view.ListViewBar;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -61,13 +59,7 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
     @Override
     public void onAttach(final Context context) {
         super.onAttach(context);
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                list = DBManager.getDbManager(context).loadNewMessage(UserManager.getUserManager(context).loadUserName());
-            }
-        });
+        list = DBManager.getDbManager(context).loadNewMessage(UserManager.getUserManager(context).loadUserName());
     }
 
     @Nullable
@@ -152,6 +144,11 @@ public class MessageFragment extends Fragment implements NewMessageBroadcastRece
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     public void cancelNew(String name) {
