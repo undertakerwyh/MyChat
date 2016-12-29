@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -25,8 +27,7 @@ import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.ImageMessageBody;
 import com.wyh.mychat.R;
-import com.wyh.mychat.adapter.UniversalAdapter;
-import com.wyh.mychat.adapter.ViewHolder;
+import com.wyh.mychat.adapter.RecyclerViewAdapter;
 import com.wyh.mychat.base.BaseActivity;
 import com.wyh.mychat.biz.BitmapManager;
 import com.wyh.mychat.biz.DBManager;
@@ -47,12 +48,15 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
 
 public class TalkActivity extends BaseActivity implements View.OnClickListener, DBManager.UpdateListener,
         NewMessageBroadcastReceiver.NewMessageTalk, ShowPicActivity.PicSendListener, BitmapManager.NewMessageTalk, XListView.HideEvent {
 
     @Bind(R.id.lv_talk_message)
-    XListView lvTalkMessage;
+    RecyclerView lvTalkMessage;
     @Bind(R.id.iv_other_bar_icon)
     ImageView ivOtherBarIcon;
     @Bind(R.id.ed_input_message)
@@ -71,8 +75,10 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     TextView toolbarTileTalk;
     @Bind(R.id.toolbar_talk)
     Toolbar toolbarTalk;
+    @Bind(R.id.refresh_layout)
+    PtrClassicFrameLayout refreshLayout;
     private PopBar popBar;
-    private UniversalAdapter<Message> talkAdapter;
+    private RecyclerViewAdapter<Message> talkAdapter;
     private String bitmapName;
     private String bitmapPath;
 
@@ -99,12 +105,12 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         talkAdapter.addDataToAdapterHead((List<Message>) msg.obj);
                         int endIndex = talkAdapter.getDataList().size();
                         if (endIndex == startIndex) {
-                            lvTalkMessage.setSelection(0);
+                            lvTalkMessage.setId(0);
                         } else {
-                            lvTalkMessage.setSelection(endIndex - startIndex + 1);
+                            lvTalkMessage.smoothScrollToPosition(endIndex - startIndex + 1);
                         }
                     }
-                    lvTalkMessage.stopRefresh();
+                    refreshLayout.refreshComplete();
                     break;
                 case 2:
                     talkAdapter.notifyDataSetChanged();
@@ -125,11 +131,12 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         /**初始化适配器*/
         initAdapter();
-        lvTalkMessage.setAdapter(talkAdapter);
-        lvTalkMessage.setPullRefreshEnable(true);
-
+        lvTalkMessage.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
         /**设置xListView*/
-        setXListView();
+        setFreshLayout();
+        lvTalkMessage.setAdapter(talkAdapter);
+
+
         DBManager.getDbManager(getApplicationContext()).setUpdateListener(this);
         /**初始化数据*/
         DBManager.getDbManager(getApplicationContext()).loadMessageDESC(friendName, true);
@@ -144,7 +151,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 setupUI(innerView);
             }
         }
-        lvTalkMessage.setHideEvent(this);
     }
 
     private void initPopBar() {
@@ -178,22 +184,33 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    private void setXListView() {
-        lvTalkMessage.setXListViewListener(new XListView.IXListViewListener() {
+    private void setFreshLayout() {
+        refreshLayout.setPtrHandler(new PtrDefaultHandler() {
             @Override
-            public void onRefresh() {
+            public void onRefreshBegin(PtrFrameLayout frame) {
                 /**更新数据*/
                 DBManager.getDbManager(getApplicationContext()).loadMessageDESC(friendName, false);
                 TimeNoteUtil.getTimeNoteUtil().setRefresh(false);
             }
         });
+        refreshLayout.setLastUpdateTimeRelateObject(this);
+        refreshLayout.setDurationToClose(1500);
+        refreshLayout.refreshComplete();
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (talkAdapter.getItemCount() == 0){
+            refreshLayout.autoRefresh();
+        }
     }
 
     private void initAdapter() {
-        talkAdapter = new UniversalAdapter<Message>(getApplicationContext(), R.layout.layout_message_item) {
+        talkAdapter = new RecyclerViewAdapter<Message>(getApplicationContext(),R.layout.layout_message_item) {
+
             @Override
-            public void assignment(ViewHolder viewHolder, final int positon) {
-                final Message message = talkAdapter.getDataList().get(positon);
+            public void assignment(RecyclerViewAdapter<Message>.MyViewHolder viewHolder, int position) {
+                final Message message = talkAdapter.getDataList().get(position);
                 viewHolder.setChatVisible(R.id.ll_chat_left, R.id.ll_chat_right, R.id.tv_chat_left,
                         R.id.tv_chat_right, R.id.iv_pic_left, R.id.iv_pic_right, R.id.rl_loading_left, R.id.rl_loading_right
                         , BitmapManager.getBitmapManager(getApplicationContext()).loadBitmapFromCache(message.getBitmapPath(), message.getType())
@@ -304,25 +321,25 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                 talkAdapter.addDataUpdate(timeMsg);
             }
             talkAdapter.addDataUpdate(message);
-            lvTalkMessage.setSelection(lvTalkMessage.getCount() - 1);
+            lvTalkMessage.smoothScrollToPosition(talkAdapter.getItemCount() - 1);
             mySendUpdate.SendUpdate(message);
             if (type == CommonUtil.TYPE_RIGHT) {
                 SendManager.getSendMessage(this).sendTextMessage(friendName, content, new EMCallBack() {
                     @Override
                     public void onSuccess() {
-                        talkAdapter.getDataList().get(talkAdapter.getCount() - 1).setErrorType(CommonUtil.SEND_SUCCESS);
+                        talkAdapter.getDataList().get(talkAdapter.getItemCount() - 1).setErrorType(CommonUtil.SEND_SUCCESS);
                         handler.sendEmptyMessage(2);
                     }
 
                     @Override
                     public void onError(int i, String s) {
-                        talkAdapter.getDataList().get(talkAdapter.getCount() - 1).setErrorType(CommonUtil.SEND_ERROR);
+                        talkAdapter.getDataList().get(talkAdapter.getItemCount() - 1).setErrorType(CommonUtil.SEND_ERROR);
                         handler.sendEmptyMessage(2);
                     }
 
                     @Override
                     public void onProgress(int i, String s) {
-                        talkAdapter.getDataList().get(talkAdapter.getCount() - 1).setErrorType(CommonUtil.SEND_LOAD);
+                        talkAdapter.getDataList().get(talkAdapter.getItemCount() - 1).setErrorType(CommonUtil.SEND_LOAD);
                         handler.sendEmptyMessage(2);
                     }
                 });
@@ -342,7 +359,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
             talkAdapter.addDataUpdate(timeMsg);
         }
         talkAdapter.addDataUpdate(message);
-        lvTalkMessage.setSelection(lvTalkMessage.getCount() - 1);
+        lvTalkMessage.smoothScrollToPosition(talkAdapter.getItemCount() - 1);
         mySendUpdate.SendUpdate(message);
     }
 

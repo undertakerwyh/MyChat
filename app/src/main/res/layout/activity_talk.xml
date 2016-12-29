@@ -27,15 +27,22 @@
             android:layout_height="wrap_content" />
     </android.support.v7.widget.Toolbar>
 
-    <com.wyh.mychat.view.xlistview.XListView
-        android:id="@+id/lv_talk_message"
+    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:divider="@color/transparent"
-        android:focusable="true"
-        android:listSelector="@color/transparent"
-        android:transcriptMode="normal"></com.wyh.mychat.view.xlistview.XListView>
+        android:layout_weight="1">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/lv_talk_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/transparent"
+            android:focusable="true"
+            android:listSelector="@color/transparent"
+            android:transcriptMode="normal"></android.support.v7.widget.RecyclerView>
+    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+
+
 
     <View style="@style/line_h_gray_1"></View>
 
