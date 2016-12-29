@@ -3,14 +3,12 @@ package com.wyh.mychat.fragment;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowSrcActivity;
@@ -32,8 +30,6 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
 
     @Bind(R.id.lv_folder)
     ListView lvFolders;
-    @Bind(R.id.pb_load)
-    ProgressBar pbLoad;
     private View view;
 
     public UniversalAdapter<String> getAdapter() {
@@ -52,28 +48,7 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
         return view;
     }
 
-    public Handler getHandler() {
-        if (handler == null) {
-            handler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-                    switch (msg.what) {
-                        case 0:
-                            pbLoad.setVisibility(View.VISIBLE);
-                            break;
-                        case 1:
-                            pbLoad.clearAnimation();
-                            pbLoad.setVisibility(View.GONE);
-                            break;
-                    }
-                }
-            };
-        }
-        return handler;
-    }
-
-    private Handler handler;
+    private Handler handler = new Handler();
 
 
     @Override
@@ -87,12 +62,10 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
      * @param name 传入的值
      */
     public void refresh(final String name) {
-
         handler.post(new Runnable() {
             @Override
             public void run() {
                 adapter.addDataUpdate(name);
-                ((ShowSrcActivity) getActivity()).setActionText(getResources().getString(R.string.my_picture) + "(" + adapter.getDataList().size() + ")");
             }
         });
 
@@ -100,7 +73,7 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
 
     private void showFolder() {
         adapter.getDataList().clear();
-        getHandler().sendEmptyMessage(0);
+        handler.sendEmptyMessage(0);
         LoadManager.getPicLoadManager(getContext()).isStop(false);
         File sdFile = Environment.getExternalStorageDirectory();
         LoadManager.getPicLoadManager(getContext()).setFileUpdate(this);
@@ -148,11 +121,4 @@ public class FolderFragment extends Fragment implements LoadManager.FileUpdate {
         refresh(folder);
     }
 
-    /**
-     * 搜索结束加载动画结束
-     */
-    @Override
-    public void fileEnd() {
-        getHandler().sendEmptyMessage(1);
-    }
 }

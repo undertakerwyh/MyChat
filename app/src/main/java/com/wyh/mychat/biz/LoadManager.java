@@ -15,8 +15,6 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2016/11/18.
@@ -38,10 +36,8 @@ public class LoadManager {
 
     private static TreeSet<String> folderSet = new TreeSet<>();
 
-    private ScheduledExecutorService scheduledSrcService;
     private ExecutorService srcService;
     private ExecutorService ServiceResource;
-    private ScheduledExecutorService scheduledResourceService;
 
     public void setFileUpdate(FileUpdate fileUpdate) {
         this.fileUpdate = fileUpdate;
@@ -69,7 +65,6 @@ public class LoadManager {
         isStop = false;
         ResourceFragment.initList();
         ServiceResource = Executors.newCachedThreadPool();
-        scheduledResourceService = Executors.newScheduledThreadPool(1);
         ServiceResource.execute(new Runnable() {
             @Override
             public void run() {
@@ -77,19 +72,6 @@ public class LoadManager {
             }
         });
         ServiceResource.shutdown();
-        scheduledResourceService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (ServiceResource.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS)) {
-                        resourceUpdate.ResourceEnd();
-                        scheduledResourceService.shutdown();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 1, 1, TimeUnit.SECONDS);
     }
 
     public void reSearch() {
@@ -102,7 +84,6 @@ public class LoadManager {
     public void getSrcList(final File sdFile) {
         if (isFirst) {
             folderSet.clear();
-            scheduledSrcService = Executors.newScheduledThreadPool(1);
             final File[] files = sdFile.listFiles();
             for (int i = 0; i < files.length; i++) {
                 final int finalI = i;
@@ -115,22 +96,11 @@ public class LoadManager {
                 });
             }
             srcService.shutdown();
-            scheduledSrcService.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    if (srcService.isTerminated()) {
-                        fileUpdate.fileEnd();
-                        isFirst = false;
-                        scheduledSrcService.shutdown();
-                    }
-                }
-            }, 1, 1, TimeUnit.SECONDS);
         } else {
             Iterator<String> iterator = folderSet.descendingIterator();
             while (iterator.hasNext()) {
                 fileUpdate.update(iterator.next());
             }
-            fileUpdate.fileEnd();
         }
     }
 
@@ -216,7 +186,6 @@ public class LoadManager {
     public interface FileUpdate {
         void update(String folder);
 
-        void fileEnd();
     }
 
     /**
@@ -225,18 +194,13 @@ public class LoadManager {
     public interface ResourceUpdate {
         void resourceUpdate(Picture picture);
 
-        void ResourceEnd();
     }
 
     public void stopSearch() {
         isStop = true;
-        if (scheduledResourceService != null) {
-            scheduledResourceService.shutdown();
-        }
         if (ServiceResource != null) {
             ServiceResource.shutdown();
         }
-        resourceUpdate.ResourceEnd();
     }
 
     /**

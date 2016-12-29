@@ -58,7 +58,7 @@ public class ShowSrcActivity extends BaseActivity {
         /**初始化标题栏*/
         ButterKnife.bind(this);
         FromClass = getIntent().getStringExtra("FromClass");
-        toolbarTitle.setText(FromClass);
+        toolbarTitle.setText(getString(R.string.my_picture));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -174,8 +174,7 @@ public class ShowSrcActivity extends BaseActivity {
             LoadManager.getPicLoadManager(this).stopSearch();
             vpResource.setCurrentItem(0);
             resourceFragment = (ResourceFragment) fragmentStatePagerAdapter.getItem(1);
-            resourceFragment.setStopText(true);
-            setActionText(getString(R.string.my_picture) + "(" + getFolderFragment().getAdapter().getDataList().size() + ")");
+            setActionText(getString(R.string.my_picture));
             return;
         }
         finish();
