@@ -20,6 +20,8 @@
             android:layout_marginLeft="5dp"
             android:drawableLeft="@drawable/selector_ic_lock"
             android:background="@drawable/edit_bg_long"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
             android:hint="密码" />
 
     </RelativeLayout>
@@ -49,7 +51,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/login_headportrait_margintop"
-        android:layout_below="@+id/iv_actionbar_head"
         android:layout_alignParentStart="true">
 
         <EditText
@@ -60,6 +61,8 @@
             android:layout_marginLeft="5dp"
             android:background="@drawable/edit_bg_long"
             android:drawableLeft="@drawable/selector_ic_person"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
             android:hint="账号" />
 
     </RelativeLayout>

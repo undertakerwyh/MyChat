@@ -105,22 +105,32 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
         adapter.getDataList().clear();
     }
 
-
+    private boolean isEnter=true;
     /**
      * 更新回调接口传来的值
      *
      * @param picture 图片文件的实体类
      */
     public void refresh(final Picture picture) {
+        adapter.addDataNotUpdate(picture);
+        if(isEnter){
+            isEnter = false;
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    adapter.addDataUpdate(picture);
+                    adapter.notifyDataSetChanged();
+                }
+            });
+            getHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isEnter = true;
                     if (!isStopText) {
                         ((ShowSrcActivity) getActivity()).setActionText(CommonUtil.folderName(ShowSrcActivity.getFolderName()) + "(" + adapter.getDataList().size() + ")");
                     }
                 }
-            });
+            },500);
+        }
     }
 
     public void setStopText(boolean stopText) {

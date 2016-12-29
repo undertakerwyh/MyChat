@@ -1,9 +1,7 @@
 package com.wyh.mychat.biz;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Environment;
-import android.util.LruCache;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -40,7 +38,6 @@ public class LoadManager {
 
     private static TreeSet<String> folderSet = new TreeSet<>();
 
-    private static LruCache<String, Bitmap> lruCache = new LruCache<>(3 * 1024 * 1024);
     private ScheduledExecutorService scheduledSrcService;
     private ExecutorService srcService;
     private ExecutorService ServiceResource;
@@ -64,33 +61,27 @@ public class LoadManager {
         return picLoadManager;
     }
 
-    private boolean isForStop = false;
 
     /**
      * 获取file中的图片资源
      */
     public void getResource(final File file) {
-        isForStop = false;
         isStop = false;
         ResourceFragment.initList();
         ServiceResource = Executors.newCachedThreadPool();
         scheduledResourceService = Executors.newScheduledThreadPool(1);
-        final File[] files = file.listFiles();
-        for (int i = 0; i < files.length && !isForStop; i++) {
-            final int finalI = i;
-            ServiceResource.execute(new Runnable() {
-                @Override
-                public void run() {
-                    searchResource(files[finalI]);
-                }
-            });
-        }
+        ServiceResource.execute(new Runnable() {
+            @Override
+            public void run() {
+                searchResource(file);
+            }
+        });
         ServiceResource.shutdown();
         scheduledResourceService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
-                    if (ServiceResource.awaitTermination(Long.MAX_VALUE,TimeUnit.DAYS)) {
+                    if (ServiceResource.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS)) {
                         resourceUpdate.ResourceEnd();
                         scheduledResourceService.shutdown();
                     }
@@ -164,7 +155,7 @@ public class LoadManager {
             String type = file.getName().substring(endIndex + 1);
             if (type.equals("png") || type.equals("jpg") || type.equals("gif") && !isStop) {
                 String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().length());
-                resourceUpdate.resourceUpdate(new Picture(name,file));
+                resourceUpdate.resourceUpdate(new Picture(name, file));
             }
         }
         File[] files = file.listFiles();
@@ -239,7 +230,6 @@ public class LoadManager {
 
     public void stopSearch() {
         isStop = true;
-        isForStop = true;
         if (scheduledResourceService != null) {
             scheduledResourceService.shutdown();
         }

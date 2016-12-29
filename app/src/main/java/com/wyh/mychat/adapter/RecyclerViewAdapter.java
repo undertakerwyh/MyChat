@@ -269,6 +269,9 @@ public abstract class RecyclerViewAdapter<DataType> extends RecyclerView.Adapter
         dataList.add(dataType);
         this.notifyDataSetChanged();
     }
+    public void addDataNotUpdate(DataType dataType){
+        dataList.add(dataType);
+    }
     public void addData(DataType dataType) {
         dataList.add(dataType);
     }
