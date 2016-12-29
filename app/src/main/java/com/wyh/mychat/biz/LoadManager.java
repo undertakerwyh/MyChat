@@ -2,14 +2,15 @@ package com.wyh.mychat.biz;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.LruCache;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wyh.mychat.R;
 import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.fragment.ResourceFragment;
-import com.wyh.mychat.util.BitmapUtil;
 
 import java.io.File;
 import java.util.Iterator;
@@ -163,7 +164,7 @@ public class LoadManager {
             String type = file.getName().substring(endIndex + 1);
             if (type.equals("png") || type.equals("jpg") || type.equals("gif") && !isStop) {
                 String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().length());
-                loadLruCache(name, file);
+                resourceUpdate.resourceUpdate(new Picture(name,file));
             }
         }
         File[] files = file.listFiles();
@@ -251,19 +252,14 @@ public class LoadManager {
     /**
      * Lrucache保存图片资源和读取图片资源
      *
-     * @param name 图片文件夹名
      * @param file 图片文件
      */
-    public void loadLruCache(final String name, final File file) {
-        Bitmap bitmap = lruCache.get(file.getAbsolutePath());
-        if (bitmap == null) {
-            bitmap = BitmapUtil.getSmallBitmap(file.getAbsolutePath());
-            if (bitmap == null) {
-                bitmap = BitmapFactory.decodeResource(contexts.getResources(), R.drawable.load_pic);
-            } else {
-                lruCache.put(file.getAbsolutePath(), bitmap);
-            }
-        }
-        resourceUpdate.resourceUpdate(new Picture(name, bitmap, file));
+    public void loadLruCache(final File file, ImageView imageView) {
+        Glide.with(contexts)
+                .load(file)
+                .override(128,128)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .error(R.drawable.load_pic)
+                .into(imageView);
     }
 }

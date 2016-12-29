@@ -133,6 +133,7 @@
     <!--...................................ShowSrcActivity....................................-->
     <!--加载等待动画的大小-->
     <dimen name="chat_pic_progress_size">20dp</dimen>
+    <dimen name="recycler_pic_size">120dp</dimen>
     <!--...................................showPicActivity......................................-->
     <dimen name="chat_show_pic_size">350dp</dimen>
 

@@ -1,7 +1,5 @@
 package com.wyh.mychat.entity;
 
-import android.graphics.Bitmap;
-
 import java.io.File;
 import java.io.Serializable;
 
@@ -11,12 +9,10 @@ import java.io.Serializable;
 
 public class Picture implements Serializable{
     private String name;
-    private Bitmap bitmap;
     private File file;
 
-    public Picture( String name, Bitmap bitmap, File file) {
+    public Picture( String name, File file) {
         this.name = name;
-        this.bitmap = bitmap;
         this.file = file;
     }
 
@@ -36,11 +32,5 @@ public class Picture implements Serializable{
         this.file = file;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
 }

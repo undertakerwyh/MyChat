@@ -13,6 +13,7 @@ import java.io.IOException;
  */
 
 public class BitmapUtil {
+
     /**
      *
      * @param filePath 图片路径

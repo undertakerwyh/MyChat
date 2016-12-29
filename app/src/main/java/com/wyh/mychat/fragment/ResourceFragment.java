@@ -6,17 +6,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.wyh.mychat.R;
 import com.wyh.mychat.activity.ShowPicActivity;
 import com.wyh.mychat.activity.ShowSrcActivity;
-import com.wyh.mychat.adapter.UniversalAdapter;
-import com.wyh.mychat.adapter.ViewHolder;
+import com.wyh.mychat.adapter.RecyclerViewAdapter;
 import com.wyh.mychat.biz.LoadManager;
 import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.util.CommonUtil;
@@ -32,16 +33,16 @@ import butterknife.ButterKnife;
 
 public class ResourceFragment extends Fragment implements LoadManager.ResourceUpdate {
     @Bind(R.id.lv_folder)
-    ListView lvResource;
+    RecyclerView lvResource;
     @Bind(R.id.pb_load)
     ProgressBar pbLoad;
     private View view;
 
-    public UniversalAdapter<Picture> getAdapter() {
+    public RecyclerViewAdapter<Picture> getAdapter() {
         return adapter;
     }
 
-    private static UniversalAdapter<Picture> adapter;
+    private static RecyclerViewAdapter<Picture> adapter;
 
     @Nullable
     @Override
@@ -49,6 +50,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
         view = inflater.inflate(R.layout.fragment_pic, null);
         ButterKnife.bind(this, view);
         initAdapter();
+        lvResource.setLayoutManager(new GridLayoutManager(getContext(),3, LinearLayoutManager.VERTICAL,false));
         lvResource.setAdapter(adapter);
         return view;
     }
@@ -80,12 +82,11 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
      * 初始化适配器
      */
     private void initAdapter() {
-        adapter = new UniversalAdapter<Picture>(getContext(), R.layout.layout_pic_item) {
+        adapter = new RecyclerViewAdapter<Picture>(getContext(), R.layout.layout_recycler_pic) {
             @Override
-            public void assignment(ViewHolder viewHolder, int positon) {
-                final Picture picture = adapter.getDataList().get(positon);
-                viewHolder.setImageViewContent(R.id.iv_pic_icon, picture.getBitmap())
-                        .setTextViewContent(R.id.tv_folder_text, picture.getName())
+            public void assignment(MyViewHolder viewHolder, int position) {
+                final Picture picture = adapter.getDataList().get(position);
+                viewHolder.setImageViewContent(R.id.iv_pic_icon, picture.getFile())
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

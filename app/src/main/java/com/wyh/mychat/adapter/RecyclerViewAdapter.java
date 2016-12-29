@@ -19,10 +19,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wyh.mychat.R;
+import com.wyh.mychat.biz.LoadManager;
 import com.wyh.mychat.entity.Message;
 import com.wyh.mychat.util.CommonUtil;
 import com.wyh.mychat.util.TimeNoteUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -144,9 +146,9 @@ public abstract class RecyclerViewAdapter<DataType> extends RecyclerView.Adapter
             return this;
         }
 
-        public MyViewHolder setImageViewContent(int ViewId, Bitmap bitmap) {
+        public MyViewHolder setImageViewContent(int ViewId,File file) {
             ImageView imageView = this.getView(ViewId);
-            imageView.setImageBitmap(bitmap);
+            LoadManager.getPicLoadManager(context).loadLruCache(file,imageView);
             return this;
         }
 
