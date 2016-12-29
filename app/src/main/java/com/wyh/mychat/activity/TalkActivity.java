@@ -81,6 +81,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
     private RecyclerViewAdapter<Message> talkAdapter;
     private String bitmapName;
     private String bitmapPath;
+    private LinearLayoutManager linearLayoutManager;
 
     public static String getFriendName() {
         return friendName;
@@ -107,7 +108,7 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
                         if (endIndex == startIndex) {
                             lvTalkMessage.setId(0);
                         } else {
-                            lvTalkMessage.smoothScrollToPosition(endIndex - startIndex + 1);
+                            lvTalkMessage.smoothScrollToPosition(endIndex-startIndex-1);
                         }
                     }
                     refreshLayout.refreshComplete();
@@ -131,11 +132,11 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         /**初始化适配器*/
         initAdapter();
-        lvTalkMessage.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+        lvTalkMessage.setLayoutManager(linearLayoutManager);
         /**设置xListView*/
         setFreshLayout();
         lvTalkMessage.setAdapter(talkAdapter);
-
 
         DBManager.getDbManager(getApplicationContext()).setUpdateListener(this);
         /**初始化数据*/
@@ -196,13 +197,6 @@ public class TalkActivity extends BaseActivity implements View.OnClickListener, 
         refreshLayout.setLastUpdateTimeRelateObject(this);
         refreshLayout.setDurationToClose(1500);
         refreshLayout.refreshComplete();
-    }
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (talkAdapter.getItemCount() == 0){
-            refreshLayout.autoRefresh();
-        }
     }
 
     private void initAdapter() {
