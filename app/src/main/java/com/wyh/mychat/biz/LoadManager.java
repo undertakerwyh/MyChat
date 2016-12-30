@@ -9,6 +9,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wyh.mychat.R;
 import com.wyh.mychat.entity.Picture;
 import com.wyh.mychat.fragment.ResourceFragment;
+import com.wyh.mychat.util.BitmapHashMapUtil;
 
 import java.io.File;
 import java.util.Iterator;
@@ -20,7 +21,7 @@ import java.util.concurrent.Executors;
  * Created by Administrator on 2016/11/18.
  */
 
-public class LoadManager {
+public class LoadManager implements BitmapHashMapUtil.ReturnBitMapPath{
     private static LoadManager picLoadManager;
     private static Context contexts;
 
@@ -56,12 +57,14 @@ public class LoadManager {
         }
         return picLoadManager;
     }
-
+    private LoadManager(){
+        BitmapHashMapUtil.getBitmapHashMapUtil(contexts).setReturnBitMapPath(this);
+    }
 
     /**
      * 获取file中的图片资源
      */
-    public void getResource(final File file) {
+    public void getResource(String folder,final File file) {
         isStop = false;
         ResourceFragment.initList();
         ServiceResource = Executors.newCachedThreadPool();
@@ -71,6 +74,7 @@ public class LoadManager {
             ServiceResource.execute(new Runnable() {
                 @Override
                 public void run() {
+
                     searchResource(files[finalI]);
                 }
             });
@@ -113,6 +117,7 @@ public class LoadManager {
         if (isStop) {
             return;
         }
+
         if (!file.exists() || file == null || !file.canRead()) {
             return;
         }
@@ -180,6 +185,11 @@ public class LoadManager {
 
     public void isStop(boolean stop) {
         isStopFile = stop;
+    }
+
+    @Override
+    public void returnPath(String name) {
+
     }
 
     /**

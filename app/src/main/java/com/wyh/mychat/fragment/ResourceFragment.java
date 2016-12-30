@@ -115,7 +115,7 @@ public class ResourceFragment extends Fragment implements LoadManager.ResourceUp
         cleanAdapter();
         LoadManager.getPicLoadManager(getContext()).isStop(false);
         LoadManager.getPicLoadManager(getContext()).setResourceUpdate(this);
-        LoadManager.getPicLoadManager(getContext()).getResource(new File(name));
+        LoadManager.getPicLoadManager(getContext()).getResource(name,new File(name));
     }
     public void cleanAdapter(){
         isEnter = true;
