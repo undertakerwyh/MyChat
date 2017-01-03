@@ -1,7 +1,6 @@
 package com.wyh.mychat.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,18 +37,19 @@ public class BitmapHashMapUtil {
      */
     public void putBitMapPath(String folder,String name,String path){
         String firstLetter = name.substring(0, 1);
-        Log.e("AAA","firstMap="+firstLetter);
         putPathName(name,path,letterName(firstLetter, folderName(folder)));
     }
     public boolean isBitMapPath(String folder,String name,String path){
+        Map folderMap=null;
+        HashMap firstMap =null;
+        List nameList=null;
         String firstLetter = name.substring(0, 1);
-        Log.e("AAA","firstMap="+firstLetter);
         if(BitmapMap.containsKey(folder)){
-            Map folderMap = (Map) BitmapMap.get(folder);
+            folderMap = (Map) BitmapMap.get(folder);
             if(folderMap.containsKey(firstLetter)){
-                Hashtable firstMap = (Hashtable) folderMap.get(firstLetter);
+                firstMap = (HashMap) folderMap.get(firstLetter);
                 if(firstMap.containsKey(name)){
-                    List nameList = (List) firstMap.get(name);
+                    nameList = (List) firstMap.get(name);
                     if(nameList.contains(path)){
                         return true;
                     }
@@ -59,15 +59,20 @@ public class BitmapHashMapUtil {
         return false;
     }
     public void getBitMapList(String folder){
-        Hashtable nameTable;
+        HashMap nameMap = null;
+        List list=null;
         if(BitmapMap.containsKey(folder)){
             Map folderMap = (Map) BitmapMap.get(folder);
             Iterator iterator = folderMap.entrySet().iterator();
             while (iterator.hasNext()){
-                nameTable = (Hashtable) iterator.next();
-                Iterator iterator1 = nameTable.entrySet().iterator();
+                Map.Entry entry = (Map.Entry) iterator.next();
+                Object value = entry.getValue();
+                nameMap = (HashMap) value;
+                Iterator iterator1 = nameMap.entrySet().iterator();
                 while (iterator1.hasNext()){
-                    List list = (List) iterator1.next();
+                    Map.Entry entry1 = (Map.Entry) iterator1.next();
+                    Object value1 = entry1.getValue();
+                    list = (List)value1;
                     Iterator iterator2 = list.iterator();
                     while (iterator2.hasNext()){
                         returnBitMapPath.returnPath((String) iterator2.next());
@@ -95,16 +100,16 @@ public class BitmapHashMapUtil {
             return firstMap;
         }
     }
-    private Hashtable letterName(String letter,HashMap map){
+    private HashMap letterName(String letter,HashMap map){
         if(map.containsKey(letter)){
-            return (Hashtable) map.get(letter);
+            return (HashMap) map.get(letter);
         }else{
-            Hashtable pathMap = new Hashtable<String,List>();
+            HashMap pathMap = new HashMap<String,List>();
             map.put(letter,pathMap);
             return pathMap;
         }
     }
-    private void putPathName(String name,String path,Hashtable map){
+    private void putPathName(String name, String path, HashMap map){
         if(map.containsKey(name)){
             ((List)map.get(name)).add(path);
         }else{

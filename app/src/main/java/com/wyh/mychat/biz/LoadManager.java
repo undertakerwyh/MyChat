@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
  * Created by Administrator on 2016/11/18.
  */
 
-public class LoadManager implements BitmapHashMapUtil.ReturnBitMapPath{
+public class LoadManager implements BitmapHashMapUtil.ReturnBitMapPath {
     private static LoadManager picLoadManager;
     private static Context contexts;
 
@@ -57,25 +57,26 @@ public class LoadManager implements BitmapHashMapUtil.ReturnBitMapPath{
         }
         return picLoadManager;
     }
-    private LoadManager(){
+
+    private LoadManager() {
         BitmapHashMapUtil.getBitmapHashMapUtil(contexts).setReturnBitMapPath(this);
     }
 
     /**
      * 获取file中的图片资源
      */
-    public void getResource(String folder,final File file) {
+    public void getResource(final String folder, final File file) {
         isStop = false;
         ResourceFragment.initList();
         ServiceResource = Executors.newCachedThreadPool();
-        final File[]files = file.listFiles();
-        for(int i=0;i<files.length;i++){
+        final File[] files = file.listFiles();
+        BitmapHashMapUtil.getBitmapHashMapUtil(contexts).getBitMapList(folder);
+        for (int i = 0; i < files.length; i++) {
             final int finalI = i;
             ServiceResource.execute(new Runnable() {
                 @Override
                 public void run() {
-
-                    searchResource(files[finalI]);
+                    searchResource(files[finalI], folder);
                 }
             });
         }
@@ -113,7 +114,7 @@ public class LoadManager implements BitmapHashMapUtil.ReturnBitMapPath{
     /**
      * 搜索图片资源的递归方法
      */
-    public void searchResource(File file) {
+    public void searchResource(File file, String folder) {
         if (isStop) {
             return;
         }
@@ -132,7 +133,10 @@ public class LoadManager implements BitmapHashMapUtil.ReturnBitMapPath{
             String type = file.getName().substring(endIndex + 1);
             if (type.equals("png") || type.equals("jpg") || type.equals("gif") && !isStop) {
                 String name = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().length());
-                resourceUpdate.resourceUpdate(new Picture(name, file));
+                if (!BitmapHashMapUtil.getBitmapHashMapUtil(contexts).isBitMapPath(folder, name, file.getAbsolutePath())) {
+                    resourceUpdate.resourceUpdate(new Picture(name, file));
+                    BitmapHashMapUtil.getBitmapHashMapUtil(contexts).putBitMapPath(folder, name, file.getAbsolutePath());
+                }
             }
         }
         File[] files = file.listFiles();
@@ -140,7 +144,7 @@ public class LoadManager implements BitmapHashMapUtil.ReturnBitMapPath{
             return;
         }
         for (int i = 0; i < files.length; i++) {
-            searchResource(files[i]);
+            searchResource(files[i], folder);
         }
     }
 
@@ -189,7 +193,7 @@ public class LoadManager implements BitmapHashMapUtil.ReturnBitMapPath{
 
     @Override
     public void returnPath(String name) {
-
+        resourceUpdate.resourceUpdate(new Picture(name, new File(name)));
     }
 
     /**
@@ -223,7 +227,7 @@ public class LoadManager implements BitmapHashMapUtil.ReturnBitMapPath{
     public void loadLruCache(final File file, ImageView imageView) {
         Glide.with(contexts)
                 .load(file)
-                .override(128,128)
+                .override(128, 128)
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .error(R.drawable.load_pic)
                 .into(imageView);
