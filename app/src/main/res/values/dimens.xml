@@ -5,7 +5,7 @@
     <!--actionbar的高-->
     <dimen name="actionbar_height">50dp</dimen>
     <!--bottomBar的高-->
-    <dimen name="bottombar_height">60dp</dimen>
+    <dimen name="bottombar_height">50dp</dimen>
 
 
     <!--..................................ActionBar......................................-->

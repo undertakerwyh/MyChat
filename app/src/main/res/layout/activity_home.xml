@@ -38,6 +38,7 @@
 
         <TabWidget
             android:id="@+id/tabWidget"
+            android:divider="@color/transparent"
             android:background="@color/colorWhite"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottombar_height"></TabWidget>

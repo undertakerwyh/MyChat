@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,7 +66,7 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
     /**
      * 保存屏幕按下移动的位置信息
      */
-    private float maxScreenWidth;
+    private int maxScreenWidth;
     private PopBar newPop;
     private View view3;
     private View view1;
@@ -87,6 +88,7 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        initHomePageChange();
         /**初始化actionbar*/
         String title = UserManager.getUserManager(this).loadUserName();
         initToolbar(title);
@@ -96,7 +98,6 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
         /**初始化底部菜单*/
         initTabHost();
         /**viewpager与滚动条的交互*/
-        initHomePageChange();
         initViewPagerScroll();
         initReceive();
         initBroadcastReceiver();
@@ -236,7 +237,7 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    newPop.showAsDropDown(vpHome, (int) maxScreenWidth / 6, newPop.getHeight());
+                    newPop.showAsDropDown(vpHome,maxScreenWidth / 6, newPop.getHeight());
                 }
             });
         }
@@ -270,7 +271,7 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
      */
     private void initTabHost() {
         view1 = getLayoutInflater().inflate(R.layout.layout_bottom_menu1, null);
-        tabWidget.addView(view1);
+        tabWidget.addView(view1, maxScreenWidth/3, LinearLayout.LayoutParams.MATCH_PARENT);
         imageView1 = (ImageView) findViewById(R.id.iv_message);
         view1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,7 +282,7 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
         });
         setVpHomeRed(1);
         view2 = getLayoutInflater().inflate(R.layout.layout_bottom_menu2, null);
-        tabWidget.addView(view2);
+        tabWidget.addView(view2,  maxScreenWidth/3,LinearLayout.LayoutParams.MATCH_PARENT);
         imageView2 = (ImageView) findViewById(R.id.iv_contacts);
         view2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,7 +292,7 @@ public class HomeActivity extends BaseActivity implements UserManager.ExitListen
             }
         });
         view3 = getLayoutInflater().inflate(R.layout.layout_bottom_menu3, null);
-        tabWidget.addView(view3);
+        tabWidget.addView(view3,  maxScreenWidth/3,LinearLayout.LayoutParams.MATCH_PARENT);
         imageView3 = (ImageView) findViewById(R.id.iv_config);
         view3.setOnClickListener(new View.OnClickListener() {
             @Override
